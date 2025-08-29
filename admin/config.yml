@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: Tonicyanbrock/trinity_calendar   # keep this repo name exactly
+  name: git-gateway
   branch: main
 
 media_folder: "uploads"
