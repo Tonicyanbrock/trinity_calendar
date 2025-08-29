@@ -1,0 +1,26 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "uploads"
+public_folder: "/uploads"
+publish_mode: editorial_workflow
+
+collections:
+  - name: "events"
+    label: "Events"
+    files:
+      - file: "events.json"
+        label: "Events JSON"
+        name: "events_json"
+        format: "json"
+        fields:
+          - label: "Events"
+            name: "events"
+            widget: "list"
+            collapsed: false
+            fields:
+              - { label: "Title", name: "t", widget: "string" }
+              - { label: "Date", name: "date", widget: "date", format: "YYYY-MM-DD" }
+              - { label: "Time", name: "time", widget: "string", required: false }
+              - { label: "Type", name: "type", widget: "select", options: ["parish","diocese","episcopal","holiday","civic","aa","na"], default: "parish" }
