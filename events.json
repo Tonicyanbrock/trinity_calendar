@@ -1,0 +1,10 @@
+{
+  "events": [
+    {
+      "type": "parish",
+      "t": "test",
+      "date": "2025-08-29",
+      "time": "1:00 AM"
+    }
+  ]
+}
