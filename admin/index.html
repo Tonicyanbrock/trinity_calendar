@@ -16,6 +16,24 @@
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Episcopal_Church_shield.svg/120px-Episcopal_Church_shield.svg.png" alt="Shield">
       <h1>Trinity Admin (Decap CMS)</h1>
     </header>
+
+    <!-- Netlify Identity widget (needed for login/reset links) -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <!-- Decap (Netlify) CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <!-- Optional redirect after login -->
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", (user) => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
+    </script>
   </body>
 </html>
