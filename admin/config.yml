@@ -1,7 +1,7 @@
 backend:
   name: git-gateway
   branch: main
-
+site_url: https://trinity-calendar.netlify.app
 media_folder: "uploads"
 public_folder: "/uploads"
 publish_mode: editorial_workflow
