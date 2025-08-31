@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+<a href="/admin" class="btn" style="border:2px solid #cbd5e1;padding:6px 10px;border-radius:10px;font-weight:800">Admin</a>
 
   <!-- Titles / SEO / Social -->
   <title>Trinity De Soto — Calendar</title>
@@ -91,6 +92,18 @@
     .add-to-cal {border:2px solid #e5e7eb; padding:10px; border-radius:12px; margin:8px 0; background:#fff}
     .add-to-cal a {display:inline-block; margin:6px 8px 0 0; padding:6px 10px; border:2px solid #cbd5e1; border-radius:10px; font-weight:700; text-decoration:none; color:inherit}
     .add-to-cal a:hover {background:#f8fafc}
+    .weekdays{border-bottom:2px solid var(--grid)}
+.weekdays div{border-right:2px solid var(--grid)}
+.weekdays div:last-child{border-right:none}
+.grid{border-top:none}
+.day{border-right:2px solid var(--grid);border-bottom:2px solid var(--grid)}
+.day:nth-child(7n){border-right:none}
+.glass{
+  height:160px; border-radius:12px; margin:10px 0;
+  background:url("assets/stained-glass.jpg") center/cover no-repeat;
+  border:2px solid #cbd5e1;
+}
+
   </style>
 </head>
 <body>
@@ -116,6 +129,7 @@
         <label><input type="checkbox" id="showUSA" checked> 🇺🇸 US holidays</label>
         <label><input type="checkbox" id="showHoly" checked> ✝️ Church seasons</label>
       </div>
+<div class="glass" role="img" aria-label="Stained glass window banner"></div>
 
       <div class="legend">
         <div class="chip"><span class="sw" style="background:#bef264"></span> Sunday Service</div>
