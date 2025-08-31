@@ -1,12 +1,16 @@
-<!doctype html>
-<html>
-  <head>  <!-- Social preview (Facebook/Twitter/LinkedIn) -->
-    <!-- SEO basics -->
-    <title>Trinity De Soto — Calendar</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Titles / SEO / Social -->
+  <title>Trinity De Soto — Calendar</title>
   <meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome.">
   <link rel="canonical" href="https://tonicyanbrock.github.io/trinity_calendar/">
+  <meta name="theme-color" content="#6b7280">
 
-  <!-- Open Graph / Facebook / Slack / iMessage -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Trinity Episcopal De Soto">
   <meta property="og:title" content="Trinity De Soto — Calendar">
@@ -23,30 +27,356 @@
   <meta name="twitter:description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO.">
   <meta name="twitter:image" content="https://tonicyanbrock.github.io/trinity_calendar/assets/og-image.jpg?v=1">
 
-  <!-- Optional polish (only keep if the files exist in /assets) -->
-  <!-- <link rel="icon" href="assets/favicon.png" type="image/png"> -->
-  <!-- <link rel="apple-touch-icon" href="assets/apple-touch-icon.png"> -->
-  <meta name="theme-color" content="#6b7280">
+  <!-- Styles (from your original full calendar) -->
+  <style>
+    :root{
+      --panel:#ffffff; --ink:#0b1220; --muted:#475569;
+      --accent:#16a34a; --accent-2:#2563eb;
+      --usa:#0ea5e9; --holy:#f59e0b;
+      --grid:#64748b; --tint:#f8fafc;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:#fff}
+    .app{max-width:980px;margin:14px auto;padding:12px}
+    .header{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand h1{font-size:22px;margin:0;line-height:1.2}
+    .banner{grid-column:1/-1;margin:6px 0 10px;padding:8px 10px;border:2px solid #cbd5e1;border-radius:12px;background:#f1f5f9;font-weight:700;text-align:center}
+    .controls{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .controls button,.controls .month{border:2px solid #cbd5e1;background:#fff;padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer;font-size:14px}
+    .controls .month{min-width:240px;text-align:center;cursor:default}
+    .right{display:flex;gap:6px;justify-content:end;align-items:center;flex-wrap:wrap}
+    .right input[type=search]{border:2px solid #cbd5e1;padding:10px 12px;border-radius:12px;font-size:14px;min-width:180px}
+    .right .btn{border:2px solid #cbd5e1;padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+    .right .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .toggles{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0}
+    .toggles label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+    .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+    .legend .chip{display:flex;align-items:center;gap:6px;border:1px solid #cbd5e1;border-radius:999px;padding:4px 8px;background:#fff}
+    .legend .sw{width:10px;height:10px;border-radius:3px;border:1px solid #0002}
+    .calendar{background:var(--panel);border:3px solid var(--grid);border-radius:8px;overflow:hidden;margin-top:8px}
+    .weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:3px solid var(--grid)}
+    .weekdays div{padding:10px 4px;text-align:center;font-size:12px;font-weight:800;color:#0b1220;border-right:2px solid var(--grid);background:#e2e8f0}
+    .weekdays div:last-child{border-right:none}
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:140px;border-bottom:2px solid var(--grid)}
+    @media (max-width:600px){.grid{grid-auto-rows:120px}}
+    .day{position:relative;border-right:2px solid var(--grid);border-bottom:2px solid var(--grid);background:#fff;padding:8px}
+    .day:nth-child(7n){border-right:none}
+    .day.alt{background:var(--tint)}
+    .day .date{position:absolute;top:6px;right:6px;font-size:12px;font-weight:800}
+    .day .tag{position:absolute;top:6px;left:6px;background:#fff;padding:2px 6px;border:2px solid #cbd5e1;border-radius:9px}
+    .day.today{outline:3px solid var(--accent-2);outline-offset:-3px;background:linear-gradient(0deg,#e0f2fe,transparent)}
+    .day.out{background:#f3f4f6;color:#94a3b8}
+    .events{margin-top:22px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+    .event{font-size:12px;padding:6px 8px;border-radius:8px;border:2px solid #e5e7eb;display:flex;align-items:center;gap:6px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .event .swatch{width:10px;height:10px;border-radius:3px;border:1px solid #0002}
+    #upcoming{background:var(--panel);border:2px solid #cbd5e1;border-radius:8px;padding:10px;margin-top:12px}
+    #upcoming h3{margin:0 0 8px 0}
+    .up-item{display:flex;gap:8px;align-items:center;padding:8px;border:2px solid #e5e7eb;border-radius:10px;margin-bottom:8px}
+    .up-item .date{font-weight:900;min-width:160px}
+    .up-item .title{font-weight:800}
+    .small{font-size:12px;color:var(--muted)}
+    dialog{border:none;padding:0;border-radius:16px;width:min(520px,94vw);box-shadow:0 22px 44px rgba(0,0,0,.18)}
+    .modal{background:var(--panel);border:2px solid #cbd5e1;border-radius:16px}
+    .modal header{padding:14px 16px;border-bottom:2px solid #cbd5e1;display:flex;justify-content:space-between;align-items:center}
+    .modal header h2{margin:0;font-size:16px}
+    .modal .content{padding:12px;display:grid;gap:10px}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+    input,textarea,select{width:100%;padding:10px;border:2px solid #cbd5e1;border-radius:10px;font-size:14px}
+    .modal footer{padding:12px 16px;border-top:2px solid #cbd5e1;display:flex;justify-content:end;gap:10px}
+    footer button{padding:10px 14px;border-radius:12px;font-weight:800;cursor:pointer;border:2px solid #cbd5e1}
+    footer button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Trinity Calendar</title>
-  </head>
-  <body>
-    <h1>Trinity Calendar</h1>
-    <p>Redirecting you to the admin…</p>
+    /* Add-to-Calendar pill styling */
+    .add-to-cal {border:2px solid #e5e7eb; padding:10px; border-radius:12px; margin:8px 0; background:#fff}
+    .add-to-cal a {display:inline-block; margin:6px 8px 0 0; padding:6px 10px; border:2px solid #cbd5e1; border-radius:10px; font-weight:700; text-decoration:none; color:inherit}
+    .add-to-cal a:hover {background:#f8fafc}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="brand">
+        <h1>Trinity De Soto — Calendar</h1>
+      </div>
+      <div class="controls">
+        <button id="prev">◀</button>
+        <div id="monthLabel" class="month">Month YYYY</div>
+        <button id="next">▶</button>
+      </div>
+      <div class="right">
+        <button id="today" class="btn">Today</button>
+        <input id="search" type="search" placeholder="Search events…">
+        <button id="openAdd" class="btn primary">＋ Add Event</button>
+      </div>
 
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", (user) => {
-          if (user) window.location.replace("/admin/");
+      <div class="banner">Monthly events & services • Trinity Episcopal Church, 202 W. Miller St, De Soto, MO</div>
+
+      <div class="toggles">
+        <label><input type="checkbox" id="showUSA" checked> 🇺🇸 US holidays</label>
+        <label><input type="checkbox" id="showHoly" checked> ✝️ Church seasons</label>
+      </div>
+
+      <div class="legend">
+        <div class="chip"><span class="sw" style="background:#bef264"></span> Sunday Service</div>
+        <div class="chip"><span class="sw" style="background:#93c5fd"></span> AA / NA</div>
+        <div class="chip"><span class="sw" style="background:#fca5a5"></span> Special</div>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar">
+      <div class="weekdays">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div id="grid" class="grid"></div>
+    </div>
+
+    <!-- Upcoming -->
+    <div id="upcoming">
+      <h3>Upcoming Events</h3>
+      <div id="upList" class="small">No upcoming events. Add one above!</div>
+    </div>
+
+    <!-- Recovery Groups: Add-to-Calendar shortcuts -->
+    <section id="recovery-groups" style="margin-top:14px">
+      <h3 style="margin:0 0 8px 0;">Recovery Groups @ Trinity</h3>
+
+      <div class="add-to-cal">
+        <strong>AA Group 148 — Tuesdays 7:00 PM</strong><br>
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=AA+Group+148&dates=20250903T000000Z/20250903T010000Z&details=AA+Group+148+meeting&location=Trinity+Episcopal+Church%2C+202+W+Miller+St%2C+De+Soto+MO+63020" target="_blank" rel="noopener noreferrer">➕ Add to Google Calendar</a>
+        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0APRODID:-//Trinity//Calendar//EN%0ABEGIN:VEVENT%0AUID:aa-148-recurring-tue%0ADTSTAMP:20250831T190000Z%0ADTSTART;TZID=America/Chicago:20250902T190000%0ADTEND;TZID=America/Chicago:20250902T200000%0ASUMMARY:AA%20Group%20148%0ADESCRIPTION:AA%20Group%20148%20meeting%0ALOCATION:Trinity%20Episcopal%20Church%2C%20202%20W%20Miller%20St%2C%20De%20Soto%20MO%2063020%0ARRULE:FREQ=WEEKLY;BYDAY=TU%0AEND:VEVENT%0AEND:VCALENDAR" download="AA_Group_148_Weekly.ics">📥 Recurring .ics</a>
+      </div>
+
+      <div class="add-to-cal">
+        <strong>AA Group 147 — Fridays 7:00 PM</strong><br>
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=AA+Group+147&dates=20250906T000000Z/20250906T010000Z&details=AA+Group+147+meeting&location=Trinity+Episcopal+Church%2C+202+W+Miller+St%2C+De+Soto+MO+63020" target="_blank" rel="noopener noreferrer">➕ Add to Google Calendar</a>
+        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0APRODID:-//Trinity//Calendar//EN%0ABEGIN:VEVENT%0AUID:aa-147-recurring-fri%0ADTSTAMP:20250831T190000Z%0ADTSTART;TZID=America/Chicago:20250905T190000%0ADTEND;TZID=America/Chicago:20250905T200000%0ASUMMARY:AA%20Group%20147%0ADESCRIPTION:AA%20Group%20147%20meeting%0ALOCATION:Trinity%20Episcopal%20Church%2C%20202%20W%20Miller%20St%2C%20De%20Soto%20MO%2063020%0ARRULE:FREQ=WEEKLY;BYDAY=FR%0AEND:VEVENT%0AEND:VCALENDAR" download="AA_Group_147_Weekly.ics">📥 Recurring .ics</a>
+      </div>
+
+      <div class="add-to-cal">
+        <strong>NA Group — Thursdays 7:00 PM</strong><br>
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=NA+Group&dates=20250905T000000Z/20250905T010000Z&details=NA+Group+meeting&location=Trinity+Episcopal+Church%2C+202+W+Miller+St%2C+De+Soto+MO+63020" target="_blank" rel="noopener noreferrer">➕ Add to Google Calendar</a>
+        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0APRODID:-//Trinity//Calendar//EN%0ABEGIN:VEVENT%0AUID:na-recurring-thu%0ADTSTAMP:20250831T190000Z%0ADTSTART;TZID=America/Chicago:20250904T190000%0ADTEND;TZID=America/Chicago:20250904T200000%0ASUMMARY:NA%20Group%0ADESCRIPTION:NA%20Group%20meeting%0ALOCATION:Trinity%20Episcopal%20Church%2C%20202%20W%20Miller%20St%2C%20De%20Soto%20MO%2063020%0ARRULE:FREQ=WEEKLY;BYDAY=TH%0AEND:VEVENT%0AEND:VCALENDAR" download="NA_Group_Thursday_Weekly.ics">📥 Recurring .ics</a>
+      </div>
+
+      <div class="add-to-cal">
+        <strong>NA Group — Sundays 5:30 PM</strong><br>
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=NA+Group&dates=20250907T223000Z/20250907T233000Z&details=NA+Group+meeting&location=Trinity+Episcopal+Church%2C+202+W+Miller+St%2C+De+Soto+MO+63020" target="_blank" rel="noopener noreferrer">➕ Add to Google Calendar</a>
+        <a href="data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0APRODID:-//Trinity//Calendar//EN%0ABEGIN:VEVENT%0AUID:na-recurring-sun%0ADTSTAMP:20250831T190000Z%0ADTSTART;TZID=America/Chicago:20250907T173000%0ADTEND;TZID=America/Chicago:20250907T183000%0ASUMMARY:NA%20Group%0ADESCRIPTION:NA%20Group%20meeting%0ALOCATION:Trinity%20Episcopal%20Church%2C%20202%20W%20Miller%20St%2C%20De%20Soto%20MO%2063020%0ARRULE:FREQ=WEEKLY;BYDAY=SU%0AEND:VEVENT%0AEND:VCALENDAR" download="NA_Group_Sunday_Weekly.ics">📥 Recurring .ics</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Add/Edit Event Dialog (from your original) -->
+  <dialog id="eventDialog">
+    <form method="dialog" class="modal">
+      <header>
+        <h2 id="dlgTitle">Add Event</h2>
+        <button id="closeDlg" style="border:none;background:transparent;font-size:20px;cursor:pointer">✕</button>
+      </header>
+      <div class="content">
+        <div>
+          <label>Title</label>
+          <input id="titleInput" placeholder="Event title">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label>Date</label><input id="dateInput" type="date"></div>
+          <div><label>Time</label><input id="timeInput" type="time"></div>
+        </div>
+        <div>
+          <label>Category</label>
+          <select id="catInput">
+            <option value="service">Sunday Service</option>
+            <option value="recovery">AA / NA</option>
+            <option value="special">Special</option>
+          </select>
+        </div>
+        <div>
+          <label>Notes</label>
+          <textarea id="notesInput" rows="3" placeholder="Optional details"></textarea>
+        </div>
+      </div>
+      <footer>
+        <button id="deleteBtn" style="display:none;color:#ef4444;border-color:#ef4444">Delete</button>
+        <button>Cancel</button>
+        <button class="primary" id="saveBtn">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Calendar logic (from your original) -->
+  <script>
+    const grid=document.getElementById("grid");
+    const monthLabel=document.getElementById("monthLabel");
+    let current=new Date();
+    let events=JSON.parse(localStorage.getItem("churchEvents")||"[]");
+    let editing=null;
+
+    const prev=document.getElementById("prev");
+    const next=document.getElementById("next");
+    const today=document.getElementById("today");
+    const upList=document.getElementById("upList");
+    const search=document.getElementById("search");
+    const eventDialog=document.getElementById("eventDialog");
+    const closeDlg=document.getElementById("closeDlg");
+    const saveBtn=document.getElementById("saveBtn");
+    const deleteBtn=document.getElementById("deleteBtn");
+
+    const titleInput=document.getElementById("titleInput");
+    const dateInput=document.getElementById("dateInput");
+    const timeInput=document.getElementById("timeInput");
+    const catInput=document.getElementById("catInput");
+    const notesInput=document.getElementById("notesInput");
+
+    function pad(n){return n.toString().padStart(2,"0")}
+    function ym(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)}
+    function fmtDate(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+    function startOfMonth(d){return new Date(d.getFullYear(), d.getMonth(), 1)}
+    function endOfMonth(d){return new Date(d.getFullYear(), d.getMonth()+1, 0)}
+
+    function render(){
+      // header month label
+      const long= new Intl.DateTimeFormat("en-US",{month:"long", year:"numeric"}).format(current);
+      monthLabel.textContent = long;
+
+      // build grid
+      grid.innerHTML="";
+      const first = startOfMonth(current);
+      const last  = endOfMonth(current);
+      const start = new Date(first);
+      start.setDate(first.getDate() - ((first.getDay()+7)%7)); // back to Sunday
+      const total = Math.ceil(( (last - start)/(1000*60*60*24) + last.getDay()+1 )/7)*7;
+
+      for(let i=0;i<total;i++){
+        const d = new Date(start); d.setDate(start.getDate()+i);
+        const cell = document.createElement("div");
+        cell.className="day"+((d.getMonth()==current.getMonth())?"":" out")+((i%14<7)?" alt":"");
+        cell.innerHTML = `
+          <div class="date">${d.getDate()}</div>
+          <div class="events"></div>
+        `;
+        if(fmtDate(d)===fmtDate(new Date())) cell.classList.add("today");
+
+        // events for the day
+        const wrap = cell.querySelector(".events");
+        events.filter(e => e.date===fmtDate(d)).forEach(e=>{
+          const chip=document.createElement("div");
+          chip.className="event";
+          const sw = document.createElement("span");
+          sw.className="swatch";
+          if(e.cat==="service") sw.style.background="#bef264";
+          else if(e.cat==="recovery") sw.style.background="#93c5fd";
+          else sw.style.background="#fca5a5";
+          chip.appendChild(sw);
+          chip.appendChild(document.createTextNode(e.time+" "+e.title));
+          wrap.appendChild(chip);
         });
-        if (window.location.hash && window.location.hash.includes("token=")) {
-          window.netlifyIdentity.open("login");
-        }
-        window.netlifyIdentity.on("login", () => window.location.replace("/admin/"));
+
+        grid.appendChild(cell);
       }
-    </script>
-  </body>
+
+      // upcoming list (next 10)
+      const todayStr = fmtDate(new Date());
+      const upcoming = events
+        .filter(e => e.date >= todayStr)
+        .sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time))
+        .slice(0,10);
+
+      if(!upcoming.length){
+        upList.textContent = "No upcoming events. Add one above!";
+      }else{
+        upList.innerHTML = upcoming.map(e=>{
+          const d = new Date(e.date+"T"+e.time);
+          const nice = new Intl.DateTimeFormat("en-US",{weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}).format(d);
+          return `<div class="up-item"><div class="date">${nice}</div><div class="title">${e.title}</div><div class="small">${e.notes||""}</div></div>`;
+        }).join("");
+      }
+
+      localStorage.setItem("churchEvents", JSON.stringify(events));
+    }
+
+    // default seed events (you can delete these later)
+    if(!events.length){
+      events = [
+        {id:1, title:"Sunday Service", date: (new Date()).toISOString().slice(0,10), time:"10:00", cat:"service", notes:"All are welcome"},
+        {id:2, title:"AA Group 148",   date:(new Date()).toISOString().slice(0,10), time:"19:00", cat:"recovery"},
+        {id:3, title:"NA Group",       date:(new Date()).toISOString().slice(0,10), time:"17:30", cat:"recovery"}
+      ];
+    }
+
+    // controls
+    prev.onclick=()=>{current.setMonth(current.getMonth()-1);render()}
+    next.onclick=()=>{current.setMonth(current.getMonth()+1);render()}
+    today.onclick=()=>{current=new Date();render()}
+    document.getElementById("showUSA").onchange=()=>{render()}
+    document.getElementById("showHoly").onchange=()=>{render()}
+    search.oninput=(e)=>{
+      const q=e.target.value.toLowerCase();
+      document.querySelectorAll(".event").forEach(el=>{
+        el.style.display=el.textContent.toLowerCase().includes(q)?"":"none";
+      });
+    }
+
+    // dialog handlers
+    const openAdd=document.getElementById("openAdd");
+    openAdd.onclick=()=>{
+      editing=null;
+      document.getElementById("dlgTitle").textContent="Add Event";
+      dateInput.value=(new Date()).toISOString().substr(0,10);
+      timeInput.value="10:00";
+      titleInput.value="";
+      catInput.value="special";
+      notesInput.value="";
+      deleteBtn.style.display="none";
+      eventDialog.showModal();
+    };
+
+    closeDlg.onclick=()=>eventDialog.close();
+
+    saveBtn.onclick=(ev)=>{
+      ev.preventDefault();
+      const item = {
+        id: editing || Date.now(),
+        title: titleInput.value || "Untitled",
+        date: dateInput.value,
+        time: timeInput.value || "00:00",
+        cat:  catInput.value,
+        notes: notesInput.value
+      };
+      if(editing){
+        events = events.map(e => e.id===editing ? item : e);
+      }else{
+        events.push(item);
+      }
+      localStorage.setItem("churchEvents",JSON.stringify(events));
+      eventDialog.close(); render();
+    };
+
+    deleteBtn.onclick=(ev)=>{
+      ev.preventDefault();
+      events = events.filter(e => e.id!==editing);
+      localStorage.setItem("churchEvents",JSON.stringify(events));
+      eventDialog.close(); render();
+    };
+
+    render();
+  </script>
+
+  <!-- Netlify Identity so /admin works -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", (user) => {
+        if (user) window.location.replace("/admin/");
+      });
+      if (window.location.hash && window.location.hash.includes("token=")) {
+        window.netlifyIdentity.open("login");
+      }
+      window.netlifyIdentity.on("login", () => window.location.replace("/admin/"));
+    }
+  </script>
+</body>
 </html>
+
 
