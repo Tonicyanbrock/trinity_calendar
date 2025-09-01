@@ -60,17 +60,8 @@
     "durationMinutes": 90
   },
 
-  {
-    "id": "bible-study-weekly",
-    "title": "Mid-Week Bible Study",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=TH",
-      "dtstart": "2025-01-09T18:00:00"
-    },
-    "durationMinutes": 75
-  },
+ 
+
 
   /* ---------- Special Services & Holy Days (2025) ---------- */
 
@@ -101,31 +92,39 @@
     "durationMinutes": 60
   },
 
-  {
-    "id": "christmas-eve-early-2025",
-    "title": "Christmas Eve Candlelight Service",
-    "location": "Sanctuary — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-12-24T17:00:00",
-    "durationMinutes": 75,
-    "notes": "Family-friendly candlelight Eucharist."
-  },
-  {
-    "id": "christmas-eve-late-2025",
-    "title": "Christmas Eve Late Service",
-    "location": "Sanctuary — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-12-24T23:00:00",
-    "durationMinutes": 75,
-    "notes": "Traditional late service leading into Christmas Day."
-  },
-  {
-    "id": "christmas-day-2025",
-    "title": "Christmas Day Holy Eucharist",
-    "location": "Sanctuary — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-12-25T10:00:00",
-    "durationMinutes": 60
+   {
+  "id": "christmas-eve-2025",
+  "title": "Christmas Eve Service",
+  "location": "Sanctuary — Trinity Episcopal Church",
+  "timeZone": "America/Chicago",
+  "start": "2025-12-24",
+  "notes": "Time TBD — likely early evening."
+},
+{
+  "id": "christmas-day-2025",
+  "title": "Christmas Day Holy Eucharist",
+  "location": "Sanctuary — Trinity Episcopal Church",
+  "timeZone": "America/Chicago",
+  "start": "2025-12-25T10:00:00",
+  "durationMinutes": 60
+},
+{
+  "id": "christmas-eve-2026",
+  "title": "Christmas Eve Service",
+  "location": "Sanctuary — Trinity Episcopal Church",
+  "timeZone": "America/Chicago",
+  "start": "2026-12-24",
+  "notes": "Time TBD — likely early evening."
+},
+{
+  "id": "christmas-day-2026",
+  "title": "Christmas Day Holy Eucharist",
+  "location": "Sanctuary — Trinity Episcopal Church",
+  "timeZone": "America/Chicago",
+  "start": "2026-12-25T10:00:00",
+  "durationMinutes": 60
+}
+
   },
 
   /* ---------- Special Services & Holy Days (2026) ---------- */
