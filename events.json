@@ -1,0 +1,6 @@
+{
+  "events": [
+    { "date": "2025-09-07", "t": "Sunday Service", "time": "10:30 AM", "type": "parish", "location": "Trinity Episcopal Church" },
+    { "date": "2025-09-14", "t": "Carry-In Dinner (First Sunday after service)", "time": "12:00 PM", "type": "parish", "location": "Parish Hall" }
+  ]
+}
