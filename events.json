@@ -1,6 +1,12 @@
-{
-  "events": [
-    { "date": "2025-09-07", "t": "Sunday Service", "time": "10:30 AM", "type": "parish", "location": "Trinity Episcopal Church" },
-    { "date": "2025-09-14", "t": "Carry-In Dinner (First Sunday after service)", "time": "12:00 PM", "type": "parish", "location": "Parish Hall" }
-  ]
-}
+{ "date": "2025-09-02", "t": "Convocation Deans & Wardens", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Bishop Deon Johnson and the Deans/Wardens of the four convocations (first Tuesday of each month).", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-09-09", "t": "Diocesan LGBTQ+ Virtual Gathering", "time": "7:00–8:00 PM", "type": "diocese", "location": "Zoom", "description": "New diocesan group (second Tuesday of each month). Email lgbtqiaministry@diocesemo.org for details and Zoom link.", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-09-20", "t": "2025 Diocesan Picnic", "time": "12:00–4:00 PM", "type": "diocese", "location": "Camp MoVal, 2659 Camp Mo-Val Rd, Union, MO 63084", "description": "A day of faith, fun, and fellowship for all ages—with games, music, food, worship, and nature activities.", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-09-22", "t": "Community of Deacons", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Archdeacon Harry Leip and deacons across the Diocese.", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-09-25", "t": "Standing Committee", "time": "5:00–7:00 PM", "type": "diocese", "location": "Zoom", "url": "https://diocesemo.org/connect/events" },
+
+{ "date": "2025-10-07", "t": "Convocation Deans & Wardens", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Bishop Deon Johnson (first Tuesday).", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-10-14", "t": "Diocesan LGBTQ+ Virtual Gathering", "time": "7:00–8:00 PM", "type": "diocese", "location": "Zoom", "description": "Second Tuesday monthly. Email lgbtqiaministry@diocesemo.org for the Zoom link.", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-10-23", "t": "Standing Committee", "time": "5:00–7:00 PM", "type": "diocese", "location": "Zoom", "url": "https://diocesemo.org/connect/events" },
+{ "date": "2025-10-27", "t": "Community of Deacons", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "url": "https://diocesemo.org/connect/events" },
+
+{ "date": "2025-11-04", "t": "Convocation Deans & Wardens", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Bishop Deon Johnson (first Tuesday). *Note time will be CST in November.*", "url": "https://diocesemo.org/connect/events" }
