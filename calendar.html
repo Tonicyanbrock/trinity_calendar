@@ -20,6 +20,8 @@
   <div id="list">Loading events…</div>
 
   <script>
+    const res = await fetch('./events.json', { cache: 'no-store' });
+
     async function load() {
       try {
         const res = await fetch('/events.json', {cache: 'no-store'});
