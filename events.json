@@ -1,12 +1,304 @@
-{ "date": "2025-09-02", "t": "Convocation Deans & Wardens", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Bishop Deon Johnson and the Deans/Wardens of the four convocations (first Tuesday of each month).", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-09-09", "t": "Diocesan LGBTQ+ Virtual Gathering", "time": "7:00–8:00 PM", "type": "diocese", "location": "Zoom", "description": "New diocesan group (second Tuesday of each month). Email lgbtqiaministry@diocesemo.org for details and Zoom link.", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-09-20", "t": "2025 Diocesan Picnic", "time": "12:00–4:00 PM", "type": "diocese", "location": "Camp MoVal, 2659 Camp Mo-Val Rd, Union, MO 63084", "description": "A day of faith, fun, and fellowship for all ages—with games, music, food, worship, and nature activities.", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-09-22", "t": "Community of Deacons", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Archdeacon Harry Leip and deacons across the Diocese.", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-09-25", "t": "Standing Committee", "time": "5:00–7:00 PM", "type": "diocese", "location": "Zoom", "url": "https://diocesemo.org/connect/events" },
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trinity Calendar</title>
+  <meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO." />
+  <style>
+    :root{
+      --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --bg:#f9fafb; --card:#ffffff;
 
-{ "date": "2025-10-07", "t": "Convocation Deans & Wardens", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Bishop Deon Johnson (first Tuesday).", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-10-14", "t": "Diocesan LGBTQ+ Virtual Gathering", "time": "7:00–8:00 PM", "type": "diocese", "location": "Zoom", "description": "Second Tuesday monthly. Email lgbtqiaministry@diocesemo.org for the Zoom link.", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-10-23", "t": "Standing Committee", "time": "5:00–7:00 PM", "type": "diocese", "location": "Zoom", "url": "https://diocesemo.org/connect/events" },
-{ "date": "2025-10-27", "t": "Community of Deacons", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "url": "https://diocesemo.org/connect/events" },
+      /* Liturgical palette (common Episcopal usage) */
+      --lit-purple:#5b21b6;    /* Advent/Lent */
+      --lit-blue:#1e3a8a;      /* optional Advent blue */
+      --lit-white:#f9fafb;     /* page white; use dark ink on white */
+      --lit-white-accent:#e5e7eb;
+      --lit-green:#0f766e;     /* After Pentecost */
+      --lit-red:#b91c1c;       /* Pentecost */
+      --lit-gold:#d97706;      /* Christmas/Easter accent */
+      --lit-black:#111827;     /* Good Friday (rare) */
 
-{ "date": "2025-11-04", "t": "Convocation Deans & Wardens", "time": "6:00–7:00 PM", "type": "diocese", "location": "Zoom", "description": "Monthly Zoom with Bishop Deon Johnson (first Tuesday). *Note time will be CST in November.*", "url": "https://diocesemo.org/connect/events" }
+      /* set by JS based on today's season */
+      --season-bg:#0f766e;
+      --season-ink:#ffffff;
+      --season-line:rgba(255,255,255,.25);
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+
+    /* Header bar colored by today's liturgical season */
+    .bar {
+      background: var(--season-bg);
+      color: var(--season-ink);
+      border-bottom: 1px solid var(--season-line);
+      padding: 20px 16px;
+    }
+    .bar h1 { margin:0 0 4px; font-size: 28px; line-height:1.2; }
+    .bar .sub { margin:0; opacity:.9; }
+
+    .wrap { padding: 20px 16px 32px; max-width: 840px; margin: 0 auto; }
+
+    .legend { font-size:14px; color:var(--muted); margin: 12px 0 10px; display:flex; flex-wrap:wrap; gap:10px 16px; }
+    .chip { display:inline-flex; align-items:center; gap:8px; }
+    .chip .dot { width:12px; height:12px; border-radius:999px; border:1px solid #d1d5db; }
+
+    /* Prayer of the Week card — picks a prayer weekly and accents with season color */
+    .prayer {
+      margin:8px 0 18px;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--card);
+      position:relative;
+    }
+    .prayer::before{
+      content:"";
+      position:absolute; inset:-1px -1px auto -1px; height:4px;
+      border-top-left-radius:14px; border-top-right-radius:14px;
+      background: var(--season-bg);
+    }
+    .prayer h2 { margin:0 0 6px; font-size:16px; font-weight:700; }
+    .prayer .text { line-height:1.55; }
+    .prayer .subtle { margin-top:8px; font-size:13px; color:var(--muted); }
+
+    .date { font-weight:700; margin:28px 0 10px; padding:6px 10px; border-radius:10px; display:inline-block; border:1px solid var(--line); }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin:12px 0; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+    .type { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid #d1d5db; margin-left:8px; display:inline-block; }
+    .meta { color:var(--muted); font-size:14px; margin-top:4px; }
+    .desc { margin-top:8px; font-size:14px; }
+
+    /* type badge colors */
+    .t-parish   { background:#eef2ff; border-color:#c7d2fe; }
+    .t-episcopal{ background:#fff7ed; border-color:#fed7aa; }
+    .t-diocese  { background:#f0fdf4; border-color:#bbf7d0; }
+    .t-holiday  { background:#fefce8; border-color:#fde68a; }
+    .t-civic    { background:#f1f5f9; border-color:#e2e8f0; }
+    .t-aa       { background:#ecfeff; border-color:#a5f3fc; }
+    .t-na       { background:#fdf4ff; border-color:#f5d0fe; }
+    .t-note     { background:#eef2ff; border-color:#c7d2fe; }
+
+    .err { color:#b91c1c; background:#fee2e2; padding:10px 12px; border-radius:10px; border:1px solid #fecaca; }
+
+    @media (prefers-color-scheme: dark) {
+      :root{ --bg:#0b1020; --card:#0f172a; --ink:#f8fafc; --muted:#cbd5e1; --line:#24304a; --lit-white:#0f172a; --lit-white-accent:#24304a; }
+      .t-parish   { background:#312e81; border-color:#3730a3; }
+      .t-episcopal{ background:#7c2d12; border-color:#9a3412; }
+      .t-diocese  { background:#064e3b; border-color:#065f46; }
+      .t-holiday  { background:#713f12; border-color:#854d0e; }
+      .t-civic    { background:#0f172a; border-color:#24304a; }
+      .t-aa       { background:#0e7490; border-color:#155e75; }
+      .t-na       { background:#6b21a8; border-color:#7e22ce; }
+      .t-note     { background:#312e81; border-color:#3730a3; }
+    }
+    a { color: inherit; }
+    a.underline { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <!-- Header bar colored by today's liturgical season -->
+  <div class="bar">
+    <h1>Trinity Calendar</h1>
+    <p class="sub" id="seasonNow">Loading season…</p>
+  </div>
+
+  <div class="wrap">
+    <!-- Type & season legend -->
+    <div class="legend" aria-live="polite">
+      <span class="chip"><span class="dot" style="background:#eef2ff"></span> parish</span>
+      <span class="chip"><span class="dot" style="background:#fff7ed"></span> episcopal</span>
+      <span class="chip"><span class="dot" style="background:#f0fdf4"></span> diocese</span>
+      <span class="chip"><span class="dot" style="background:#fefce8"></span> holiday</span>
+      <span class="chip"><span class="dot" style="background:#f1f5f9"></span> civic</span>
+      <span class="chip"><span class="dot" style="background:#ecfeff"></span> aa</span>
+      <span class="chip"><span class="dot" style="background:#fdf4ff"></span> na</span>
+      <span class="chip"><span class="dot" style="background:var(--lit-purple)"></span> Advent/Lent</span>
+      <span class="chip"><span class="dot" style="background:var(--lit-green)"></span> After Pentecost</span>
+      <span class="chip"><span class="dot" style="background:var(--lit-red)"></span> Pentecost</span>
+      <span class="chip"><span class="dot" style="background:var(--lit-white-accent)"></span> Christmas/Easter</span>
+    </div>
+
+    <!-- Prayer of the Week (season accented) -->
+    <div class="prayer" id="prayerCard" aria-live="polite">
+      <h2>Prayer of the Week</h2>
+      <div id="prayerText" class="text"></div>
+      <div class="subtle">
+        Diocese info: <a class="underline" href="https://diocesemo.org/connect/events" target="_blank" rel="noopener">Events page →</a>
+      </div>
+    </div>
+
+    <!-- Your covenant affirmation (always visible, gentle) -->
+    <p class="legend" style="margin-top:0; line-height:1.5">
+      <em>
+        I will seek and serve Christ in all persons,<br>
+        loving my neighbor as myself.<br>
+        I will strive for justice and peace among all people,<br>
+        and respect the dignity of every human being.
+      </em>
+    </p>
+
+    <div id="list" role="region" aria-live="polite">Loading events…</div>
+  </div>
+
+  <script>
+    // ---------- utilities ----------
+    function escapeHTML(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;")}
+    function ymd(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}`;}
+    function fromYMD(s){return new Date(s+"T12:00:00");} // noon avoids timezone midnight drift
+    function addDays(d, n){ const x=new Date(d); x.setDate(d.getDate()+n); return x;}
+
+    // ---------- liturgical season helpers (simplified Episcopal cycle) ----------
+    function easterSunday(year){
+      const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+            h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+            month=Math.floor((h+l-7*m+114)/31), day=((h+l-7*m+114)%31)+1;
+      return new Date(year, month-1, day, 12);
+    }
+    function previousSunday(d){ const x=new Date(d); x.setDate(d.getDate()-x.getDay()); return x;}
+    function adventStart(year){
+      // Sunday between Nov 27 and Dec 3 (inclusive)
+      for (let day=27; day<=33; day++){
+        const dt = new Date(year, 10, day, 12); // Nov=10
+        if (dt.getMonth()===10 && dt.getDay()===0) return dt;
+        if (dt.getMonth()===11 && dt.getDay()===0 && day<=3) return dt; // Dec 1-3 edge
+      }
+      return previousSunday(new Date(year,11,3,12));
+    }
+    function seasonForDate(d){
+      const y=d.getFullYear();
+      const christmasStart=new Date(y,11,25,12); // Dec 25
+      const christmasEnd = new Date(y+1,0,5,12); // Jan 5 next year
+      const epiphanyDay  = new Date(y,0,6,12);   // Jan 6
+
+      const easter = easterSunday(y);
+      const ashWed = addDays(easter, -46);
+      const holySat= addDays(easter, -1);
+      const pentecost = addDays(easter, 49);
+      const afterPentecostStart = addDays(pentecost, 1);
+      const advStart = adventStart(y);
+      const advEnd = new Date(y,11,24,12); // Dec 24
+
+      if (d >= christmasStart) return { key:'christmas', name:'Christmas', color:'white' };
+      if (d <= christmasEnd)   return { key:'christmas', name:'Christmas', color:'white' };
+
+      if (d >= advStart && d <= advEnd) return { key:'advent', name:'Advent', color:'purple' };
+
+      if (d >= ashWed && d <= holySat) return { key:'lent', name:'Lent', color:'purple' };
+
+      if (ymd(d) === ymd(pentecost)) return { key:'pentecost', name:'Pentecost', color:'red' };
+
+      if (d >= easter && d < pentecost) return { key:'eastertide', name:'Eastertide', color:'white' };
+
+      if (ymd(d) === ymd(epiphanyDay)) return { key:'epiphany', name:'Epiphany', color:'white' };
+      if (d > epiphanyDay && d < ashWed) return { key:'epiphanytide', name:'Epiphanytide', color:'green' };
+
+      if (d >= afterPentecostStart && d < advStart) return { key:'after-pentecost', name:'After Pentecost', color:'green' };
+
+      return { key:'ordinary', name:'Ordinary Time', color:'green' };
+    }
+    function seasonColorVars(color){
+      switch(color){
+        case 'purple': return { bg:'var(--lit-purple)', ink:'#ffffff', line:'rgba(255,255,255,.25)' };
+        case 'red':    return { bg:'var(--lit-red)',    ink:'#ffffff', line:'rgba(255,255,255,.25)' };
+        case 'white':  return { bg:'var(--lit-white)',  ink:'#111827', line:'var(--lit-white-accent)' };
+        case 'green':  return { bg:'var(--lit-green)',  ink:'#ffffff', line:'rgba(255,255,255,.25)' };
+        default:       return { bg:'var(--lit-green)',  ink:'#ffffff', line:'rgba(255,255,255,.25)' };
+      }
+    }
+
+    // ---------- page load ----------
+    async function load(){
+      // 1) Color the header & prayer card for today's season
+      const today = new Date();
+      const sNow = seasonForDate(today);
+      const vars = seasonColorVars(sNow.color);
+      document.documentElement.style.setProperty('--season-bg', vars.bg);
+      document.documentElement.style.setProperty('--season-ink', vars.ink);
+      document.documentElement.style.setProperty('--season-line', vars.line);
+      document.getElementById('seasonNow').textContent = `${sNow.name} season`;
+
+      // 2) Prayer of the Week (rotates by ISO week number; first entry is your Baptismal Covenant lines)
+      (function(){
+        const prayers = [
+          `I will seek and serve Christ in all persons,<br>loving my neighbor as myself.<br>I will strive for justice and peace among all people,<br>and respect the dignity of every human being.`,
+          `Lord, make us instruments of your peace: where there is hatred, let us sow love.`,
+          `Keep, O Lord, your household the Church in your steadfast faith and love.`,
+          `Grant us the serenity to accept the things we cannot change,<br>courage to change the things we can,<br>and wisdom to know the difference.`,
+          `Come, Holy Spirit, kindle in us the fire of your love.`,
+          `All shall be well, and all shall be well, and all manner of thing shall be well.`
+        ];
+        const jan4 = new Date(today.getFullYear(),0,4);
+        const week1Mon = new Date(jan4); week1Mon.setDate(jan4.getDate() - ((jan4.getDay()+6)%7));
+        const weekNo = Math.floor((today - week1Mon) / (7*24*60*60*1000)) + 1;
+        const text = prayers[(weekNo - 1) % prayers.length];
+        document.getElementById('prayerText').innerHTML = `<em>${text}</em>`;
+      })();
+
+      // 3) Load events
+      const url = './events.json';
+      const list = document.getElementById('list');
+      try{
+        const res = await fetch(url, { cache:'no-store' });
+        if(!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+        const data = await res.json();
+        const events = Array.isArray(data.events) ? data.events.slice() : [];
+
+        // sort by date then time
+        events.sort((a,b) => {
+          const ad=(a.date||''), bd=(b.date||'');
+          if (ad !== bd) return ad.localeCompare(bd);
+          return (a.time||'').localeCompare(b.time||'');
+        });
+
+        if(!events.length){ list.textContent='No events yet.'; return; }
+
+        list.innerHTML='';
+        let currentDate='';
+        for(const ev of events){
+          const dateStr = ev.date || 'Unknown date';
+          if(dateStr !== currentDate){
+            currentDate = dateStr;
+            const dObj = fromYMD(dateStr);
+            const s = isFinite(dObj) ? seasonForDate(dObj) : {name:'', color:'green', key:'after-pentecost'};
+            // date header tinted to that date's season
+            const dateEl = document.createElement('div');
+            dateEl.className = 'date';
+            dateEl.textContent = dateStr + (s.name ? ` — ${s.name}` : '');
+            const tint = seasonColorVars(s.color);
+            dateEl.style.background = s.color==='white' ? 'var(--card)' : tint.bg;
+            dateEl.style.color = s.color==='white' ? 'var(--ink)' : '#ffffff';
+            dateEl.style.borderColor = s.color==='white' ? 'var(--line)' : 'rgba(255,255,255,.35)';
+            list.appendChild(dateEl);
+          }
+
+          const card = document.createElement('div');
+          card.className = 'card';
+          const type = String(ev.type||'').toLowerCase().trim();
+          const typeClass = type ? `t-${type}` : '';
+          const metaBits = [ev.time, ev.location].filter(Boolean).join(' · ');
+          const more = ev.url ? `<div class="meta"><a class="underline" href="${escapeHTML(ev.url)}" target="_blank" rel="noopener">More info</a></div>` : '';
+          const desc = ev.description ? `<div class="desc">${escapeHTML(ev.description)}</div>` : '';
+          card.innerHTML = `
+            <div>
+              <strong>${escapeHTML(ev.t || 'Untitled event')}</strong>
+              ${type ? `<span class="type ${typeClass}">${escapeHTML(type)}</span>` : ''}
+            </div>
+            ${metaBits ? `<div class="meta">${escapeHTML(metaBits)}</div>` : ''}
+            ${desc}
+            ${more}
+          `;
+          list.appendChild(card);
+        }
+
+      }catch(e){
+        list.innerHTML = `<div class="err">
+          Could not load <code>${url}</code>. ${escapeHTML(e.message)}.
+          <div style="margin-top:6px;font-size:13px">Tip: ensure <code>events.json</code> is in the same folder as <code>calendar.html</code>, then open it directly in your browser to confirm it loads.</div>
+        </div>`;
+        console.error(e);
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
