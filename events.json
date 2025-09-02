@@ -81,19 +81,112 @@
       "location": "Camp MoVal, 2659 Camp Mo-Val Rd, Union, MO 63084",
       "duration_minutes": 240
     },
-    
+
     {
-    { "title": "Lincoln's Birthday (MO Holiday)", "notes": "", "start": "2025-02-12T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Truman Day (MO Holiday)", "notes": "", "start": "2025-05-08T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Cinco de Mayo 🎉 (celebration)", "notes": "Celebrate!", "start": "2025-05-05T00:00", "location": "", "duration_minutes": 1440 }
+      "title": "Lincoln's Birthday (MO Holiday)",
+      "notes": "",
+      "start": "2025-02-12T00:00",
+      "location": "",
+      "duration_minutes": 1440
     },
-  
-    { "title": "Liturgical Season — Advent (Purple)", "notes": "Season begins.", "start": "2025-11-30T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Liturgical Season — Christmas (White)", "notes": "Season begins.", "start": "2025-12-25T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Liturgical Season — Epiphany (Green)", "notes": "Season begins.", "start": "2026-01-06T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Liturgical Season — Lent (Purple)", "notes": "Season begins.", "start": "2026-02-18T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Liturgical Season — Easter (White)", "notes": "Season begins.", "start": "2026-04-05T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Liturgical Season — Pentecost (Red)", "notes": "Season begins.", "start": "2026-05-24T00:00", "location": "", "duration_minutes": 1440 },
-    { "title": "Liturgical Season — Ordinary Time (Green)", "notes": "Season begins.", "start": "2026-05-25T00:00", "location": "", "duration_minutes": 1440 }
+    {
+      "title": "Truman Day (MO Holiday)",
+      "notes": "",
+      "start": "2025-05-08T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Cinco de Mayo 🎉 (celebration)",
+      "notes": "Celebrate!",
+      "start": "2025-05-05T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Halloween",
+      "notes": "",
+      "start": "2025-10-31T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Valentine’s Day",
+      "notes": "",
+      "start": "2026-02-14T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "St. Patrick’s Day",
+      "notes": "",
+      "start": "2026-03-17T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Mother’s Day",
+      "notes": "Second Sunday of May (2026).",
+      "start": "2026-05-10T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Father’s Day",
+      "notes": "Third Sunday of June (2026).",
+      "start": "2026-06-21T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+
+    {
+      "title": "Liturgical Season — Advent (Purple)",
+      "notes": "Season begins.",
+      "start": "2025-11-30T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Liturgical Season — Christmas (White)",
+      "notes": "Season begins.",
+      "start": "2025-12-25T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Liturgical Season — Epiphany (Green)",
+      "notes": "Season begins.",
+      "start": "2026-01-06T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Liturgical Season — Lent (Purple)",
+      "notes": "Season begins.",
+      "start": "2026-02-18T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Liturgical Season — Easter (White)",
+      "notes": "Season begins.",
+      "start": "2026-04-05T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Liturgical Season — Pentecost (Red)",
+      "notes": "Season begins.",
+      "start": "2026-05-24T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Liturgical Season — Ordinary Time (Green)",
+      "notes": "Season begins.",
+      "start": "2026-05-25T00:00",
+      "location": "",
+      "duration_minutes": 1440
+    }
   ]
 }
