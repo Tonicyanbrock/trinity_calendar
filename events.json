@@ -57,5 +57,76 @@
       "location": "Church Lawn",
       "duration_minutes": 60
     }
+    {
+  "title": "Convocation Deans & Wardens",
+  "notes": "Bishop Deon Johnson gathers with the Deans and Wardens of our four convocations (monthly, first Tuesday). Location: Zoom.",
+  "start": "2025-09-02T18:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+},
+{
+  "title": "Diocesan LGBTQ+ Virtual Gathering",
+  "notes": "New diocesan group meets monthly on the second Tuesday at 7 p.m. Email lgbtqiaministry@diocesemo.org for Zoom link.",
+  "start": "2025-09-09T19:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+},
+{
+  "title": "2025 Diocesan Picnic",
+  "notes": "Day of faith, fun, and fellowship. Games, music, food, worship, nature activities for all ages.",
+  "start": "2025-09-20T12:00",
+  "location": "Camp MoVal, 2659 Camp Mo-Val Rd, Union, MO 63084",
+  "duration_minutes": 240
+},
+{
+  "title": "Community of Deacons",
+  "notes": "Archdeacon Harry Leip and deacons gather for a monthly Zoom meeting.",
+  "start": "2025-09-22T18:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+},
+{
+  "title": "Standing Committee",
+  "notes": "Monthly meeting.",
+  "start": "2025-09-25T17:00",
+  "location": "Zoom",
+  "duration_minutes": 120
+},
+{
+  "title": "Convocation Deans & Wardens",
+  "notes": "Bishop Deon Johnson gathers with the Deans and Wardens of our four convocations (monthly, first Tuesday). Location: Zoom.",
+  "start": "2025-10-07T18:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+},
+{
+  "title": "Diocesan LGBTQ+ Virtual Gathering",
+  "notes": "New diocesan group meets monthly on the second Tuesday at 7 p.m. Email lgbtqiaministry@diocesemo.org for Zoom link.",
+  "start": "2025-10-14T19:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+},
+{
+  "title": "Standing Committee",
+  "notes": "Monthly meeting.",
+  "start": "2025-10-23T17:00",
+  "location": "Zoom",
+  "duration_minutes": 120
+},
+{
+  "title": "Community of Deacons",
+  "notes": "Archdeacon Harry Leip and deacons gather for a monthly Zoom meeting.",
+  "start": "2025-10-27T18:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+},
+{
+  "title": "Convocation Deans & Wardens",
+  "notes": "Bishop Deon Johnson gathers with the Deans and Wardens of our four convocations (monthly, first Tuesday). Location: Zoom.",
+  "start": "2025-11-04T18:00",
+  "location": "Zoom",
+  "duration_minutes": 60
+}
+
   ]
 }
