@@ -1,27 +1,32 @@
 backend:
   name: git-gateway
   branch: main
-site_url: https://trinity-calendar.netlify.app
-media_folder: "uploads"
-public_folder: "/uploads"
-publish_mode: editorial_workflow
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+site_url: "/"
+logo_url: "/assets/view-calendar.png"
 
 collections:
-  - name: "events"
-    label: "Events"
+  - name: "site-data"
+    label: "Site Data"
     files:
-      - file: "events.json"
-        label: "Events JSON"
-        name: "events_json"
-        format: "json"
+      - name: "events"
+        label: "Events (JSON)"
+        file: "assets/events.json"
+        description: >
+          Edit the calendar’s events. Use the examples as a guide.
+          Supported formats:
+          • Single event: { "title":"...", "start":"YYYY-MM-DDTHH:mm", "location":"...", "duration_minutes":60 }
+          • Weekly: { "title":"...", "rrule":"FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0", "location":"...", "duration_minutes":60 }
+          • First Sunday monthly: { "title":"First Sunday Carry-In Dinner", "rrule":"FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1;BYHOUR=11;BYMINUTE=30", "location":"Parish Hall", "duration_minutes":90 }
+          Timezone is America/Chicago.
+        editor:
+          preview: false
         fields:
-          - label: "Events"
-            name: "events"
-            widget: "list"
-            collapsed: false
-            fields:
-              - { label: "Title", name: "t", widget: "string" }
-              - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
-
-              - { label: "Time", name: "time", widget: "string", required: false }
-              - { label: "Type", name: "type", widget: "select", options: ["parish","diocese","episcopal","holiday","civic","aa","na"], default: "parish" }
+          - label: "JSON"
+            name: "raw"
+            widget: "code"
+            default_language: "json"
+            hint: "Paste valid JSON. Keep keys and quotes exactly."
