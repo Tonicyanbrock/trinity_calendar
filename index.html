@@ -319,6 +319,23 @@
       if (monthIndex===11){ add("Christmas Day", fixedDate(year,11,25)); }
       return H;
     }
+function moJeffCoHolidaysForMonth(year, monthIndex){
+  const H = [];
+  const add = (title, dt) => H.push({
+    title: `Holiday — ${title}`,
+    location: '',
+    notes: '',
+    start: dt,
+    end: new Date(dt.getTime() + 24*60*60000),
+    _holiday: true
+  });
+
+  if (monthIndex === 1) add("Lincoln's Birthday (MO)", zonedDate(year, 1, 12, 0, 0, 0)); // Feb 12
+  if (monthIndex === 4) add("Truman Day (MO)",          zonedDate(year, 4,  8, 0, 0, 0)); // May 8
+  if (monthIndex === 4) add("Cinco de Mayo (Cultural)", zonedDate(year, 4,  5, 0, 0, 0)); // May 5
+
+  return H;
+}
 
     /* ---------- Expand all for month ---------- */
     function expandAllForMonth(y,m){
