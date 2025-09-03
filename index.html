@@ -74,6 +74,15 @@
       .card{border:none;padding:0}
     }
   </style>
+  .season-chip{
+  margin-left:10px;
+  padding:3px 8px;
+  border-radius:999px;
+  font-size:12px;
+  border:1px solid var(--grid);
+  background:#fff;
+}
+
 </head>
 <body>
   <div class="app" id="app" hidden>
@@ -92,11 +101,14 @@
     </header>
 
     <div class="monthbar">
-      <div class="nav">
-        <button id="prev" aria-label="Previous month">◀</button>
-        <button id="next" aria-label="Next month">▶</button>
-      </div>
-      <h2 id="monthlabel" aria-live="polite"></h2>
+    
+<div class="nav">
+  <button id="prev" aria-label="Previous month">◀</button>
+  <button id="next" aria-label="Next month">▶</button>
+</div>
+<h2 id="monthlabel" aria-live="polite"></h2>
+<span id="seasonChip" class="season-chip" aria-label="Liturgical season" hidden></span>
+
     </div>
 
     <div id="err" class="error" hidden>
@@ -133,6 +145,7 @@
   <script>
   (function(){
     'use strict';
+ NEW
 
     /* ---------- Config ---------- */
     const TZ = 'America/Chicago';
@@ -309,10 +322,23 @@
 
     /* ---------- Expand all for month ---------- */
     function expandAllForMonth(y,m){
-      const acc=[];
-      (window.RAW?.events||[]).forEach(ev=>expandEventForMonth(ev, y, m).forEach(x=>acc.push(x)));
-      acc.push(...usFederalHolidaysForMonth(y,m));
-      acc.sort((a,b)=>a.start-b.start);
+  const acc = [];
+
+  // base events from events.json
+  (window.RAW?.events || []).forEach(ev => {
+    expandEventForMonth(ev, y, m).forEach(x => acc.push(x));
+  });
+
+  // add-on holiday sources
+  acc.push(...usFederalHolidaysForMonth(y,m));
+  acc.push(...moJeffCoHolidaysForMonth(y,m)); // JEFFCO/MO extras
+
+  // sort AFTER all additions
+  acc.sort((a,b) => a.start - b.start);
+
+  return acc;
+}
+
       return acc;
     }
 
