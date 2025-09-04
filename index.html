@@ -108,23 +108,14 @@
   </style>
 </head>
 <body>
-  <header class="banner">
-    <div class="banner-inner">
-      <div class="brand">
-        <div>
-          <h1>Trinity Episcopal De Soto — Calendar</h1>
-          <p>Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome.</p>
-        </div>
+  <header class="banner" style="text-align:center">
+    <a href="#app" id="viewHeader" title="View Calendar" style="display:block;text-decoration:none;color:inherit">
+      <div class="banner-inner" style="display:block;padding:32px 14px">
+        <img src="assets/view-calendar.png?v=224" alt="View Calendar" style="max-width:320px;width:60%;height:auto;border-radius:16px;box-shadow:0 6px 30px #00000055;margin:0 auto 16px auto;display:block" />
+        <h1 style="margin:0;font-size:clamp(22px,4vw,32px);font-weight:800">Trinity Episcopal De Soto — Calendar</h1>
+        <p style="margin:6px 0 0 0;color:#cbd5e1;font-size:16px">Monthly events & services at Trinity Episcopal Church, De Soto, MO.<br/>All are welcome.</p>
       </div>
-      <div class="share-art" style="justify-content:center;gap:16px">
-        <!-- Centered image-as-button -->
-        <a href="#app" id="viewLink" title="View Calendar">
-          <img src="assets/view-calendar.png?v=223" alt="View Calendar"
-               style="display:block;width:280px;max-width:40vw;height:auto;border-radius:16px;box-shadow:0 6px 30px #00000055" />
-        </a>
-        <button class="btn" id="printBtn">🖨 Print Calendar</button>
-      </div>
-    </div>
+    </a>
   </header>
 
   <main class="app" id="app" hidden>
