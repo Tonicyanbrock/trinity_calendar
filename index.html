@@ -117,7 +117,11 @@
         </div>
       </div>
       <div class="share-art">
-        <img src="assets/view-calendar.png?v=222" alt="View Calendar" />
+        <!-- Clickable "View Calendar" image; falls back gracefully if image missing -->
+        <a href="#app" id="viewBtn" title="View Calendar">
+          <img src="assets/view-calendar.png?v=222" alt="View Calendar" onerror="this.style.display='none'" />
+        </a>
+        <button class="btn" id="viewBtn2">View Calendar</button>
         <button class="btn" id="printBtn">🖨 Print Calendar</button>
       </div>
     </div>
@@ -377,10 +381,14 @@
   function escapeHtml(s=''){return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]))}
 
   // ---------- NAV
-  $('#prevMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()-1, 1); render(); });
-  $('#nextMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()+1, 1); render(); });
-  $('#todayBtn').addEventListener('click', ()=>{ current = new Date(); render(); });
+  $('#prevMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()-1, 1); render(); window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'}); });
+  $('#nextMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()+1, 1); render(); window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'}); });
+  $('#todayBtn').addEventListener('click', ()=>{ current = new Date(); render(); window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'}); });
   $('#printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('viewBtn2').addEventListener('click', ()=>{
+    document.getElementById('app').hidden=false;
+    window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'});
+  });
 
   // ---------- BOOT
   (async function(){
