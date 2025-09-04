@@ -9,10 +9,12 @@
   <style>
     :root{
       --bg:#0b1220; --panel:#ffffff; --ink:#0e1726; --muted:#475569;
-      --grid:#d1d5db; --accent:#2563eb; --btn:#16a34a;
+      --grid:#e5e7eb; --accent:#2563eb; --btn:#16a34a;
     }
     *{box-sizing:border-box} html,body{height:100%}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:#fff}
+
+    /* Banner */
     .banner{
       background: radial-gradient(1200px 600px at 10% -20%, #1e3a8a 0%, transparent 65%),
                   radial-gradient(900px 500px at 90% -30%, #9333ea 0%, transparent 65%),
@@ -24,6 +26,8 @@
     .banner img{display:block;width:min(360px,45vw);height:auto;border-radius:16px;
       box-shadow:0 6px 30px #00000055;margin:0 auto 16px}
     h1{margin:0 0 6px 0;font-size:clamp(22px,4vw,32px);font-weight:800}
+
+    /* App & controls */
     .app{max-width:1000px;margin:14px auto;padding:12px}
     .btn{appearance:none;border:0;border-radius:999px;padding:10px 16px;background:var(--btn);color:white;font-weight:700;cursor:pointer}
     .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
@@ -31,6 +35,8 @@
     .monthbar{display:flex;gap:8px;align-items:center}
     .monthlabel{font-weight:800}
     .chip{font-size:12px;padding:4px 8px;border-radius:999px;background:#eee;color:#333;font-weight:700}
+
+    /* Calendar grid */
     .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
     .dow{font-size:12px;color:#334155;text-transform:uppercase;letter-spacing:1px}
     .cell{background:#fff;border:1px solid var(--grid);border-radius:12px;min-height:110px;padding:8px;display:flex;flex-direction:column;gap:6px}
@@ -46,7 +52,16 @@
     .up-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
     .up-item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
     .up-date{font-size:12px;color:#475569;font-weight:700;width:92px}
+
+    /* Add-to-calendar mini button */
+    .addbtn{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;
+      border:1px solid #e2e8f0;background:#f8fafc;color:#1f2937;text-decoration:none;margin-left:6px}
+    .addbtn:hover{background:#eef2f7}
+
+    /* Print */
     @media print{ .banner,.toolbar .btn{display:none!important}; .app{max-width:100%;padding:0} .card{break-inside:avoid} }
+
+    /* Misc */
     details.debug{margin-top:8px} details.debug summary{cursor:pointer;color:#0ea5e9}
     .muted{color:#64748b}
   </style>
@@ -78,6 +93,7 @@
       <div class="spacer"></div>
       <button class="btn" id="todayBtn">Today</button>
       <button class="btn" id="printBtn">🖨 Print</button>
+      <button class="btn" id="hideBtn">Hide</button>
     </div>
 
     <div class="grid" id="dow"></div>
@@ -108,7 +124,7 @@
 
   <script>
   // ---------- CONFIG
-  const ASSETS_VERSION = 224; // bump when assets/events.json changes
+  const ASSETS_VERSION = 225; // bump when assets/events.json changes
   const EVENTS_URLS = [ `assets/events.json?v=${ASSETS_VERSION}` ];
   let TZ = 'America/Chicago';
 
@@ -116,13 +132,11 @@
   let rawEvents = [];   // from JSON (supports rrule OR start)
   let allEvents = [];   // expanded instances for current view
   let current = new Date();
-  const $ = sel => document.querySelector(sel);
 
   // ---------- UTILITIES
   const fmtDate = (d, opts={}) => new Intl.DateTimeFormat('en-US', { timeZone: TZ, ...opts }).format(d);
   const ymd = d => fmtDate(d, { year:'numeric', month:'2-digit', day:'2-digit' }).split('/').reverse().join('-');
   const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
-  const endOfMonth   = (d) => new Date(d.getFullYear(), d.getMonth()+1, 0);
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
   const setTimeLocal = (d,h=0,m=0) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m, 0);
 
@@ -189,6 +203,53 @@
     return 'other';
   }
 
+  // ---------- Add-to-calendar helpers + time labels
+  function isAllDay(e){
+    const d = new Date(e.start);
+    const midnight = d.getHours()===0 && d.getMinutes()===0;
+    return e.type==='holy' || (midnight && (e.duration_minutes===1440));
+  }
+  function timeLabel(iso){
+    const d = new Date(iso);
+    return new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour:'numeric', minute:'2-digit' }).format(d);
+  }
+  function addMinutes(date, mins){ return new Date(new Date(date).getTime() + mins*60000); }
+  function fmtAllDay(d){
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+    return `${y}${m}${day}`;
+  }
+  function fmtZ(dt){
+    const d = new Date(dt);
+    const y=d.getUTCFullYear(), m=String(d.getUTCMonth()+1).padStart(2,'0'), day=String(d.getUTCDate()).padStart(2,'0');
+    const hh=String(d.getUTCHours()).padStart(2,'0'), mm=String(d.getUTCMinutes()).padStart(2,'0');
+    return `${y}${m}${day}T${hh}${mm}00Z`;
+  }
+  function gcalUrl(e){
+    const start = new Date(e.start);
+    const dur = e.duration_minutes || 60;
+    const end = e.end ? new Date(e.end) : addMinutes(start, dur);
+
+    let dates;
+    if (isAllDay(e)) {
+      const sd = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const ed = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate()+1);
+      dates = `${fmtAllDay(sd)}/${fmtAllDay(ed)}`;
+    } else {
+      dates = `${fmtZ(start)}/${fmtZ(end)}`;
+    }
+
+    const base = 'https://calendar.google.com/calendar/render';
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: e.title,
+      dates,
+      location: e.where || '',
+      details: 'Added from Trinity Episcopal De Soto calendar'
+    });
+    return `${base}?${params.toString()}`;
+  }
+
+  // ---------- Event shaping
   function wireToEvent(e){
     return {
       id: e.id || undefined,
@@ -202,7 +263,6 @@
       type: (e.type || tagFromTitle(e.title)).toLowerCase(),
     };
   }
-
   function instanceFrom(r, dt){
     return {
       id: r.id || `${r.title}|${dt.toISOString()}`,
@@ -211,9 +271,9 @@
       start: dt.toISOString(),
       end: r.end || null,
       type: r.type,
+      duration_minutes: r.duration_minutes || null,
     };
   }
-
   function expandEventsInRange(raw, fromDate, toDate){
     const out = [];
     const from = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
@@ -224,7 +284,7 @@
         const rule = parseRRule(r.rrule);
         if(rule.freq==='WEEKLY' && rule.byday.length){
           for(let d=new Date(from); d<=to; d=addDays(d,1)){
-            const code = Object.keys(DOW).find(k=>DOW[k]===d.getDay());
+            const code = ['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];
             if(rule.byday.includes(code)){
               const dt = setTimeLocal(d, rule.byhour, rule.byminute);
               out.push(instanceFrom(r, dt));
@@ -304,7 +364,9 @@
 
   function renderEvent(e){
     const cls = `event ${e.type}`;
-    return `<div class="${cls}"><span class="badge ${e.type}">${badgeText(e)}</span> ${escapeHtml(e.title)}</div>`;
+    const t = isAllDay(e) ? '' : ` <span class="muted">— ${timeLabel(e.start)}</span>`;
+    const add = `<a class="addbtn" href="${gcalUrl(e)}" target="_blank" rel="noopener">Add to Google</a>`;
+    return `<div class="${cls}"><span class="badge ${e.type}">${badgeText(e)}</span> ${escapeHtml(e.title)}${t} ${add}</div>`;
   }
   function badgeText(e){
     if(e.type==='aa') return 'AA';
@@ -315,7 +377,7 @@
   }
   function escapeHtml(s=''){return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]))}
 
-  // ---------- NAV + VIEW BUTTON
+  // ---------- NAV + VIEW/HIDE
   function goToCalendar(){
     const el = document.getElementById('app');
     el.hidden = false;
@@ -323,14 +385,15 @@
     const y = document.querySelector('.app').offsetTop - 10;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
-  ['viewLink'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el){ el.addEventListener('click', (e)=>{ e.preventDefault(); goToCalendar(); }); }
-  });
+  document.getElementById('viewLink').addEventListener('click', (e)=>{ e.preventDefault(); goToCalendar(); });
   document.getElementById('prevMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()-1, 1); render(); goToCalendar(); });
   document.getElementById('nextMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()+1, 1); render(); goToCalendar(); });
   document.getElementById('todayBtn').addEventListener('click', ()=>{ current = new Date(); render(); goToCalendar(); });
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('hideBtn').addEventListener('click', ()=>{
+    document.getElementById('app').hidden = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // ---------- BOOT
   (async function(){
