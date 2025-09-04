@@ -116,12 +116,12 @@
           <p>Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome.</p>
         </div>
       </div>
-      <div class="share-art">
-        <!-- Clickable "View Calendar" image; falls back gracefully if image missing -->
-        <a href="#app" id="viewBtn" title="View Calendar">
-          <img src="assets/view-calendar.png?v=222" alt="View Calendar" onerror="this.style.display='none'" />
+      <div class="share-art" style="justify-content:center;gap:16px">
+        <!-- Centered image-as-button -->
+        <a href="#app" id="viewLink" title="View Calendar">
+          <img src="assets/view-calendar.png?v=223" alt="View Calendar"
+               style="display:block;width:280px;max-width:40vw;height:auto;border-radius:16px;box-shadow:0 6px 30px #00000055" />
         </a>
-        <button class="btn" id="viewBtn2">View Calendar</button>
         <button class="btn" id="printBtn">🖨 Print Calendar</button>
       </div>
     </div>
@@ -167,7 +167,7 @@
 
   <script>
   // ---------- CONFIG
-  const ASSETS_VERSION = 222; // bump when assets/events.json changes
+  const ASSETS_VERSION = 223; // bump when assets/events.json changes
   const EVENTS_URLS = [ `assets/events.json?v=${ASSETS_VERSION}` ];
   let TZ = 'America/Chicago';
 
@@ -385,10 +385,15 @@
   $('#nextMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()+1, 1); render(); window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'}); });
   $('#todayBtn').addEventListener('click', ()=>{ current = new Date(); render(); window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'}); });
   $('#printBtn').addEventListener('click', ()=> window.print());
-  document.getElementById('viewBtn2').addEventListener('click', ()=>{
-    document.getElementById('app').hidden=false;
-    window.scrollTo({top:document.querySelector('.app').offsetTop-10, behavior:'smooth'});
-  });
+  const goToCalendar = ()=>{
+    const el = document.getElementById('app');
+    el.hidden = false; // reveal if hidden
+    // ensure first render happened
+    if(!el.dataset.rendered){ render(); el.dataset.rendered = '1'; }
+    const y = document.querySelector('.app').offsetTop - 10;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  };
+  document.getElementById('viewLink').addEventListener('click', (e)=>{ e.preventDefault(); goToCalendar(); });
 
   // ---------- BOOT
   (async function(){
