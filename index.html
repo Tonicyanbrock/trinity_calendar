@@ -124,7 +124,7 @@
 
   <script>
   // ---------- CONFIG
-  const ASSETS_VERSION = 248; // bump when assets/events.json changes
+  const ASSETS_VERSION = 249; // bump when assets/events.json changes
   const EVENTS_URLS = [ `assets/events.json?v=${ASSETS_VERSION}` ];
   let TZ = 'America/Chicago';
 
@@ -487,12 +487,28 @@ async function getInstancesForMonth(year, month){
   instances.sort((a,b)=> new Date(a.start) - new Date(b.start));
   return instances;
 }
+
+  <!-- BOOT -->
+<script>
+(async function () {
+  // Render day-of-week headers
+  const el = document.getElementById('dow');
+  if (el) {
+    el.innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+      .map(d => `<div class="dow">${d}</div>`)
+      .join('');
+  }
+
+  // Fetch events, then render the month
+  try {
+    await loadEvents();   // your existing fetch helper
+    if (typeof render === 'function') render();
+  } catch (e) {
+    console.error('BOOT error:', e);
+  }
+})();
 </script>
 
-  // ---------- BOOT
-  (async function(){
-    document.getElementById('dow').innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="dow">${d}</div>`).join('');
-    await loadEvents();
     render();
   })();
   </script>
