@@ -1,3 +1,62 @@
-{
-  "events": []
-}
+[
+  {
+    "id": "sun-service",
+    "title": "Sunday Service (Holy Eucharist)",
+    "location": "Trinity Episcopal Church, 202 W. Miller Street, De Soto, MO 63020",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=SU",
+      "dtstart": "2025-01-05T10:00:00"
+    },
+    "durationMinutes": 75
+  },
+  {
+    "id": "first-sunday-carry-in",
+    "title": "First Sunday Carry-In Dinner",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
+      "dtstart": "2025-01-05T12:00:00"
+    },
+    "durationMinutes": 90
+  },
+  {
+    "id": "aa-weekly",
+    "title": "AA (Alcoholics Anonymous)",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=MO",
+      "dtstart": "2025-01-06T19:00:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "na-weekly",
+    "title": "NA (Narcotics Anonymous)",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=TH",
+      "dtstart": "2025-01-09T19:00:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "blessing-of-animals-2025",
+    "title": "Blessing of the Animals (St. Francis)",
+    "location": "Church Lawn — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "start": "2025-10-04T15:00:00",
+    "durationMinutes": 45
+  },
+  {
+    "id": "christmas-eve-2025",
+    "title": "Christmas Eve Candlelight Service",
+    "location": "Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "start": "2025-12-24T19:00:00",
+    "durationMinutes": 60"
+  }
+]
