@@ -1,6 +1,7 @@
 {
   "timezone": "America/Chicago",
   "events": [
+    /* ---------- Trinity recurring ---------- */
     {
       "title": "Sunday Service (Holy Eucharist)",
       "notes": "All are welcome.",
@@ -15,65 +16,66 @@
       "location": "Parish Hall",
       "duration_minutes": 90
     },
-
     {
       "title": "AA Group 148",
-      "notes": "Open Meeting",
+      "notes": "Open Meeting.",
       "rrule": "FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0",
       "location": "Parish Hall",
       "duration_minutes": 60
     },
     {
       "title": "AA Group 147",
-      "notes": "Open Meeting",
+      "notes": "Open Meeting.",
       "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=19;BYMINUTE=0",
       "location": "Parish Hall",
       "duration_minutes": 60
     },
     {
       "title": "NA",
-      "notes": "Narcotics Anonymous",
+      "notes": "Narcotics Anonymous.",
       "rrule": "FREQ=WEEKLY;BYDAY=TH;BYHOUR=19;BYMINUTE=0",
       "location": "Parish Hall",
       "duration_minutes": 60
     },
     {
       "title": "NA",
-      "notes": "Narcotics Anonymous",
+      "notes": "Narcotics Anonymous.",
       "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=17;BYMINUTE=30",
       "location": "Parish Hall",
       "duration_minutes": 60
     },
 
+    /* ---------- Diocesan standing Zooms ---------- */
     {
-      "title": "Convocation Deans & Wardens",
-      "notes": "Monthly Zoom (first Tuesday).",
+      "title": "Convocation Deans & Wardens (Zoom)",
+      "notes": "Monthly Zoom — first Tuesday.",
       "rrule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=1;BYHOUR=18;BYMINUTE=0",
       "location": "Zoom",
       "duration_minutes": 60
     },
     {
-      "title": "Diocesan LGBTQ+ Virtual Gathering",
-      "notes": "Monthly Zoom (second Tuesday).",
+      "title": "Diocesan LGBTQ+ Virtual Gathering (Zoom)",
+      "notes": "Monthly Zoom — second Tuesday.",
       "rrule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=2;BYHOUR=19;BYMINUTE=0",
       "location": "Zoom",
       "duration_minutes": 60
     },
     {
-      "title": "Community of Deacons",
-      "notes": "Monthly Zoom (fourth Monday).",
+      "title": "Community of Deacons (Zoom)",
+      "notes": "Monthly Zoom — fourth Monday.",
       "rrule": "FREQ=MONTHLY;BYDAY=MO;BYSETPOS=4;BYHOUR=18;BYMINUTE=0",
       "location": "Zoom",
       "duration_minutes": 60
     },
     {
-      "title": "Standing Committee",
-      "notes": "Monthly Zoom (fourth Thursday).",
+      "title": "Standing Committee (Zoom)",
+      "notes": "Monthly Zoom — fourth Thursday.",
       "rrule": "FREQ=MONTHLY;BYDAY=TH;BYSETPOS=4;BYHOUR=17;BYMINUTE=0",
       "location": "Zoom",
       "duration_minutes": 120
     },
 
+    /* ---------- One-off example (keep or edit) ---------- */
     {
       "title": "2025 Diocesan Picnic",
       "notes": "Faith, fun, and fellowship at Camp MoVal.",
@@ -82,112 +84,18 @@
       "duration_minutes": 240
     },
 
-    {
-      "title": "Lincoln's Birthday (MO Holiday)",
-      "notes": "",
-      "start": "2025-02-12T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Truman Day (MO Holiday)",
-      "notes": "",
-      "start": "2025-05-08T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Cinco de Mayo 🎉 (celebration)",
-      "notes": "Celebrate!",
-      "start": "2025-05-05T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Halloween",
-      "notes": "",
-      "start": "2025-10-31T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Valentine’s Day",
-      "notes": "",
-      "start": "2026-02-14T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "St. Patrick’s Day",
-      "notes": "",
-      "start": "2026-03-17T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Mother’s Day",
-      "notes": "Second Sunday of May (2026).",
-      "start": "2026-05-10T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Father’s Day",
-      "notes": "Third Sunday of June (2026).",
-      "start": "2026-06-21T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
+    /* ---------- US Federal Holidays (recurring) ---------- */
+    { "title": "New Year’s Day (Holiday)",            "rrule": "FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1;BYHOUR=0;BYMINUTE=0",     "duration_minutes": 1440 },
+    { "title": "Martin Luther King Jr. Day (Holiday)", "rrule": "FREQ=YEARLY;BYMONTH=1;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Presidents’ Day (Holiday)",            "rrule": "FREQ=YEARLY;BYMONTH=2;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Memorial Day (Holiday)",               "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=MO;BYSETPOS=-1;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Juneteenth (Holiday)",                 "rrule": "FREQ=YEARLY;BYMONTH=6;BYMONTHDAY=19;BYHOUR=0;BYMINUTE=0",  "duration_minutes": 1440 },
+    { "title": "Independence Day (Holiday)",           "rrule": "FREQ=YEARLY;BYMONTH=7;BYMONTHDAY=4;BYHOUR=0;BYMINUTE=0",   "duration_minutes": 1440 },
+    { "title": "Labor Day (Holiday)",                  "rrule": "FREQ=YEARLY;BYMONTH=9;BYDAY=MO;BYSETPOS=1;BYHOUR=0;BYMINUTE=0",  "duration_minutes": 1440 },
+    { "title": "Indigenous Peoples’ Day (Holiday)",    "rrule": "FREQ=YEARLY;BYMONTH=10;BYDAY=MO;BYSETPOS=2;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Veterans Day (Holiday)",               "rrule": "FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=11;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Thanksgiving Day (Holiday)",           "rrule": "FREQ=YEARLY;BYMONTH=11;BYDAY=TH;BYSETPOS=4;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Christmas Day (Holiday)",              "rrule": "FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=25;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
 
-    {
-      "title": "Liturgical Season — Advent (Purple)",
-      "notes": "Season begins.",
-      "start": "2025-11-30T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Liturgical Season — Christmas (White)",
-      "notes": "Season begins.",
-      "start": "2025-12-25T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Liturgical Season — Epiphany (Green)",
-      "notes": "Season begins.",
-      "start": "2026-01-06T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Liturgical Season — Lent (Purple)",
-      "notes": "Season begins.",
-      "start": "2026-02-18T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Liturgical Season — Easter (White)",
-      "notes": "Season begins.",
-      "start": "2026-04-05T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Liturgical Season — Pentecost (Red)",
-      "notes": "Season begins.",
-      "start": "2026-05-24T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Liturgical Season — Ordinary Time (Green)",
-      "notes": "Season begins.",
-      "start": "2026-05-25T00:00",
-      "location": "",
-      "duration_minutes": 1440
-    }
-  ]
-}
-
+    /* ---------- Missouri State Holidays (recurring) ---------- */
+    { "title": "Lincoln’s Birthday (MO Holiday)",      "rrule":
