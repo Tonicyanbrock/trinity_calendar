@@ -23,11 +23,12 @@
   <h1>Trinity Episcopal De Soto — Calendar</h1>
   <div class="bar">
     <button id="reload">Reload Events</button>
+    <button id="today">Today</button>
     <span class="muted">Source: <code>/assets/events.json</code></span>
   </div>
   <div id="status" class="ok" style="display:none"></div>
   <div id="error" class="err" style="display:none"></div>
-  <h2>Upcoming (simple view)</h2>
+  <h2 id="view-label">Upcoming (simple view)</h2>
   <ul id="list"></ul>
 </div>
 
@@ -35,6 +36,7 @@
 const EVENTS_URLS = [
   `/assets/events.json?v=${Date.now()}`
 ];
+let allEvents = [];
 
 function toLocal(dt){
   try {
@@ -100,6 +102,20 @@ function googleLink(ev){
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&location=${loc}&details=${details}`;
 }
 
+function render(events, label="Upcoming (simple view)"){
+  const $ul = document.getElementById('list');
+  document.getElementById('view-label').textContent = label;
+  $ul.innerHTML = events.map(e=>{
+    const dur = e.durationMinutes ? ` • ${e.durationMinutes} min` : '';
+    return `<li>
+      <strong>${e.title}</strong><br>
+      <span class="muted">${toLocal(e.start)}</span>${dur}<br>
+      <span class="muted">${e.location||''}</span><br>
+      <a href="${googleLink(e)}" target="_blank">➕ Add to Google</a>
+    </li>`;
+  }).join('');
+}
+
 async function load(){
   const $err = document.getElementById('error');
   const $ok  = document.getElementById('status');
@@ -111,27 +127,33 @@ async function load(){
       if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
       const data = await res.json();
       const evs  = Array.isArray(data) ? data : (data.events || []);
-      const expanded = expand(evs);
-      const $ul = document.getElementById('list');
-      $ul.innerHTML = expanded.slice(0,40).map(e=>{
-        const dur = e.durationMinutes ? ` • ${e.durationMinutes} min` : '';
-        return `<li>
-          <strong>${e.title}</strong><br>
-          <span class="muted">${toLocal(e.start)}</span>${dur}<br>
-          <span class="muted">${e.location||''}</span><br>
-          <a href="${googleLink(e)}" target="_blank">➕ Add to Google</a>
-        </li>`;
-      }).join('');
-      $ok.textContent = `Loaded ${expanded.length} events`; 
+      allEvents  = expand(evs);
+      render(allEvents, "Upcoming (simple view)");
+      $ok.textContent = `Loaded ${allEvents.length} events`; 
       $ok.style.display='block';
       return;
     }catch(err){
       $err.style.display='block';
-      $err.textContent = `Failed loading ${url}\n${err.message}\n(Check that the JSON has no trailing commas, no comments, and straight quotes.)`;
+      $err.textContent = `Failed loading ${url}\n${err.message}`;
     }
   }
 }
+
+function showToday(){
+  const today = new Date();
+  const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+  const start = new Date(y,m,d,0,0,0);
+  const end   = new Date(y,m,d,23,59,59);
+  const todays = allEvents.filter(e=>{
+    const when = new Date(e.start);
+    return when >= start && when <= end;
+  });
+  render(todays, "Today’s Events");
+}
+
 document.getElementById('reload').addEventListener('click', load);
+document.getElementById('today').addEventListener('click', showToday);
+
 load();
 </script>
 </body>
