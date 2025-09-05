@@ -1,4 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trinity Episcopal De Soto — Calendar</title>
+  <meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome." />
+  <meta name="theme-color" content="#0b1220" />
+
+  <!-- Social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Trinity Episcopal De Soto — Calendar" />
+  <meta property="og:description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome." />
+  <meta property="og:image" content="https://trinity-calendar.netlify.app/assets/view-calendar.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Trinity Episcopal De Soto — Calendar" />
+  <meta name="twitter:description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome." />
+  <meta name="twitter:image" content="https://trinity-calendar.netlify.app/assets/view-calendar.png" />
+
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#ffffff; --ink:#0e1726; --muted:#475569; --grid:#e5e7eb;
+      --btn:#16a34a; --season:#16a34a;
+      --glow:0 12px 40px rgba(0,0,0,.22);
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:#fff}
+
+    /* Hero */
+    .banner{
+      color:#e5e7eb; text-align:center; border-bottom:6px solid #11182733;
+      background:
+        radial-gradient(1200px 600px at 10% -20%, #1e3a8a 0 60%, transparent 60%),
+        radial-gradient(1000px 520px at 90% -30%, #9333ea 0 60%, transparent 60%),
+        radial-gradient(900px 460px at 30% -40%, #22c55e 0 60%, transparent 60%),
+        linear-gradient(180deg,#0b1220 0 45%, #111827 100%);
+    }
+    .banner-inner{max-width:1000px;margin:0 auto;padding:34px 14px}
+    .hero-img{display:block;width:min(420px,60vw);height:auto;border-radius:18px;box-shadow:var(--glow);margin:0 auto 16px}
+    h1{margin:0 0 6px 0;font-size:clamp(22px,4vw,34px);font-weight:800;letter-spacing:.2px}
+    .hero-btn{
+      display:inline-block;margin:0 auto 16px;padding:12px 18px;border-radius:999px;
+      background:var(--btn);color:#fff;font-weight:800;box-shadow:var(--glow)
+    }
+
+    /* App shell */
+    .app{max-width:1000px;margin:16px auto;padding:12px;border:6px solid var(--season);
+      border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.12);background:#fff}
+    .btn{appearance:none;border:0;border-radius:999px;padding:10px 16px;background:var(--btn);color:white;font-weight:700;cursor:pointer}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+    .toolbar .spacer{flex:1}
+    .monthbar{display:flex;gap:10px;align-items:center}
+    .monthlabel{font-weight:800}
+    .chip{font-size:12px;padding:5px 10px;border-radius:999px;background:#eef2ff;color:#111827;font-weight:800}
+
+    /* Calendar grid */
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .dow{font-size:12px;color:#334155;text-transform:uppercase;letter-spacing:1px}
+    .cell{background:#fff;border:1px solid var(--grid);border-radius:14px;min-height:120px;padding:8px;display:flex;flex-direction:column;gap:6px}
+    .cell .date{font-size:12px;color:#64748b;font-weight:800}
+    .event{font-size:13px;line-height:1.3;border-left:4px solid transparent;padding-left:8px}
+    .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;color:#fff;margin-right:6px}
+    .badge.aa{background:linear-gradient(0deg,#10b981,#059669)} .event.aa{border-left-color:#059669}
+    .badge.na{background:linear-gradient(0deg,#f97316,#ea580c)} .event.na{border-left-color:#ea580c}
+    .badge.svc{background:linear-gradient(0deg,#64748b,#475569)} .event.svc{border-left-color:#475569}
+    .badge.holy{background:linear-gradient(0deg,#f59e0b,#d97706)} .event.holy{border-left-color:#d97706}
+
+    .aside{margin-top:18px;display:grid;grid-template-columns:1fr 320px;gap:14px}
+    .card{background:#fff;border:1px solid var(--grid);border-radius:14px;padding:12px}
+    .up-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .up-item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
+    .up-date{font-size:12px;color:#475569;font-weight:700;width:92px}
+
+    /* “Add to Google” chip */
+    .addbtn{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid #e2e8f0;background:#f8fafc;color:#1f2937;text-decoration:none;margin-left:6px}
+    .addbtn:hover{background:#eef2f7}
+
+    /* Print */
+    @media print{ .banner,.toolbar .btn{display:none!important}; .app{max-width:100%;padding:0;border:0} .card{break-inside:avoid} }
+
+    details.debug{margin-top:8px} details.debug summary{cursor:pointer;color:#0ea5e9}
+    .muted{color:#64748b}
+  </style>
+</head>
+<body>
+  <!-- HERO (image becomes the button; if PNG fails, shows a green fallback button) -->
+  <header class="banner">
+    <div class="banner-inner">
+      <a href="#app" id="viewLink" title="View Calendar" style="text-decoration:none;color:inherit;display:block;max-width:1000px;margin:0 auto">
+        <img class="hero-img" src="assets/view-calendar.png" alt="View Calendar"
+             onerror="this.style.display='none'; this.nextElementSibling.hidden=false;">
+        <span hidden class="hero-btn">View Calendar</span>
+        <h1>Trinity Episcopal De Soto — Calendar</h1>
+      </a>
+    </div>
+  </header>
+
+  <!-- APP -->
+  <main class="app" id="app" hidden>
+    <section class="card" style="margin-bottom:10px">
+      <strong>Monthly events &amp; services at Trinity Episcopal Church, De Soto, MO. All are welcome.</strong>
+    </section>
+
+    <div class="toolbar">
+      <button class="btn" id="prevMonth">◀</button>
+      <div class="monthbar">
+        <div class="monthlabel" id="monthLabel">Month YYYY</div>
+        <span class="chip" id="seasonChip">Ordinary Time</span>
+      </div>
+      <button class="btn" id="nextMonth">▶</button>
+      <div class="spacer"></div>
+      <button class="btn" id="todayBtn">Today</button>
+      <button class="btn" id="printBtn">🖨 Print</button>
+      <button class="btn" id="hideBtn">Hide</button>
+    </div>
+
+    <div class="grid" id="dow"></div>
+    <div class="grid" id="calendar"></div>
+
+    <div class="aside">
+      <section class="card">
+        <h3>Upcoming (next 10)</h3>
+        <ul class="up-list" id="upcoming"></ul>
+      </section>
+      <section class="card">
+        <h3>Legend</h3>
+        <div class="legend">
+          <span class="badge aa">AA 148 / 147</span>
+          <span class="badge na">NA</span>
+          <span class="badge svc">Sunday Service</span>
+          <span class="badge holy">Holy Day</span>
+        </div>
+        <p class="muted" style="margin-top:10px">Trinity Episcopal Church, 202 W. Miller St., De Soto, MO 63020 • (636) 586-2542</p>
+      </section>
+    </div>
+
+    <details class="debug" id="debug">
+      <summary>Debug info</summary>
+      <pre id="dbg"></pre>
+    </details>
+  </main>
+
+  <footer style="margin-top:24px; border-top:4px solid #11182722">
+    <div style="max-width:1000px;margin:0 auto;padding:10px 14px">
+      <img src="assets/stained-glass.jpg" alt="" style="width:100%;height:auto;border-radius:12px;box-shadow:var(--glow)">
+    </div>
+  </footer>
+
+  <script>
+  /* ---------- CONFIG */
+  const ASSETS_VERSION = 230;                     // bump when assets/events.json changes
+  const EVENTS_URLS = [ `assets/events.json?v=${ASSETS_VERSION}` ];
+  let TZ = 'America/Chicago';
+
+  /* ---------- STATE */
+  let rawEvents = [];
+  let allEvents = [];
+  let current = new Date();
+
+  /* ---------- UTILITIES */
+  const fmtDate = (d, opts={}) => new Intl.DateTimeFormat('en-US', { timeZone: TZ, ...opts }).format(d);
+  const ymd = d => fmtDate(d, { year:'numeric', month:'2-digit', day:'2-digit' }).split('/').reverse().join('-');
+  const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
+  const setTimeLocal = (d,h=0,m=0) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m, 0);
+
+  function seasonFor(date){
+    const m = date.getMonth()+1, day = date.getDate();
+    if((m===12 && day>=1) || (m===1)) return {name:'Advent/Christmastide', color:'#6d28d9'};
+    if(m===3 || m===4) return {name:'Lent/Easter', color:'#6d28d9'};
+    if(m===5 || m===6) return {name:'Pentecost', color:'#ef4444'};
+    return {name:'Ordinary Time', color:'#16a34a'};
+  }
+
+  /* ---------- LOAD */
+  async function loadEvents(){
+    const dbg = [];
+    for(const url of EVENTS_URLS){
+      try{
+        const res = await fetch(url, { cache:'no-store' });
+        if(!res.ok) throw new Error(res.status+" "+res.statusText);
+        const data = await res.json();
+        if(data.timezone) TZ = data.timezone;
+        if(Array.isArray(data)) rawEvents.push(...data);
+        else if(Array.isArray(data.events)) rawEvents.push(...data.events);
+        else dbg.push(`WARN: ${url} had no array`);
+        dbg.push(`OK: ${url} (raw count=${rawEvents.length})`);
+      }catch(err){ dbg.push(`FAIL: ${url} → ${err.message}`); }
+    }
+    const dbgEl = document.getElementById('dbg'); if(dbgEl) dbgEl.textContent = dbg.join('\\n');
+  }
+
+  /* ---------- RRULES */
+  const DOW = {SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6};
+  function parseRRule(rr=''){
+    const out = {freq:null, byday:[], bysetpos:null, byhour:0, byminute:0};
+    rr.split(';').forEach(part=>{
+      const [k,v] = part.split('=');
+      if(!k||!v) return;
+      const K = k.toUpperCase();
+      if(K==='FREQ') out.freq = v.toUpperCase();
+      if(K==='BYDAY') out.byday = v.split(',').map(s=>s.trim().toUpperCase());
+      if(K==='BYSETPOS') out.bysetpos = parseInt(v,10);
+      if(K==='BYHOUR') out.byhour = parseInt(v,10)||0;
+      if(K==='BYMINUTE') out.byminute = parseInt(v,10)||0;
+    });
+    return out;
+  }
+  function nthDowOfMonth(y,m,dow,setpos){
+    if(setpos===-1){
+      const last = new Date(y, m+1, 0);
+      const delta = (last.getDay() - dow + 7) % 7;
+      return addDays(last, -delta);
+    }
+    const first = new Date(y, m, 1);
+    const offset = (dow - first.getDay() + 7) % 7;
+    const day = 1 + offset + (setpos-1)*7;
+    return new Date(y, m, day);
+  }
+
+  /* ---------- Add-to-Google helpers */
+  function isAllDay(e){
+    const d = new Date(e.start);
+    const midnight = d.getHours()===0 && d.getMinutes()===0;
+    return e.type==='holy' || (midnight && (e.duration_minutes===1440));
+  }
+  function timeLabel(iso){
+    const d = new Date(iso);
+    return new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour:'numeric', minute:'2-digit' }).format(d);
+  }
+  function addMinutes(date, mins){ return new Date(new Date(date).getTime() + mins*60000); }
+  function fmtAllDay(d){
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+    return `${y}${m}${day}`;
+  }
+  function fmtZ(dt){
+    const d = new Date(dt);
+    const y=d.getUTCFullYear(), m=String(d.getUTCMonth()+1).padStart(2,'0'), day=String(d.getUTCDate()).padStart(2,'0');
+    const hh=String(d.getUTCHours()).padStart(2,'0'), mm=String(d.getUTCMinutes()).padStart(2,'0');
+    return `${y}${m}${day}T${hh}${mm}00Z`;
+  }
+  function gcalUrl(e){
+    const start = new Date(e.start);
+    const dur = e.duration_minutes || 60;
+    const end = e.end ? new Date(e.end) : addMinutes(start, dur);
+    let dates;
+    if (isAllDay(e)) {
+      const sd = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const ed = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate()+1);
+      dates = `${fmtAllDay(sd)}/${fmtAllDay(ed)}`;
+    } else {
+      dates = `${fmtZ(start)}/${fmtZ(end)}`;
+    }
+    const base = 'https://calendar.google.com/calendar/render';
+    const params = new URLSearchParams({
+      action: 'TEMPLATE', text: e.title, dates,
+      location: e.where || '', details: 'Added from Trinity Episcopal De Soto calendar'
+    });
+    return `${base}?${params.toString()}`;
+  }
+
+  /* ---------- Event shaping */
+  function tagFromTitle(t=''){
+    const s = t.toLowerCase();
+    if(s.includes('aa')) return 'aa';
+    if(s.includes('narcotics') || s.includes(' na') || s==='na') return 'na';
+    if(s.includes('service') || s.includes('eucharist') || s.includes('mass')) return 'svc';
+    if(s.includes('ash wednesday') || s.includes('pentecost') || s.includes('holy') || s.includes('easter') || s.includes('advent')) return 'holy';
+    return 'other';
+  }
+  function wireToEvent(e){
+    return {
+      id: e.id || undefined, title: e.title, notes: e.notes || '',
+      where: e.location || e.where || 'Trinity Episcopal Church',
+      start: e.start || null, end: e.end || null, rrule: e.rrule || null,
+      duration_minutes: e.duration_minutes || null,
+      type: (e.type || tagFromTitle(e.title)).toLowerCase(),
+    };
+  }
+  function instanceFrom(r, dt){
+    return {
+      id: r.id || `${r.title}|${dt.toISOString()}`, title: r.title, where: r.where,
+      start: dt.toISOString(), end: r.end || null, type: r.type,
+      duration_minutes: r.duration_minutes || null,
+    };
+  }
+  function expandEventsInRange(raw, fromDate, toDate){
+    const out = [];
+    const from = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
+    const to = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 23,59,59);
+
+    for(const r of raw.map(wireToEvent)){
+      if(r.rrule){
+        const rule = parseRRule(r.rrule);
+        if(rule.freq==='WEEKLY' && rule.byday.length){
+          for(let d=new Date(from); d<=to; d=addDays(d,1)){
+            const code = ['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];
+            if(rule.byday.includes(code)){
+              const dt = setTimeLocal(d, rule.byhour, rule.byminute);
+              out.push(instanceFrom(r, dt));
+            }
+          }
+        } else if(rule.freq==='MONTHLY' && rule.byday.length && r.rrule.includes('BYSETPOS')){
+          for(let y=from.getFullYear(); y<=to.getFullYear(); y++){
+            const mStart = (y===from.getFullYear()? from.getMonth():0);
+            const mEnd = (y===to.getFullYear()? to.getMonth():11);
+            for(let m=mStart; m<=mEnd; m++){
+              for(const code of rule.byday){
+                const dow = DOW[code];
+                const occ = nthDowOfMonth(y, m, dow, rule.bysetpos||1);
+                if(occ>=from && occ<=to){
+                  const dt = setTimeLocal(occ, rule.byhour, rule.byminute);
+                  out.push(instanceFrom(r, dt));
+                }
+              }
+            }
+          }
+        }
+      } else if(r.start){
+        const dt = new Date(r.start);
+        if(dt>=from && dt<=to) out.push(instanceFrom(r, dt));
+      }
+    }
+    const seen = new Set();
+    return out.filter(e=>{ const key = `${e.title}|${e.start}`; if(seen.has(key)) return false; seen.add(key); return true; });
+  }
+
+  /* ---------- RENDER */
+  function render(){
+    const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    document.getElementById('dow').innerHTML = dowNames.map(d=>`<div class="dow">${d}</div>`).join('');
+
+    const a = startOfMonth(current);
+    const firstCell = addDays(a, -a.getDay());
+    const cells = []; for(let i=0;i<42;i++) cells.push(addDays(firstCell, i));
+
+    document.getElementById('monthLabel').textContent = fmtDate(current, { month:'long', year:'numeric'});
+    const season = seasonFor(current);
+    const chip = document.getElementById('seasonChip');
     chip.textContent = season.name; chip.style.background = season.color; chip.style.color = '#fff';
+    document.documentElement.style.setProperty('--season', season.color);
 
     const rangeStart = cells[0], rangeEnd = cells[cells.length-1];
     allEvents = expandEventsInRange(rawEvents, rangeStart, rangeEnd);
@@ -14,7 +354,7 @@
       const k = ymd(d);
       const inMonth = d.getMonth()===current.getMonth();
       const list = (byDay.get(k)||[]).map(renderEvent).join('');
-      return `<div class="cell" style="opacity:${inMonth?1:0.48}">
+      return `<div class="cell" style="opacity:${inMonth?1:.48}">
         <div class="date">${fmtDate(d,{day:'numeric'})}</div>
         ${list||''}
       </div>`;
@@ -28,8 +368,6 @@
         <div class="up-date">${fmtDate(new Date(e.start), { weekday:'short', month:'short', day:'numeric'})}</div>
         <div><span class="badge ${e.type}">${badgeText(e)}</span> ${escapeHtml(e.title)}</div>
       </li>`).join('');
-
-    document.getElementById('app').hidden = false;
   }
 
   function renderEvent(e){
@@ -47,5 +385,34 @@
   }
   function escapeHtml(s=''){return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]))}
 
-  // ---------- NAV + VIEW/HIDE
+  /* ---------- NAV + VIEW/HIDE */
   function goToCalendar(){
+    const el = document.getElementById('app');
+    el.hidden = false;
+    if(!el.dataset.rendered){ render(); el.dataset.rendered = '1'; }
+    const y = document.querySelector('.app').offsetTop - 10;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+  ['viewLink','viewHeader'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.addEventListener('click', e=>{ e.preventDefault(); goToCalendar(); }); }
+  });
+  document.getElementById('prevMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()-1, 1); render(); goToCalendar(); });
+  document.getElementById('nextMonth').addEventListener('click', ()=>{ current = new Date(current.getFullYear(), current.getMonth()+1, 1); render(); goToCalendar(); });
+  document.getElementById('todayBtn').addEventListener('click', ()=>{ current = new Date(); render(); goToCalendar(); });
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('hideBtn').addEventListener('click', ()=>{
+    document.getElementById('app').hidden = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---------- BOOT */
+  (async function(){
+    document.getElementById('dow').innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="dow">${d}</div>`).join('');
+    await loadEvents();
+    render();
+    document.getElementById('app').hidden = true; // keep hidden until click
+  })();
+  </script>
+</body>
+</html>
