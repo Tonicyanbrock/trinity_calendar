@@ -1,183 +1,145 @@
 {
-  "timezone": "America/Chicago",
-  "events": [
-    {
-      "title": "Sunday Service (Holy Eucharist)",
-      "notes": "All are welcome.",
-      "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=10;BYMINUTE=0",
-      "location": "Sanctuary",
-      "duration_minutes": 60
+  "affirmationLabel": "Daily Affirmation",
+  "affirmationURL": "",
+  "dioceseICS": "https://www.lectionarypage.net/Resources/LiturgicalCalendar.ics",
+  "affirmationText": "May these days remind us: God\u2019s love is present in every season."
+} },
+  {
+    "id": "first-sunday-carry-in",
+    "title": "First Sunday Carry-In Dinner",
+    "location": "Parish Hall \u2014 Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
+      "dtstart": "2025-01-05T12:00:00"
     },
-    {
-      "title": "First Sunday Carry-In Dinner",
-      "notes": "Potluck lunch after the service. Bring a favorite dish if you like.",
-      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1;BYHOUR=11;BYMINUTE=30",
-      "location": "Parish Hall",
-      "duration_minutes": 90
+    "durationMinutes": 90
+  },
+  {
+    "id": "aa-weekly",
+    "title": "AA (Alcoholics Anonymous)",
+    "location": "Parish Hall \u2014 Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=MO",
+      "dtstart": "2025-01-06T19:00:00"
     },
-    {
-      "title": "AA Group 148",
-      "notes": "Open Meeting.",
-      "rrule": "FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0",
-      "location": "Parish Hall",
-      "duration_minutes": 60
+    "durationMinutes": 60
+  },
+  {
+    "id": "na-weekly",
+    "title": "NA (Narcotics Anonymous)",
+    "location": "Parish Hall \u2014 Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=TH",
+      "dtstart": "2025-01-09T19:00:00"
     },
-    {
-      "title": "AA Group 147",
-      "notes": "Open Meeting.",
-      "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=19;BYMINUTE=0",
-      "location": "Parish Hall",
-      "duration_minutes": 60
-    },
-    {
-      "title": "NA",
-      "notes": "Narcotics Anonymous.",
-      "rrule": "FREQ=WEEKLY;BYDAY=TH;BYHOUR=19;BYMINUTE=0",
-      "location": "Parish Hall",
-      "duration_minutes": 60
-    },
-    {
-      "title": "NA",
-      "notes": "Narcotics Anonymous.",
-      "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=17;BYMINUTE=30",
-      "location": "Parish Hall",
-      "duration_minutes": 60
-    },
-    {
-      "title": "Convocation Deans & Wardens (Zoom)",
-      "notes": "Monthly Zoom — first Tuesday.",
-      "rrule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=1;BYHOUR=18;BYMINUTE=0",
-      "location": "Zoom",
-      "duration_minutes": 60
-    },
-    {
-      "title": "Diocesan LGBTQ+ Virtual Gathering (Zoom)",
-      "notes": "Monthly Zoom — second Tuesday.",
-      "rrule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=2;BYHOUR=19;BYMINUTE=0",
-      "location": "Zoom",
-      "duration_minutes": 60
-    },
-    {
-      "title": "Community of Deacons (Zoom)",
-      "notes": "Monthly Zoom — fourth Monday.",
-      "rrule": "FREQ=MONTHLY;BYDAY=MO;BYSETPOS=4;BYHOUR=18;BYMINUTE=0",
-      "location": "Zoom",
-      "duration_minutes": 60
-    },
-    {
-      "title": "Standing Committee (Zoom)",
-      "notes": "Monthly Zoom — fourth Thursday.",
-      "rrule": "FREQ=MONTHLY;BYDAY=TH;BYSETPOS=4;BYHOUR=17;BYMINUTE=0",
-      "location": "Zoom",
-      "duration_minutes": 120
-    },
-    {
-      "title": "2025 Diocesan Picnic",
-      "notes": "Faith, fun, and fellowship at Camp MoVal.",
-      "start": "2025-09-20T12:00",
-      "location": "Camp MoVal, 2659 Camp Mo-Val Rd, Union, MO 63084",
-      "duration_minutes": 240
-    },
-
-    /* US Federal Holidays */
-    {
-      "title": "New Year’s Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Martin Luther King Jr. Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=1;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Presidents’ Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=2;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Memorial Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=MO;BYSETPOS=-1;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Juneteenth (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=6;BYMONTHDAY=19;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Independence Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=7;BYMONTHDAY=4;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Labor Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=9;BYDAY=MO;BYSETPOS=1;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Indigenous Peoples’ Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=10;BYDAY=MO;BYSETPOS=2;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Veterans Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=11;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Thanksgiving Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=11;BYDAY=TH;BYSETPOS=4;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Christmas Day (Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=25;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-
-    /* Missouri State Holidays */
-    {
-      "title": "Lincoln’s Birthday (MO Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=12;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Truman Day (MO Holiday)",
-      "rrule": "FREQ=YEARLY;BYMONTH=5;BYMONTHDAY=8;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-
-    /* Cultural / Community */
-    {
-      "title": "Valentine’s Day (Celebration)",
-      "rrule": "FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=14;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "St. Patrick’s Day (Celebration)",
-      "rrule": "FREQ=YEARLY;BYMONTH=3;BYMONTHDAY=17;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Mother’s Day (Celebration)",
-      "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=SU;BYSETPOS=2;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Cinco de Mayo (Celebration)",
-      "rrule": "FREQ=YEARLY;BYMONTH=5;BYMONTHDAY=5;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Father’s Day (Celebration)",
-      "rrule": "FREQ=YEARLY;BYMONTH=6;BYDAY=SU;BYSETPOS=3;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    },
-    {
-      "title": "Halloween (Celebration)",
-      "rrule": "FREQ=YEARLY;BYMONTH=10;BYMONTHDAY=31;BYHOUR=0;BYMINUTE=0",
-      "duration_minutes": 1440
-    }
-  ]
-}
+    "durationMinutes": 60
+  }
+]
+ {
+    "id": "new-years-2025",
+    "title": "New Year's Day (State/Federal)",
+    "location": "USA/Missouri",
+    "timeZone": "America/Chicago",
+    "start": "2025-01-01T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "mlk-2025",
+    "title": "Martin Luther King, Jr.\u2019s Birthday (State/Federal)",
+    "location": "USA/Missouri",
+    "timeZone": "America/Chicago",
+    "start": "2025-01-20T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "lincoln-2025",
+    "title": "Lincoln's Birthday (State)",
+    "location": "Missouri, USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-02-12T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "washington-2025",
+    "title": "Washington's Birthday (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-02-17T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "truman-day-2025",
+    "title": "Truman Day (Missouri)",
+    "location": "Missouri, USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-05-08T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "memorial-2025",
+    "title": "Memorial Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-05-26T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "juneteenth-2025",
+    "title": "Juneteenth (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-06-19T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "independence-2025",
+    "title": "Independence Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-07-04T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "labor-2025",
+    "title": "Labor Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-09-01T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "columbus-2025",
+    "title": "Columbus Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-10-13T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "veterans-2025",
+    "title": "Veterans Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-11-11T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "thanksgiving-2025",
+    "title": "Thanksgiving Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-11-27T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "christmas-2025",
+    "title": "Christmas Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-12-25T00:00:00",
+    "durationMinutes": 0
+  }
+]
