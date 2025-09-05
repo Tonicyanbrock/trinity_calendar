@@ -1,124 +1,62 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Trinity Episcopal De Soto — Calendar</title>
-<meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome.">
-<style>
-  :root{--ink:#0b1220;--muted:#475569;--accent:#2563eb;--panel:#fff;--tint:#f8fafc}
-  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:#fff}
-  .app{max-width:900px;margin:24px auto;padding:16px}
-  h1{margin:0 0 8px 0}
-  .bar{display:flex;gap:8px;align-items:center;margin:12px 0 20px}
-  button{border:1px solid #cbd5e1;background:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}
-  .err{background:#fee2e2;color:#991b1b;padding:10px;border:1px solid #fecaca;border-radius:8px;margin:12px 0;white-space:pre-wrap}
-  .ok{background:#ecfeff;color:#065f46;padding:8px;border:1px solid #bae6fd;border-radius:8px;margin:12px 0}
-  ul{padding-left:18px}
-  .muted{color:var(--muted)}
-</style>
-</head>
-<body>
-<div class="app">
-  <h1>Trinity Episcopal De Soto — Calendar</h1>
-  <div class="bar">
-    <button id="reload">Reload Events</button>
-    <span class="muted">Source: <code>/assets/events.json</code></span>
-  </div>
-  <div id="status" class="ok" style="display:none"></div>
-  <div id="error" class="err" style="display:none"></div>
-  <h2>Upcoming (simple view)</h2>
-  <ul id="list"></ul>
-</div>
-<script>
-const EVENTS_URLS = [
-  `/assets/events.json?v=${Date.now()}`
-];
-
-function toLocal(dt, tz){
-  try {
-    const d = new Date(dt);
-    return d.toLocaleString([], { dateStyle:'medium', timeStyle:'short' });
-  } catch(e){ return dt }
-}
-
-function expand(events){
-  // Expand a tiny subset: only WEEKLY (BYDAY) and MONTHLY first-Sunday (BYSETPOS=1;BYDAY=SU)
-  const out = [];
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth()-1, 1);
-  const end   = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59);
-
-  for(const ev of events){
-    if(ev.start){
-      const when = new Date(ev.start);
-      if(when >= start && when <= end) out.push(ev);
-      continue;
-    }
-    if(ev.recurrence && ev.recurrence.rrule && ev.recurrence.dtstart){
-      const rule = ev.recurrence.rrule;
-      const dt0  = new Date(ev.recurrence.dtstart);
-      const dur  = (ev.durationMinutes||60)*60000;
-      if(rule.startsWith('FREQ=WEEKLY')){
-        const byday = (rule.match(/BYDAY=([A-Z,]+)/)||[])[1]||'';
-        const want = new Set(byday.split(','));
-        for(let d=new Date(Math.max(dt0,start)); d<=end; d.setDate(d.getDate()+1)){
-          const wk = ['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];
-          if(d>=dt0 && want.has(wk)){
-            const s = new Date(d); s.setHours(dt0.getHours(), dt0.getMinutes(), 0, 0);
-            out.push({...ev, start:s.toISOString()});
-          }
-        }
-      } else if(rule.startsWith('FREQ=MONTHLY')){
-        const bysetpos = (rule.match(/BYSETPOS=(\-?\d+)/)||[])[1];
-        const byday = (rule.match(/BYDAY=([A-Z]{2})/)||[])[1];
-        if(bysetpos==='1' && byday==='SU'){
-          for(let m=new Date(start.getFullYear(), start.getMonth(), 1); m<=end; m.setMonth(m.getMonth()+1)){
-            // find first Sunday of month
-            const first = new Date(m.getFullYear(), m.getMonth(), 1);
-            const add = (7 - first.getDay()) % 7; // 0=Sun
-            const day = new Date(first); day.setDate(first.getDate()+add);
-            if(day >= dt0 && day <= end){
-              const s = new Date(day); s.setHours(dt0.getHours(), dt0.getMinutes(), 0, 0);
-              out.push({...ev, start:s.toISOString()});
-            }
-          }
-        }
-      }
-    }
+[
+  {
+    "id": "sun-service",
+    "title": "Sunday Service (Holy Eucharist)",
+    "location": "Trinity Episcopal Church, 202 W. Miller Street, De Soto, MO 63020",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=SU",
+      "dtstart": "2025-01-05T10:00:00"
+    },
+    "durationMinutes": 75
+  },
+  {
+    "id": "first-sunday-carry-in",
+    "title": "First Sunday Carry-In Dinner",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
+      "dtstart": "2025-01-05T12:00:00"
+    },
+    "durationMinutes": 90
+  },
+  {
+    "id": "aa-weekly",
+    "title": "AA (Alcoholics Anonymous)",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=MO",
+      "dtstart": "2025-01-06T19:00:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "na-weekly",
+    "title": "NA (Narcotics Anonymous)",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=TH",
+      "dtstart": "2025-01-09T19:00:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "blessing-of-animals-2025",
+    "title": "Blessing of the Animals (St. Francis)",
+    "location": "Church Lawn — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "start": "2025-10-04T15:00:00",
+    "durationMinutes": 45
+  },
+  {
+    "id": "christmas-eve-2025",
+    "title": "Christmas Eve Candlelight Service",
+    "location": "Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "start": "2025-12-24T19:00:00",
+    "durationMinutes": 60
   }
-  // sort by date/time
-  out.sort((a,b)=>new Date(a.start)-new Date(b.start));
-  return out;
-}
-
-async function load(){
-  const $err = document.getElementById('error');
-  const $ok  = document.getElementById('status');
-  $err.style.display='none'; $ok.style.display='none';
-
-  for(const url of EVENTS_URLS){
-    try{
-      const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-      const data = await res.json();
-      const evs  = Array.isArray(data) ? data : (data.events || []);
-      const expanded = expand(evs);
-      const $ul = document.getElementById('list');
-      $ul.innerHTML = expanded.slice(0,40).map(e=>{
-        const dur = e.durationMinutes ? ` • ${e.durationMinutes} min` : '';
-        return `<li><strong>${e.title}</strong><br><span class="muted">${toLocal(e.start, e.timeZone||'')}</span>${dur}<br><span class="muted">${e.location||''}</span></li>`;
-      }).join('');
-      $ok.textContent = `Loaded ${expanded.length} events`; $ok.style.display='block';
-      return;
-    }catch(err){
-      $err.style.display='block';
-      $err.textContent = `Failed loading ${url}\n${err.message}\n(Check that the JSON has no trailing commas, no comments, and straight quotes.)`;
-    }
-  }
-}
-document.getElementById('reload').addEventListener('click', load);
-load();
-</script>
-</body>
-</html>
+]
