@@ -1,10 +1,167 @@
 [
   {
-    "id": "smoke",
-    "title": "Smoke Test Event",
-    "location": "Trinity Episcopal Church",
+    "affirmationLabel": "Daily Affirmation",
+    "affirmationURL": "",
+    "dioceseICS": "https://www.lectionarypage.net/Resources/LiturgicalCalendar.ics",
+    "affirmationText": "May these days remind us: God’s love is present in every season."
+  },
+  {
+    "id": "first-sunday-carry-in",
+    "title": "First Sunday Carry-In Dinner",
+    "location": "Parish Hall — Trinity Episcopal Church",
     "timeZone": "America/Chicago",
-    "start": "2025-09-05T12:00:00",
+    "recurrence": {
+      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
+      "dtstart": "2025-01-05T12:00:00"
+    },
+    "durationMinutes": 90
+  },
+  {
+    "id": "aa-148-tue",
+    "title": "AA Group 148",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=TU",
+      "dtstart": "2025-01-07T19:00:00"
+    },
     "durationMinutes": 60
+  },
+  {
+    "id": "aa-147-fri",
+    "title": "AA Group 147",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=FR",
+      "dtstart": "2025-01-03T19:00:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "na-thu",
+    "title": "NA (Narcotics Anonymous)",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=TH",
+      "dtstart": "2025-01-09T19:00:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "na-sun",
+    "title": "NA (Narcotics Anonymous)",
+    "location": "Parish Hall — Trinity Episcopal Church",
+    "timeZone": "America/Chicago",
+    "recurrence": {
+      "rrule": "FREQ=WEEKLY;BYDAY=SU",
+      "dtstart": "2025-01-05T17:30:00"
+    },
+    "durationMinutes": 60
+  },
+  {
+    "id": "new-years-2025",
+    "title": "New Year's Day (State/Federal)",
+    "location": "USA/Missouri",
+    "timeZone": "America/Chicago",
+    "start": "2025-01-01T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "mlk-2025",
+    "title": "Martin Luther King, Jr.’s Birthday (State/Federal)",
+    "location": "USA/Missouri",
+    "timeZone": "America/Chicago",
+    "start": "2025-01-20T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "lincoln-2025",
+    "title": "Lincoln's Birthday (State)",
+    "location": "Missouri, USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-02-12T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "washington-2025",
+    "title": "Washington's Birthday (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-02-17T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "truman-day-2025",
+    "title": "Truman Day (Missouri)",
+    "location": "Missouri, USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-05-08T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "memorial-2025",
+    "title": "Memorial Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-05-26T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "juneteenth-2025",
+    "title": "Juneteenth (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-06-19T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "independence-2025",
+    "title": "Independence Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-07-04T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "labor-2025",
+    "title": "Labor Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-09-01T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "columbus-2025",
+    "title": "Columbus Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-10-13T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "veterans-2025",
+    "title": "Veterans Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-11-11T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "thanksgiving-2025",
+    "title": "Thanksgiving Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-11-27T00:00:00",
+    "durationMinutes": 0
+  },
+  {
+    "id": "christmas-2025",
+    "title": "Christmas Day (Federal)",
+    "location": "USA",
+    "timeZone": "America/Chicago",
+    "start": "2025-12-25T00:00:00",
+    "durationMinutes": 0
   }
 ]
