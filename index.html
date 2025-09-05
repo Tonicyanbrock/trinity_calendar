@@ -18,16 +18,26 @@
     .banner{background: radial-gradient(1200px 600px at 10% -20%, #1b3a9c, #7c3aed 60%, #0ea5e9 100%); color:#fff;padding:40px 16px;margin-bottom:12px}
     .brand{font-weight:800;font-size:32px}
     .subtitle{margin:0 0 8px 0;opacity:.85}
+
+    /* cover */
+    .cover{max-width:980px;margin:14px auto;padding:0 12px}
+    .cover-card{background:#0b1220 url('assets/view-calendar.png?v='+Math.random()) center/cover no-repeat;border-radius:20px;min-height:220px;display:flex;align-items:end;justify-content:end;overflow:hidden}
+    .cover-veil{backdrop-filter: blur(2px);background:rgba(0,0,0,.35);width:100%;height:100%;position:relative}
+    .cover-btn{position:absolute;right:14px;bottom:14px;background:#16a34a;color:#fff;border:none;border-radius:999px;padding:10px 16px;font-weight:800;cursor:pointer}
+
     .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:10px 0}
     .chip{background:var(--chip);color:#14532d;border-radius:999px;padding:4px 10px;font-weight:600;font-size:12px}
     .btn{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
     .btn:disabled{opacity:.6;cursor:not-allowed}
+
     .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
     .dow{opacity:.7;font-size:12px;font-weight:700;text-align:center}
     .cell{border:1px solid var(--grid);border-radius:16px;min-height:120px;padding:8px;position:relative}
     .date{position:absolute;top:6px;right:10px;font-size:12px;color:var(--muted)}
     .event{margin-top:22px;background:#f8fafc;border-radius:12px;padding:6px 8px;border:1px solid #e5e7eb}
     .event a{font-size:12px;text-decoration:none}
+
+    .affirm{max-width:980px;margin:20px auto 40px;padding:12px;border-top:1px solid var(--grid);color:var(--muted)}
   </style>
 </head>
 <body>
@@ -38,7 +48,17 @@
     </div>
   </div>
 
-  <div class="app">
+  <!-- Cover image that can hide/show the calendar -->
+  <div class="cover" id="cover" style="display:none">
+    <div class="cover-card">
+      <div class="cover-veil">
+        <button class="cover-btn" id="showCalendar">View Calendar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar app -->
+  <div class="app" id="calendarApp" style="display:block">
     <div class="controls">
       <div style="display:flex;gap:10px;align-items:center">
         <button class="btn" id="prev">◀</button>
@@ -49,12 +69,15 @@
       <div style="display:flex;gap:10px;align-items:center">
         <button class="btn" data-btn="today">Today</button>
         <button class="btn" id="print">🖨 Print</button>
+        <button class="btn" id="hide">Hide</button>
       </div>
     </div>
 
     <div class="grid" id="dow"></div>
     <div class="grid" id="grid"></div>
   </div>
+
+  <div class="affirm" id="affirm"></div>
 
   <script>
   // ===== Core constants =====
@@ -75,6 +98,36 @@
       try{ const r = await fetch(url,{cache:'no-store'}); if(r.ok){ window.__events = await r.json(); return window.__events; } }catch(_){ }
     }
     throw new Error('No events.json sources reachable');
+  }
+
+  // ===== Diocese ICS (optional) =====
+  async function loadDioceseForMonth(year, month){
+    try{
+      const data = await loadEvents();
+      const meta = data.find(x=>x.dioceseICS);
+      if (!meta) return [];
+      const res = await fetch(meta.dioceseICS, {cache:'no-store'});
+      if (!res.ok) return [];
+      const ics = await res.text();
+      const blocks = ics.split(/BEGIN:VEVENT/).slice(1).map(b=>'BEGIN:VEVENT'+b.split('END:VEVENT')[0]);
+      const startMonth = new Date(year, month, 1);
+      const endMonth = new Date(year, month+1, 0, 23,59,59);
+      const out = [];
+      for (const b of blocks){
+        const sm = b.match(/SUMMARY:(.*)/);
+        const sum = sm ? sm[1].trim() : '';
+        const mdt = b.match(/DTSTART;?[^:]*:(\d{8})/);
+        const dtm = mdt ? mdt[1] : '';
+        if (!sum || !dtm) continue;
+        const y = +dtm.slice(0,4), m = +dtm.slice(4,6)-1, d = +dtm.slice(6,8);
+        const when = new Date(y,m,d,0,0,0);
+        if (when>=startMonth && when<=endMonth){
+          const iso = when.toISOString();
+          out.push({ title: sum, start: iso, end: iso, location: 'Lectionary', diocese:true });
+        }
+      }
+      return out;
+    }catch(_){ return []; }
   }
 
   // ===== RRULE expansion =====
@@ -116,6 +169,10 @@
         instances.push({ ev, start:s.toISOString(), end:addMinutes(ev.start, ev.durationMinutes||60) }); }}
       if (ev.recurrence){ const reps=expandRecurrence(ev, rangeStart, rangeEnd); for (const r of reps){ instances.push({ ev, start:r.start, end:r.end }); }}
     }
+    // Diocese ICS
+    const extra = await loadDioceseForMonth(year, month);
+    for (const x of extra){ instances.push({ ev: { title: x.title, location: x.location }, start: x.start, end: x.end, diocese:true }); }
+
     instances.sort((a,b)=> new Date(a.start)-new Date(b.start));
     return instances;
   }
@@ -154,15 +211,27 @@
       const idx = (day - 1) + first.getDay();
       const cell = grid.children[idx]; if (!cell) continue;
       const card=document.createElement('div'); card.className='event';
-      const time = d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+      const time = it.diocese ? '— all day' : d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
       const a = document.createElement('a'); a.href = googleLink(it.ev, it.start, it.end); a.target='_blank'; a.rel='noopener'; a.textContent='Add to Google';
-      card.innerHTML = '<div style="font-weight:700">'+it.ev.title+'</div><div style="font-size:12px;opacity:.7">'+time+(it.ev.location? ' — '+it.ev.location : '')+'</div>';
-      card.appendChild(a);
+      const title = it.diocese ? it.ev.title : it.ev.title;
+      card.innerHTML = '<div style="font-weight:700">'+title+'</div><div style="font-size:12px;opacity:.7">'+time+(it.ev.location? ' — '+it.ev.location : '')+'</div>';
+      if (!it.diocese) card.appendChild(a);
       cell.appendChild(card);
     }
+
+    // Affirmation footer
+    try{
+      const data = await loadEvents();
+      const meta = data.find(x=>x.affirmationText);
+      const box = document.getElementById('affirm');
+      if (meta && box){
+        const link = meta.affirmationURL ? ' — <a href="'+meta.affirmationURL+'" target="_blank" rel="noopener">Read more</a>' : '';
+        box.innerHTML = '<strong>'+(meta.affirmationLabel||'Daily Affirmation')+':</strong> '+meta.affirmationText + link;
+      }
+    }catch(_){ }
   }
 
-  // ===== Navigation =====
+  // ===== Navigation & Cover =====
   function goTo(y,m){ state.year=y; state.month=m; render(); location.hash = '#/'+y+'/'+String(m+1).padStart(2,'0'); }
   function goToToday(){ const now=new Date(); goTo(now.getFullYear(), now.getMonth()); }
   document.querySelector('[data-btn="today"]').addEventListener('click', goToToday);
@@ -170,15 +239,11 @@
   document.getElementById('next').addEventListener('click', ()=>{ let y=state.year, m=state.month+1; if (m>11){m=0;y++;} goTo(y,m);});
   document.getElementById('print').addEventListener('click', ()=>window.print());
 
-  // ===== Boot =====
-  (async function(){
-    const hash=location.hash.match(/#\/(\d{4})\/(\d{2})/);
-    if (hash){ goTo(parseInt(hash[1],10), parseInt(hash[2],10)-1); } else { goToToday(); }
-  })();
-
-  // debug helper
-  window._probeEvents = async () => { const u='assets/events.json?probe='+Date.now(); const r=await fetch(u,{cache:'no-store'}); const t=await r.text(); console.log('status',r.status,'bytes',t.length); try{JSON.parse(t); console.log('JSON OK');}catch(e){console.warn('JSON parse error',e);} };
-  </script>
-</body>
-</html>
-
+  const cover = document.getElementById('cover');
+  const app = document.getElementById('calendarApp');
+  const showBtn = document.getElementById('showCalendar');
+  const hideBtn = document.getElementById('hide');
+  function showCalendar(){ cover.style.display='none'; app.style.display='block'; localStorage.setItem('coverHidden','1'); }
+  function hideCalendar(){ cover.style.display='block'; app.style.display='none'; }
+  showBtn?.addEventListener('click', showCalendar);
+  hideBtn?.addEventLi
