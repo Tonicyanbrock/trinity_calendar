@@ -1,7 +1,6 @@
 {
   "timezone": "America/Chicago",
   "events": [
-    /* ---------- Trinity recurring ---------- */
     {
       "title": "Sunday Service (Holy Eucharist)",
       "notes": "All are welcome.",
@@ -44,8 +43,6 @@
       "location": "Parish Hall",
       "duration_minutes": 60
     },
-
-    /* ---------- Diocesan standing Zooms ---------- */
     {
       "title": "Convocation Deans & Wardens (Zoom)",
       "notes": "Monthly Zoom — first Tuesday.",
@@ -74,8 +71,6 @@
       "location": "Zoom",
       "duration_minutes": 120
     },
-
-    /* ---------- One-off example (keep or edit) ---------- */
     {
       "title": "2025 Diocesan Picnic",
       "notes": "Faith, fun, and fellowship at Camp MoVal.",
@@ -84,18 +79,105 @@
       "duration_minutes": 240
     },
 
-    /* ---------- US Federal Holidays (recurring) ---------- */
-    { "title": "New Year’s Day (Holiday)",            "rrule": "FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1;BYHOUR=0;BYMINUTE=0",     "duration_minutes": 1440 },
-    { "title": "Martin Luther King Jr. Day (Holiday)", "rrule": "FREQ=YEARLY;BYMONTH=1;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
-    { "title": "Presidents’ Day (Holiday)",            "rrule": "FREQ=YEARLY;BYMONTH=2;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
-    { "title": "Memorial Day (Holiday)",               "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=MO;BYSETPOS=-1;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
-    { "title": "Juneteenth (Holiday)",                 "rrule": "FREQ=YEARLY;BYMONTH=6;BYMONTHDAY=19;BYHOUR=0;BYMINUTE=0",  "duration_minutes": 1440 },
-    { "title": "Independence Day (Holiday)",           "rrule": "FREQ=YEARLY;BYMONTH=7;BYMONTHDAY=4;BYHOUR=0;BYMINUTE=0",   "duration_minutes": 1440 },
-    { "title": "Labor Day (Holiday)",                  "rrule": "FREQ=YEARLY;BYMONTH=9;BYDAY=MO;BYSETPOS=1;BYHOUR=0;BYMINUTE=0",  "duration_minutes": 1440 },
-    { "title": "Indigenous Peoples’ Day (Holiday)",    "rrule": "FREQ=YEARLY;BYMONTH=10;BYDAY=MO;BYSETPOS=2;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
-    { "title": "Veterans Day (Holiday)",               "rrule": "FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=11;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
-    { "title": "Thanksgiving Day (Holiday)",           "rrule": "FREQ=YEARLY;BYMONTH=11;BYDAY=TH;BYSETPOS=4;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
-    { "title": "Christmas Day (Holiday)",              "rrule": "FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=25;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    /* US Federal Holidays */
+    {
+      "title": "New Year’s Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Martin Luther King Jr. Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=1;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Presidents’ Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=2;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Memorial Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=MO;BYSETPOS=-1;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Juneteenth (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=6;BYMONTHDAY=19;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Independence Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=7;BYMONTHDAY=4;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Labor Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=9;BYDAY=MO;BYSETPOS=1;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Indigenous Peoples’ Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=10;BYDAY=MO;BYSETPOS=2;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Veterans Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=11;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Thanksgiving Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=11;BYDAY=TH;BYSETPOS=4;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Christmas Day (Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=25;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
 
-    /* ---------- Missouri State Holidays (recurring) ---------- */
-    { "title": "Lincoln’s Birthday (MO Holiday)",      "rrule":
+    /* Missouri State Holidays */
+    {
+      "title": "Lincoln’s Birthday (MO Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=12;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Truman Day (MO Holiday)",
+      "rrule": "FREQ=YEARLY;BYMONTH=5;BYMONTHDAY=8;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+
+    /* Cultural / Community */
+    {
+      "title": "Valentine’s Day (Celebration)",
+      "rrule": "FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=14;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "St. Patrick’s Day (Celebration)",
+      "rrule": "FREQ=YEARLY;BYMONTH=3;BYMONTHDAY=17;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Mother’s Day (Celebration)",
+      "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=SU;BYSETPOS=2;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Cinco de Mayo (Celebration)",
+      "rrule": "FREQ=YEARLY;BYMONTH=5;BYMONTHDAY=5;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Father’s Day (Celebration)",
+      "rrule": "FREQ=YEARLY;BYMONTH=6;BYDAY=SU;BYSETPOS=3;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    },
+    {
+      "title": "Halloween (Celebration)",
+      "rrule": "FREQ=YEARLY;BYMONTH=10;BYMONTHDAY=31;BYHOUR=0;BYMINUTE=0",
+      "duration_minutes": 1440
+    }
+  ]
+}
