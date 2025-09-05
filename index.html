@@ -124,7 +124,7 @@
 
   <script>
   // ---------- CONFIG
-  const ASSETS_VERSION = 247; // bump when assets/events.json changes
+  const ASSETS_VERSION = 248; // bump when assets/events.json changes
   const EVENTS_URLS = [ `assets/events.json?v=${ASSETS_VERSION}` ];
   let TZ = 'America/Chicago';
 
@@ -394,6 +394,100 @@
     document.getElementById('app').hidden = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+<script>
+// ===== minimal helpers =====
+const pad = n => String(n).padStart(2,'0');
+function addMinutes(iso, mins){ const d=new Date(iso); d.setMinutes(d.getMinutes()+(mins||0)); return d.toISOString(); }
+
+// Expand WEEKLY and MONTHLY(BYDAY+BYSETPOS) into concrete instances within a date range
+function expandRecurrence(ev, rangeStartISO, rangeEndISO){
+  const out = [];
+  if (!ev?.recurrence) return out;
+  const { rrule, dtstart } = ev.recurrence || {};
+  if (!rrule || !dtstart) return out;
+
+  const start = new Date(rangeStartISO);
+  const end   = new Date(rangeEndISO);
+  const rule = Object.fromEntries(rrule.split(';').map(kv => kv.split('=')));
+  const freq = rule.FREQ;
+  const weekdayIndex = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+  const base = new Date(dtstart);
+  const baseH = base.getHours(), baseM = base.getMinutes();
+
+  if (freq === 'WEEKLY'){
+    const byday = (rule.BYDAY || '').split(',').filter(Boolean);
+    // start at range start (not dtstart) so we fill the current month
+    let cursor = new Date(start);
+    while (cursor <= end){
+      for (const code of byday){
+        const inst = new Date(cursor);
+        const want = weekdayIndex[code];
+        const diff = (want - inst.getDay() + 7) % 7;
+        inst.setDate(inst.getDate() + diff);
+        const instance = new Date(inst.getFullYear(), inst.getMonth(), inst.getDate(), baseH, baseM, 0);
+        if (instance >= start && instance <= end){
+          const sISO = instance.toISOString();
+          out.push({ start: sISO, end: addMinutes(sISO, ev.durationMinutes || 60) });
+        }
+      }
+      cursor.setDate(cursor.getDate() + 7);
+    }
+  }
+
+  if (freq === 'MONTHLY'){
+    const byday = (rule.BYDAY || '').split(',').filter(Boolean);
+    const bysetpos = parseInt(rule.BYSETPOS || '1', 10);
+    // walk month by month across the range
+    let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    while (cursor <= end){
+      const y = cursor.getFullYear(), m = cursor.getMonth();
+      for (const code of byday){
+        const firstOfMonth = new Date(y, m, 1);
+        const firstDow = firstOfMonth.getDay();
+        const want = weekdayIndex[code];
+        const day = 1 + ((want - firstDow + 7) % 7) + (bysetpos - 1) * 7;
+        const inst = new Date(y, m, day, baseH, baseM, 0);
+        if (inst >= start && inst <= end && inst.getMonth() === m){
+          const sISO = inst.toISOString();
+          out.push({ start: sISO, end: addMinutes(sISO, ev.durationMinutes || 60) });
+        }
+      }
+      cursor = new Date(y, m + 1, 1);
+    }
+  }
+
+  return out;
+}
+
+// Build all event instances (one-time + recurring) for a given month
+async function getInstancesForMonth(year, month){
+  const evs = await loadEvents(); // your existing fetch function
+  const rangeStart = new Date(year, month, 1, 0, 0, 0).toISOString();
+  const rangeEnd   = new Date(year, month+1, 0, 23, 59, 59).toISOString();
+  const instances = [];
+
+  for (const ev of evs){
+    // one-time starters
+    if (ev.start){
+      const s = new Date(ev.start);
+      const monthStart = new Date(rangeStart), monthEnd = new Date(rangeEnd);
+      if (s >= monthStart && s <= monthEnd){
+        instances.push({ ev, start: s.toISOString(), end: addMinutes(ev.start, ev.durationMinutes || 60) });
+      }
+    }
+    // recurring expansion
+    if (ev.recurrence){
+      const reps = expandRecurrence(ev, rangeStart, rangeEnd);
+      for (const r of reps){
+        instances.push({ ev, start: r.start, end: r.end });
+      }
+    }
+  }
+  // sort by start time
+  instances.sort((a,b)=> new Date(a.start) - new Date(b.start));
+  return instances;
+}
+</script>
 
   // ---------- BOOT
   (async function(){
