@@ -80,183 +80,214 @@
   <div class="affirm" id="affirm"></div>
 
   <script>
-  // ===== Core constants =====
-  const ASSETS_VERSION = 251; // bump when events.json or this file changes
+  <!-- =============================
+Trinity Calendar — Drop‑in fixes
+1) Replace the entire /assets/events.json with the JSON below.
+2) In index.html, bump ASSETS_VERSION and paste the <script> block below
+   just before the closing </body>.
+3) Hard refresh (Cmd+Shift+R) after each change.
+============================= -->
+
+<!-- ===== (1) /assets/events.json ===== -->
+<script type="application/json" data-filename="assets/events.json">
+[
+  {
+    "affirmationLabel": "Daily Affirmation",
+    "affirmationURL": "",
+    "dioceseICS": "https://www.lectionarypage.net/Resources/LiturgicalCalendar.ics",
+    "affirmationText": "May these days remind us: God’s love is present in every season."
+  },
+
+  { "id": "first-sunday-carry-in", "title": "First Sunday Carry-In Dinner", "location": "Parish Hall — Trinity Episcopal Church", "timeZone": "America/Chicago", "recurrence": { "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1", "dtstart": "2025-01-05T12:00:00" }, "durationMinutes": 90 },
+
+  { "id": "aa-148-tue", "title": "AA Group 148", "location": "Parish Hall — Trinity Episcopal Church", "timeZone": "America/Chicago", "recurrence": { "rrule": "FREQ=WEEKLY;BYDAY=TU", "dtstart": "2025-01-07T19:00:00" }, "durationMinutes": 60 },
+  { "id": "aa-147-fri", "title": "AA Group 147", "location": "Parish Hall — Trinity Episcopal Church", "timeZone": "America/Chicago", "recurrence": { "rrule": "FREQ=WEEKLY;BYDAY=FR", "dtstart": "2025-01-03T19:00:00" }, "durationMinutes": 60 },
+  { "id": "na-thu", "title": "NA (Narcotics Anonymous)", "location": "Parish Hall — Trinity Episcopal Church", "timeZone": "America/Chicago", "recurrence": { "rrule": "FREQ=WEEKLY;BYDAY=TH", "dtstart": "2025-01-09T19:00:00" }, "durationMinutes": 60 },
+  { "id": "na-sun", "title": "NA (Narcotics Anonymous)", "location": "Parish Hall — Trinity Episcopal Church", "timeZone": "America/Chicago", "recurrence": { "rrule": "FREQ=WEEKLY;BYDAY=SU", "dtstart": "2025-01-05T17:30:00" }, "durationMinutes": 60 },
+
+  { "id": "new-years-2025", "title": "New Year's Day (State/Federal)", "location": "USA/Missouri", "timeZone": "America/Chicago", "start": "2025-01-01T00:00:00", "durationMinutes": 0 },
+  { "id": "mlk-2025", "title": "Martin Luther King, Jr.’s Birthday (State/Federal)", "location": "USA/Missouri", "timeZone": "America/Chicago", "start": "2025-01-20T00:00:00", "durationMinutes": 0 },
+  { "id": "lincoln-2025", "title": "Lincoln's Birthday (Missouri)", "location": "Missouri, USA", "timeZone": "America/Chicago", "start": "2025-02-12T00:00:00", "durationMinutes": 0 },
+  { "id": "washington-2025", "title": "Washington's Birthday (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-02-17T00:00:00", "durationMinutes": 0 },
+  { "id": "truman-day-2025", "title": "Truman Day (Missouri)", "location": "Missouri, USA", "timeZone": "America/Chicago", "start": "2025-05-08T00:00:00", "durationMinutes": 0 },
+  { "id": "memorial-2025", "title": "Memorial Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-05-26T00:00:00", "durationMinutes": 0 },
+  { "id": "juneteenth-2025", "title": "Juneteenth (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-06-19T00:00:00", "durationMinutes": 0 },
+  { "id": "independence-2025", "title": "Independence Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-07-04T00:00:00", "durationMinutes": 0 },
+  { "id": "labor-2025", "title": "Labor Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-09-01T00:00:00", "durationMinutes": 0 },
+  { "id": "columbus-2025", "title": "Columbus Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-10-13T00:00:00", "durationMinutes": 0 },
+  { "id": "veterans-2025", "title": "Veterans Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-11-11T00:00:00", "durationMinutes": 0 },
+  { "id": "thanksgiving-2025", "title": "Thanksgiving Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-11-27T00:00:00", "durationMinutes": 0 },
+  { "id": "christmas-2025", "title": "Christmas Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-12-25T00:00:00", "durationMinutes": 0 }
+]
+</script>
+
+
+<!-- ===== (2) index.html — drop this before </body>  ===== -->
+<script>
+  // ***** BUMP THIS NUMBER ANY TIME events.json OR THIS SCRIPT CHANGES *****
+  const ASSETS_VERSION = 240;
+
+  // Where to load events from (no leading slash)
   const EVENTS_URLS = [
     'assets/events.json?v=' + ASSETS_VERSION,
     'admin/events.json?v=' + ASSETS_VERSION // optional fallback if using CMS
   ];
-  const TZ_DEFAULT = 'America/Chicago';
-  const pad = n => String(n).padStart(2,'0');
 
-  // ===== Fetch events =====
-  async function loadEvents(){
-    if (window.__events) return window.__events;
-    const attempts = EVENTS_URLS.map(url => fetch(url,{cache:'no-store'}).then(r=>{if(!r.ok) throw new Error(url+' '+r.status);return r.json();}));
-    try{ window.__events = await Promise.any(attempts); return window.__events; }catch(e){}
-    for (const url of EVENTS_URLS){
-      try{ const r = await fetch(url,{cache:'no-store'}); if(r.ok){ window.__events = await r.json(); return window.__events; } }catch(_){ }
+  // Basic router state
+  const state = { year: 0, month: 0 }; // month 0–11
+
+  // ---- Fetch helpers ----
+  async function loadEvents() {
+    const attempts = EVENTS_URLS.map(url =>
+      fetch(url, { cache: 'no-store' }).then(r => {
+        if (!r.ok) throw new Error(url + ' ' + r.status);
+        return r.json();
+      })
+    );
+    // Try fastest path
+    try { return await Promise.any(attempts); } catch {}
+    // Fallback: try serially
+    for (const url of EVENTS_URLS) {
+      try {
+        const r = await fetch(url, { cache: 'no-store' });
+        if (r.ok) return await r.json();
+      } catch {}
     }
     throw new Error('No events.json sources reachable');
   }
 
-  // ===== Diocese ICS (optional) =====
-  async function loadDioceseForMonth(year, month){
-    try{
-      const data = await loadEvents();
-      const meta = data.find(x=>x.dioceseICS);
-      if (!meta) return [];
-      const res = await fetch(meta.dioceseICS, {cache:'no-store'});
-      if (!res.ok) return [];
-      const ics = await res.text();
-      const blocks = ics.split(/BEGIN:VEVENT/).slice(1).map(b=>'BEGIN:VEVENT'+b.split('END:VEVENT')[0]);
-      const startMonth = new Date(year, month, 1);
-      const endMonth = new Date(year, month+1, 0, 23,59,59);
-      const out = [];
-      for (const b of blocks){
-        const sm = b.match(/SUMMARY:(.*)/);
-        const sum = sm ? sm[1].trim() : '';
-        const mdt = b.match(/DTSTART;?[^:]*:(\d{8})/);
-        const dtm = mdt ? mdt[1] : '';
-        if (!sum || !dtm) continue;
-        const y = +dtm.slice(0,4), m = +dtm.slice(4,6)-1, d = +dtm.slice(6,8);
-        const when = new Date(y,m,d,0,0,0);
-        if (when>=startMonth && when<=endMonth){
-          const iso = when.toISOString();
-          out.push({ title: sum, start: iso, end: iso, location: 'Lectionary', diocese:true });
-        }
-      }
-      return out;
-    }catch(_){ return []; }
+  // ---- Date helpers ----
+  const pad = n => String(n).padStart(2, '0');
+  const TZ_DEFAULT = 'America/Chicago';
+
+  function addMinutes(iso, mins) {
+    const d = new Date(iso);
+    d.setMinutes(d.getMinutes() + (mins || 0));
+    return d.toISOString();
   }
 
-  // ===== RRULE expansion =====
-  function addMinutes(iso, mins){ const d=new Date(iso); d.setMinutes(d.getMinutes()+(mins||0)); return d.toISOString(); }
-  function expandRecurrence(ev, rangeStartISO, rangeEndISO){
-    const out=[]; if(!ev || !ev.recurrence) return out; const rr=ev.recurrence; if(!rr.rrule || !rr.dtstart) return out;
-    const start=new Date(rangeStartISO), end=new Date(rangeEndISO); const rule=Object.fromEntries(rr.rrule.split(';').map(kv=>kv.split('=')));
-    const freq=rule.FREQ; const weekdayIndex={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6}; const base=new Date(rr.dtstart); const h=base.getHours(), m=base.getMinutes();
-    if (freq==='WEEKLY'){
-      const byday=(rule.BYDAY||'').split(',').filter(Boolean); let cursor=new Date(start);
-      while(cursor<=end){
-        for(const code of byday){ const inst=new Date(cursor); const want=weekdayIndex[code]; const diff=(want-inst.getDay()+7)%7; inst.setDate(inst.getDate()+diff);
-          const dt=new Date(inst.getFullYear(),inst.getMonth(),inst.getDate(),h,m,0);
-          if(dt>=start && dt<=end){ const s=dt.toISOString(); out.push({start:s,end:addMinutes(s,ev.durationMinutes||60)}); }
+  // Expand minimal RRULEs (WEEKLY, MONTHLY with BYDAY & BYSETPOS=1..5)
+  function expandRecurrence(ev, rangeStartISO, rangeEndISO) {
+    const out = [];
+    if (!ev.recurrence) return out;
+    const { rrule, dtstart } = ev.recurrence;
+    if (!rrule || !dtstart) return out;
+
+    const start = new Date(rangeStartISO);
+    const end   = new Date(rangeEndISO);
+
+    const rule = Object.fromEntries(rrule.split(';').map(kv => kv.split('=')));
+    const freq = rule.FREQ;
+
+    if (freq === 'WEEKLY') {
+      const byday = (rule.BYDAY || '').split(','); // e.g., ["TU"]
+      // start from the week of dtstart
+      let cursor = new Date(dtstart);
+      // move cursor back to range start if needed
+      if (cursor < start) cursor = new Date(start);
+
+      const weekdayIndex = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+
+      while (cursor <= end) {
+        for (const code of byday) {
+          const inst = new Date(cursor);
+          const want = weekdayIndex[code];
+          const diff = (want - inst.getDay() + 7) % 7;
+          inst.setDate(inst.getDate() + diff);
+          const instanceISO = new Date(
+            inst.getFullYear(), inst.getMonth(), inst.getDate(),
+            new Date(dtstart).getHours(), new Date(dtstart).getMinutes(), 0
+          ).toISOString();
+          if (inst >= start && inst <= end) {
+            out.push({ start: instanceISO, end: addMinutes(instanceISO, ev.durationMinutes || 60) });
+          }
         }
-        cursor.setDate(cursor.getDate()+7);
+        cursor.setDate(cursor.getDate() + 7); // next week
       }
     }
-    if (freq==='MONTHLY'){
-      const byday=(rule.BYDAY||'').split(',').filter(Boolean); const bysetpos=parseInt(rule.BYSETPOS||'1',10);
-      let cursor=new Date(start.getFullYear(),start.getMonth(),1);
-      while(cursor<=end){ const y=cursor.getFullYear(), mo=cursor.getMonth();
-        for(const code of byday){ const first=new Date(y,mo,1); const firstDow=first.getDay(); const want=weekdayIndex[code]; const day=1+((want-firstDow+7)%7)+(bysetpos-1)*7;
-          const dt=new Date(y,mo,day,h,m,0); if(dt>=start && dt<=end && dt.getMonth()===mo){ const s=dt.toISOString(); out.push({start:s,end:addMinutes(s,ev.durationMinutes||60)}); }
+
+    if (freq === 'MONTHLY') {
+      const byday = (rule.BYDAY || '').split(','); // e.g., ["SU"]
+      const bysetpos = parseInt(rule.BYSETPOS || '1', 10); // e.g., 1 = first
+      let cursor = new Date(dtstart);
+      if (cursor < start) cursor = new Date(start);
+
+      const weekdayIndex = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+
+      while (cursor <= end) {
+        const y = cursor.getFullYear();
+        const m = cursor.getMonth();
+        for (const code of byday) {
+          // find the Nth weekday of the month
+          const firstOfMonth = new Date(y, m, 1);
+          const firstDow = firstOfMonth.getDay();
+          const want = weekdayIndex[code];
+          const day = 1 + ((want - firstDow + 7) % 7) + (bysetpos - 1) * 7;
+          const inst = new Date(y, m, day, new Date(dtstart).getHours(), new Date(dtstart).getMinutes(), 0);
+          if (inst >= start && inst <= end && inst.getMonth() === m) {
+            const instanceISO = inst.toISOString();
+            out.push({ start: instanceISO, end: addMinutes(instanceISO, ev.durationMinutes || 60) });
+          }
         }
-        cursor=new Date(y,mo+1,1);
+        // next month
+        cursor = new Date(y, m + 1, 1);
       }
     }
+
     return out;
   }
 
-  async function getInstancesForMonth(year, month){
-    const evs = await loadEvents();
-    const rangeStart = new Date(year, month, 1, 0, 0, 0).toISOString();
-    const rangeEnd   = new Date(year, month+1, 0, 23, 59, 59).toISOString();
-    const instances=[];
-    for (const ev of evs){
-      if (ev.start){ const s=new Date(ev.start); const ms=new Date(rangeStart), me=new Date(rangeEnd); if (s>=ms && s<=me){
-        instances.push({ ev, start:s.toISOString(), end:addMinutes(ev.start, ev.durationMinutes||60) }); }}
-      if (ev.recurrence){ const reps=expandRecurrence(ev, rangeStart, rangeEnd); for (const r of reps){ instances.push({ ev, start:r.start, end:r.end }); }}
-    }
-    // Diocese ICS
-    const extra = await loadDioceseForMonth(year, month);
-    for (const x of extra){ instances.push({ ev: { title: x.title, location: x.location }, start: x.start, end: x.end, diocese:true }); }
-
-    instances.sort((a,b)=> new Date(a.start)-new Date(b.start));
-    return instances;
+  // ---- Google link helper ----
+  function toGoogleUTC(dt) {
+    const d = new Date(dt);
+    return (
+      d.getUTCFullYear() +
+      pad(d.getUTCMonth() + 1) +
+      pad(d.getUTCDate()) + 'T' +
+      pad(d.getUTCHours()) +
+      pad(d.getUTCMinutes()) + '00Z'
+    );
   }
 
-  // ===== Google helper =====
-  function toGoogleUTC(dt){ const d=new Date(dt); return d.getUTCFullYear()+String(d.getUTCMonth()+1).padStart(2,'0')+String(d.getUTCDate()).padStart(2,'0')+'T'+String(d.getUTCHours()).padStart(2,'0')+String(d.getUTCMinutes()).padStart(2,'0')+'00Z'; }
-  function googleLink(ev, startISO, endISO){ const text=encodeURIComponent(ev.title); const dates=toGoogleUTC(startISO)+'/'+toGoogleUTC(endISO); const loc=encodeURIComponent(ev.location||''); const tz=encodeURIComponent(ev.timeZone||TZ_DEFAULT); const det=encodeURIComponent('Trinity Episcopal De Soto — Calendar'); return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&location='+loc+'&details='+det+'&ctz='+tz; }
-
-  // ===== Render =====
-  const state={year:0, month:0};
-  function labelMonth(y,m){ return new Date(y,m,1).toLocaleString(undefined,{month:'long', year:'numeric'}); }
-
-  async function render(){
-    const y=state.year, m=state.month;
-    document.getElementById('monthlabel').textContent = labelMonth(y,m);
-    const dow = document.getElementById('dow');
-    dow.innerHTML = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>'<div class="dow">'+d+'</div>').join('');
-
-    const grid = document.getElementById('grid');
-    grid.innerHTML='';
-    const first = new Date(y,m,1); const startOffset = first.getDay();
-    const daysInMonth = new Date(y, m+1, 0).getDate();
-    const cells = 42;
-    for (let i=0;i<cells;i++){
-      const cell = document.createElement('div'); cell.className='cell';
-      const dateNum = i - startOffset + 1;
-      const inMonth = dateNum>=1 && dateNum<=daysInMonth;
-      cell.innerHTML = '<div class="date">'+(inMonth?dateNum:'')+'</div>';
-      grid.appendChild(cell);
-    }
-
-    const instances = await getInstancesForMonth(y,m);
-    for (const it of instances){
-      const d=new Date(it.start); if (d.getFullYear()!==y || d.getMonth()!==m) continue;
-      const day = d.getDate();
-      const idx = (day - 1) + first.getDay();
-      const cell = grid.children[idx]; if (!cell) continue;
-      const card=document.createElement('div'); card.className='event';
-      const time = it.diocese ? '— all day' : d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
-      const a = document.createElement('a'); a.href = googleLink(it.ev, it.start, it.end); a.target='_blank'; a.rel='noopener'; a.textContent='Add to Google';
-      const title = it.diocese ? it.ev.title : it.ev.title;
-      card.innerHTML = '<div style="font-weight:700">'+title+'</div><div style="font-size:12px;opacity:.7">'+time+(it.ev.location? ' — '+it.ev.location : '')+'</div>';
-      if (!it.diocese) card.appendChild(a);
-      cell.appendChild(card);
-    }
-
-    // Affirmation footer
-    try{
-      const data = await loadEvents();
-      const meta = data.find(x=>x.affirmationText);
-      const box = document.getElementById('affirm');
-      if (meta && box){
-        const link = meta.affirmationURL ? ' — <a href="'+meta.affirmationURL+'" target="_blank" rel="noopener">Read more</a>' : '';
-        box.innerHTML = '<strong>'+(meta.affirmationLabel||'Daily Affirmation')+':</strong> '+meta.affirmationText + link;
-      }
-    }catch(_){ }
+  function googleLink(ev, startISO, endISO) {
+    const text = encodeURIComponent(ev.title);
+    const dates = `${toGoogleUTC(startISO)}/${toGoogleUTC(endISO)}`;
+    const loc = encodeURIComponent(ev.location || '');
+    const tz = encodeURIComponent(ev.timeZone || TZ_DEFAULT);
+    const det = encodeURIComponent('Trinity Episcopal De Soto — Calendar');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&location=${loc}&details=${det}&ctz=${tz}`;
   }
 
-  // ===== Navigation & Cover =====
-  function goTo(y,m){ state.year=y; state.month=m; render(); location.hash = '#/'+y+'/'+String(m+1).padStart(2,'0'); }
-  function goToToday(){ const now=new Date(); goTo(now.getFullYear(), now.getMonth()); }
-  document.querySelector('[data-btn="today"]').addEventListener('click', goToToday);
-  document.getElementById('prev').addEventListener('click', ()=>{ let y=state.year, m=state.month-1; if (m<0){m=11;y--;} goTo(y,m);});
-  document.getElementById('next').addEventListener('click', ()=>{ let y=state.year, m=state.month+1; if (m>11){m=0;y++;} goTo(y,m);});
-  document.getElementById('print').addEventListener('click', ()=>window.print());
+  // ---- Today button ----
+  function goTo(y, m) {
+    state.year = y; state.month = m; render?.(); // assumes you already have render()
+    location.hash = `#/${y}/${String(m + 1).padStart(2, '0')}`;
+  }
+  function goToToday() {
+    const now = new Date();
+    goTo(now.getFullYear(), now.getMonth());
+  }
+  document.querySelector('[data-btn="today"]')?.addEventListener('click', goToToday);
+  if (!location.hash) goToToday();
 
-  const cover = document.getElementById('cover');
-  const app = document.getElementById('calendarApp');
-  const showBtn = document.getElementById('showCalendar');
-  const hideBtn = document.getElementById('hide');
-  function showCalendar(){ cover.style.display='none'; app.style.display='block'; localStorage.setItem('coverHidden','1'); }
-  function hideCalendar(){ cover.style.display='block'; app.style.display='none'; }
-  showBtn?.addEventListener('click', showCalendar);
-  hideBtn?.addEventListener('click', hideCalendar);
+  // ---- Example hook during render (pseudo):
+  // When you render an expanded event instance, add the Google button like this:
+  // const a = document.createElement('a');
+  // a.href = googleLink(ev, instance.start, instance.end);
+  // a.target = '_blank';
+  // a.rel = 'noopener';
+  // a.textContent = 'Add to Google';
+  // card.appendChild(a);
 
-  // ===== Boot =====
-  (async function(){
-    if (localStorage.getItem('coverHidden')==='1') { showCalendar(); } else { hideCalendar(); }
-    const hash=location.hash.match(/#\/(\d{4})\/(\d{2})/);
-    if (hash){ goTo(parseInt(hash[1],10), parseInt(hash[2],10)-1); } else { goToToday(); }
-  })();
+  // Optional: quick probe in console to debug fetch
+  window._probeEvents = async () => {
+    const u = 'assets/events.json?probe=' + Date.now();
+    const r = await fetch(u, { cache: 'no-store' });
+    const t = await r.text();
+    console.log('status', r.status, 'bytes', t.length);
+    try { JSON.parse(t); console.log('JSON OK'); } catch(e) { console.warn('JSON parse error', e); }
+  };
+</script>
 
-  // debug helper
-  window._probeEvents = async () => { const u='assets/events.json?probe='+Date.now(); const r=await fetch(u,{cache:'no-store'}); const t=await r.text(); console.log('status',r.status,'bytes',t.length); try{JSON.parse(t); console.log('JSON OK');}catch(e){console.warn('JSON parse error',e);} };
-  </script>
 </body>
 </html>
