@@ -1,49 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Trinity Episcopal De Soto — Calendar</title>
-<style>
-  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#fff;color:#0b1220}
-  .app{max-width:900px;margin:24px auto;padding:16px}
-  h1{margin:0 0 12px}
-  .nav{display:flex;justify-content:space-between;align-items:center;margin:12px 0}
-  table{border-collapse:collapse;width:100%}
-  th,td{border:1px solid #cbd5e1;vertical-align:top;padding:6px;min-height:80px}
-  th{background:#f1f5f9;text-align:center}
-  .date{font-weight:bold;margin-bottom:4px}
-  .event{margin:2px 0;font-size:14px}
-  .btn{display:inline-block;margin-top:2px;font-size:12px;color:#2563eb;text-decoration:none}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trinity DeSoto — Calendar</title>
+  <meta name="description" content="Trinity DeSoto monthly calendar of services and events." />
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif;
+         line-height:1.4;background:#fafafa;color:#111}
+    a{color:inherit}
+    :root{
+      --brand:#1c5ed6;
+      --ink:#111;
+      --muted:#6b7280;
+      --bg:#fafafa;
+      --card:#fff;
+      --ring:#e5e7eb;
+      --grid:#e5e7eb;
+      --today:#fde68a;
+      --accent:#eef2ff;
+    }
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand h1{font-size:clamp(18px,2.2vw,24px);margin:0;font-weight:700;display:flex;align-items:center;gap:8px}
+    .brand small{display:block;color:var(--muted);font-weight:500}
+    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    button,.btn{appearance:none;border:1px solid var(--ring);background:var(--card);padding:8px 12px;border-radius:10px;cursor:pointer}
+    button:hover{border-color:#cbd5e1}
+    select{border:1px solid var(--ring);padding:8px 10px;border-radius:10px;background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--grid);border-radius:14px;overflow:hidden;background:var(--card)}
+    .weekday{display:grid;place-items:center;font-weight:600;padding:10px;background:#f3f4f6;border-bottom:1px solid var(--grid)}
+    .cell{min-height:110px;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);padding:8px;position:relative}
+    .cell:nth-child(7n){border-right:none}
+    .date{position:absolute;top:6px;right:8px;font-size:12px;color:var(--muted)}
+    .other-month .date{opacity:.45}
+    .today{background:var(--today)}
+    .event{margin-top:20px;padding:6px 8px;border-radius:8px;background:var(--accent);border:1px dashed #c7d2fe;font-size:12px}
+    .event .t{display:block;font-weight:700;margin-bottom:2px}
+    .event .n{display:block;color:#374151}
+    .event.episcopal { background:#f3e8ff; border:1px solid #c084fc; }
+    .event.holiday   { background:#dbeafe; border:1px solid #60a5fa; }
+    .event.civic     { background:#dcfce7; border:1px solid #4ade80; }
+    .event.diocese   { background:#fff7ed; border:1px solid #fb923c; }
+    .event.parish    { background:#fef9c3; border:1px solid #facc15; }
+    .wrap{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width: 980px){.wrap{grid-template-columns:2.2fr 1fr}}
+    .card{background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:12px}
+    .card h3{margin:0 0 8px 0;font-size:16px}
+    .list{display:flex;flex-direction:column;gap:8px}
+    .list .item{border:1px solid var(--ring);border-radius:10px;padding:8px}
+    .muted{color:var(--muted)}
+    footer{margin-top:16px;color:var(--muted);font-size:12px}
+    @media print{header .controls, footer, .card{display:none}.container{max-width:100%;padding:0}body{background:#fff}.grid{border-color:#999}}
+  </style>
 </head>
 <body>
-<div class="app">
-  <h1>Trinity Episcopal De Soto — Calendar</h1>
-  <div class="nav">
-    <button id="prev">◀</button>
-    <div id="monthLabel"></div>
-    <button id="next">▶</button>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Episcopal_Church_shield.svg/120px-Episcopal_Church_shield.svg.png" alt="Episcopal Shield" style="width:40px;height:auto;vertical-align:middle;">
+        <div>
+          <h1 id="title">Trinity DeSoto — Calendar</h1>
+          <small id="subtitle" class="muted">Monthly events & services</small>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="prevBtn" aria-label="Previous month">◀</button>
+        <select id="monthSelect" aria-label="Select month"></select>
+        <select id="yearSelect" aria-label="Select year"></select>
+        <button id="nextBtn" aria-label="Next month">▶</button>
+        <a id="todayBtn" class="btn" href="#">Today</a>
+        <button id="printBtn" aria-label="Print calendar">🖨 Print Calendar</button>
+      </div>
+    </header>
+    <div class="wrap">
+      <main><div class="grid" id="calendar" role="grid" aria-label="Monthly calendar"></div></main>
+      <aside class="card" aria-label="Upcoming"><h3>Upcoming (next 10)</h3><div id="upcoming" class="list"></div></aside>
+      <aside class="card" aria-label="Legend">
+        <h3>Legend</h3>
+        <ul style="list-style:none;padding:0;margin:0;display:grid;gap:4px;font-size:13px">
+          <li><span class="event episcopal">Episcopal</span> Church Feasts & Seasons</li>
+          <li><span class="event holiday">Holiday</span> U.S./MO Public Holidays</li>
+          <li><span class="event civic">Civic</span> National/State Observances</li>
+          <li><span class="event diocese">Diocese</span> Diocesan Events</li>
+          <li><span class="event parish">Parish</span> Local Parish Events</li>
+        </ul>
+      </aside>
+    </div>
+    <footer><p>Trinity Episcopal Church, 202 W. Miller Street, De Soto, MO 63020 | (636) 586-2542</p></footer>
   </div>
-  <table id="calendar"></table>
-</div>
-
 <script>
 const EVENTS_URL = "assets/events.json?v=" + Date.now();
 let events = [];
 let current = new Date();
 
 function toKey(d){ return d.toISOString().split('T')[0]; }
-
 function googleLink(ev){
   const start = new Date(ev.start);
   const end = new Date(start.getTime() + (ev.durationMinutes||60)*60000);
   const fmt = d => d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
-  const text = encodeURIComponent(ev.title);
-  const dates = fmt(start) + "/" + fmt(end);
-  const loc = encodeURIComponent(ev.location||"");
-  const details = encodeURIComponent(ev.notes||"");
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&location=${loc}&details=${details}`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title)}&dates=${fmt(start)}/${fmt(end)}&location=${encodeURIComponent(ev.location||"")}&details=${encodeURIComponent(ev.notes||"")}`;
 }
 
 function expand(evs){
@@ -92,19 +151,17 @@ function render(){
   const last=new Date(year,month+1,0);
   const weeks=[];
   let week=new Array(7).fill(null);
-  let day=1, dow=first.getDay();
-
+  let day=1,dow=first.getDay();
   for(let i=0;i<dow;i++) week[i]=null;
   while(day<=last.getDate()){
     week[dow]={y:year,m:month,d:day};
     dow++;
-    if(dow===7){ weeks.push(week); week=new Array(7).fill(null); dow=0; }
+    if(dow===7){weeks.push(week);week=new Array(7).fill(null);dow=0;}
     day++;
   }
   if(dow>0) weeks.push(week);
-
-  const monthLabel=new Intl.DateTimeFormat("en",{month:"long",year:"numeric"}).format(first);
-  document.getElementById("monthLabel").textContent=monthLabel;
+  document.getElementById("monthSelect").value=month;
+  document.getElementById("yearSelect").value=year;
 
   const expanded=expand(events);
   const grouped={};
@@ -114,18 +171,32 @@ function render(){
   }
 
   const $cal=document.getElementById("calendar");
-  $cal.innerHTML="<tr>"+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<th>${d}</th>`).join("")+"</tr>";
+  $cal.innerHTML="";
+  const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  for(const wd of weekdays){$cal.innerHTML+=`<div class="weekday">${wd}</div>`;}
   for(const w of weeks){
-    $cal.innerHTML+="<tr>"+w.map(cell=>{
-      if(!cell) return "<td></td>";
+    for(const cell of w){
+      if(!cell){$cal.innerHTML+=`<div class="cell other-month"></div>`;continue;}
       const date=new Date(cell.y,cell.m,cell.d);
       const key=toKey(date);
       const evs=grouped[key]||[];
-      return `<td><div class="date">${cell.d}</div>`+
-        evs.map(e=>`<div class="event">${e.title}<br><a class="btn" href="${googleLink(e)}" target="_blank">Add</a></div>`).join("")+
-        "</td>";
-    }).join("")+"</tr>";
+      const todayCls=(date.toDateString()===new Date().toDateString())?" today":"";
+      let html=`<div class="cell${todayCls}"><div class="date">${cell.d}</div>`;
+      for(const e of evs){
+        html+=`<div class="event parish"><span class="t">${e.title}</span><span class="n">${e.location||""}</span><a class="btn" href="${googleLink(e)}" target="_blank">Add</a></div>`;
+      }
+      html+="</div>";
+      $cal.innerHTML+=html;
+    }
   }
+
+  // Upcoming (next 10)
+  const allExpanded=expand(events);
+  allExpanded.sort((a,b)=>new Date(a.start)-new Date(b.start));
+  const $up=document.getElementById("upcoming");
+  $up.innerHTML=allExpanded.slice(0,10).map(e=>{
+    return `<div class="item"><strong>${e.title}</strong><br><span class="muted">${new Date(e.start).toLocaleString()}</span></div>`;
+  }).join("");
 }
 
 async function load(){
@@ -133,8 +204,20 @@ async function load(){
   events=await res.json();
   render();
 }
-document.getElementById("prev").onclick=()=>{current.setMonth(current.getMonth()-1);render();}
-document.getElementById("next").onclick=()=>{current.setMonth(current.getMonth()+1);render();}
+
+document.getElementById("prevBtn").onclick=()=>{current.setMonth(current.getMonth()-1);render();}
+document.getElementById("nextBtn").onclick=()=>{current.setMonth(current.getMonth()+1);render();}
+document.getElementById("todayBtn").onclick=e=>{e.preventDefault();current=new Date();render();}
+document.getElementById("printBtn").onclick=()=>{window.print();}
+
+const monthSel=document.getElementById("monthSelect");
+for(let m=0;m<12;m++){const opt=document.createElement("option");opt.value=m;opt.textContent=new Date(2000,m,1).toLocaleString("en",{month:"long"});monthSel.appendChild(opt);}
+monthSel.onchange=()=>{current.setMonth(parseInt(monthSel.value));render();};
+
+const yearSel=document.getElementById("yearSelect");
+for(let y=2020;y<=2030;y++){const opt=document.createElement("option");opt.value=y;opt.textContent=y;yearSel.appendChild(opt);}
+yearSel.onchange=()=>{current.setFullYear(parseInt(yearSel.value));render();};
+
 load();
 </script>
 </body>
