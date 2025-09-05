@@ -1,62 +1,64 @@
-[
-  {
-    "id": "sun-service",
-    "title": "Sunday Service (Holy Eucharist)",
-    "location": "Trinity Episcopal Church, 202 W. Miller Street, De Soto, MO 63020",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=SU",
-      "dtstart": "2025-01-05T10:00:00"
-    },
-    "durationMinutes": 75
-  },
-  {
-    "id": "first-sunday-carry-in",
-    "title": "First Sunday Carry-In Dinner",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
-      "dtstart": "2025-01-05T12:00:00"
-    },
-    "durationMinutes": 90
-  },
-  {
-    "id": "aa-weekly",
-    "title": "AA (Alcoholics Anonymous)",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=MO",
-      "dtstart": "2025-01-06T19:00:00"
-    },
-    "durationMinutes": 60
-  },
-  {
-    "id": "na-weekly",
-    "title": "NA (Narcotics Anonymous)",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=TH",
-      "dtstart": "2025-01-09T19:00:00"
-    },
-    "durationMinutes": 60
-  },
-  {
-    "id": "blessing-of-animals-2025",
-    "title": "Blessing of the Animals (St. Francis)",
-    "location": "Church Lawn — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-10-04T15:00:00",
-    "durationMinutes": 45
-  },
-  {
-    "id": "christmas-eve-2025",
-    "title": "Christmas Eve Candlelight Service",
-    "location": "Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-12-24T19:00:00",
-    "durationMinutes": 60
-  }
-]
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trinity Episcopal De Soto — Calendar</title>
+<meta name="description" content="Events & services at Trinity Episcopal Church, De Soto, MO. All are welcome.">
+<style>
+  :root{--ink:#0b1220;--muted:#475569;--ring:#e2e8f0;--card:#ffffff}
+  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#fff;color:var(--ink)}
+  .app{max-width:900px;margin:24px auto;padding:16px}
+  h1{margin:0 0 12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .card{background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:12px}
+  .title{font-weight:600}
+  .muted{color:var(--muted)}
+  .btn{display:inline-block;margin-top:8px;padding:6px 10px;border:1px solid var(--ring);border-radius:8px;font-size:14px;text-decoration:none;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Trinity Episcopal De Soto — Calendar</h1>
+  <div id="grid" class="grid"></div>
+</div>
+
+<script>
+const EVENTS_URL = "assets/events.json?v=" + Date.now();
+
+function toLocal(dt){
+  const d = new Date(dt);
+  return d.toLocaleString([], { dateStyle:'medium', timeStyle:'short' });
+}
+
+function googleLink(ev){
+  const start = new Date(ev.start);
+  const end = new Date(start.getTime() + (ev.durationMinutes||60)*60000);
+  const fmt = d => d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}Z$/,"Z");
+  const text = encodeURIComponent(ev.title);
+  const dates = fmt(start) + "/" + fmt(end);
+  const loc = encodeURIComponent(ev.location||"");
+  const details = encodeURIComponent(ev.notes||"");
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&location=${loc}&details=${details}`;
+}
+
+async function load(){
+  const res = await fetch(EVENTS_URL);
+  const data = await res.json();
+  const evs = Array.isArray(data)?data:(data.events||[]);
+  const $grid = document.getElementById("grid");
+  $grid.innerHTML = evs.map(ev=>{
+    return `<div class="card">
+      <div class="title">${ev.title}</div>
+      <div class="muted">${toLocal(ev.start)}${ev.durationMinutes?` • ${ev.durationMinutes} min`:""}</div>
+      <div class="muted">${ev.location||""}</div>
+      <a class="btn" href="${googleLink(ev)}" target="_blank">➕ Add to Google</a>
+    </div>`;
+  }).join("");
+}
+
+load();
+</script>
+</body>
+</html>
+
