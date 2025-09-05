@@ -4,92 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trinity Episcopal De Soto — Calendar</title>
-<meta name="description" content="Events & services at Trinity Episcopal Church, De Soto, MO. All are welcome.">
 <style>
-  :root{--ink:#0b1220;--muted:#475569;--accent:#2563eb;--panel:#fff;--tint:#f8fafc}
-  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:#fff}
+  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#fff;color:#0b1220}
   .app{max-width:900px;margin:24px auto;padding:16px}
-  h1{margin:0 0 8px 0}
-  .bar{display:flex;gap:8px;align-items:center;margin:12px 0 20px}
-  button{border:1px solid #cbd5e1;background:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}
-  .err{background:#fee2e2;color:#991b1b;padding:10px;border:1px solid #fecaca;border-radius:8px;margin:12px 0;white-space:pre-wrap}
-  .ok{background:#ecfeff;color:#065f46;padding:8px;border:1px solid #bae6fd;border-radius:8px;margin:12px 0}
-  ul{padding-left:18px}
-  .muted{color:var(--muted)}
+  h1{margin:0 0 12px}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin:12px 0}
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid #cbd5e1;vertical-align:top;padding:6px;min-height:80px}
+  th{background:#f1f5f9;text-align:center}
+  .date{font-weight:bold;margin-bottom:4px}
+  .event{margin:2px 0;font-size:14px}
+  .btn{display:inline-block;margin-top:2px;font-size:12px;color:#2563eb;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="app">
   <h1>Trinity Episcopal De Soto — Calendar</h1>
-  <div class="bar">
-    <button id="reload">Reload Events</button>
-    <button id="today">Today</button>
-    <span class="muted">Source: <code>/assets/events.json</code></span>
+  <div class="nav">
+    <button id="prev">◀</button>
+    <div id="monthLabel"></div>
+    <button id="next">▶</button>
   </div>
-  <div id="status" class="ok" style="display:none"></div>
-  <div id="error" class="err" style="display:none"></div>
-  <h2 id="view-label">Upcoming (simple view)</h2>
-  <ul id="list"></ul>
+  <table id="calendar"></table>
 </div>
 
 <script>
-const EVENTS_URLS = [
-  `/assets/events.json?v=${Date.now()}`
-];
-let allEvents = [];
+const EVENTS_URL = "assets/events.json?v=" + Date.now();
+let events = [];
+let current = new Date();
 
-function toLocal(dt){
-  try {
-    const d = new Date(dt);
-    return d.toLocaleString([], { dateStyle:'medium', timeStyle:'short' });
-  } catch(e){ return dt }
-}
-
-function expand(events){
-  const out = [];
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth()-1, 1);
-  const end   = new Date(now.getFullYear(), now.getMonth()+2, 0, 23,59,59);
-
-  for(const ev of events){
-    if(ev.start){
-      const when = new Date(ev.start);
-      if(when >= start && when <= end) out.push(ev);
-      continue;
-    }
-    if(ev.recurrence && ev.recurrence.rrule && ev.recurrence.dtstart){
-      const rule = ev.recurrence.rrule;
-      const dt0  = new Date(ev.recurrence.dtstart);
-      if(rule.startsWith('FREQ=WEEKLY')){
-        const byday = (rule.match(/BYDAY=([A-Z,]+)/)||[])[1]||'';
-        const want = new Set(byday.split(','));
-        for(let d=new Date(Math.max(dt0,start)); d<=end; d.setDate(d.getDate()+1)){
-          const wk = ['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];
-          if(d>=dt0 && want.has(wk)){
-            const s = new Date(d); s.setHours(dt0.getHours(), dt0.getMinutes(), 0, 0);
-            out.push({...ev, start:s.toISOString()});
-          }
-        }
-      } else if(rule.startsWith('FREQ=MONTHLY')){
-        const bysetpos = (rule.match(/BYSETPOS=(\-?\d+)/)||[])[1];
-        const byday = (rule.match(/BYDAY=([A-Z]{2})/)||[])[1];
-        if(bysetpos==='1' && byday==='SU'){
-          for(let m=new Date(start.getFullYear(), start.getMonth(), 1); m<=end; m.setMonth(m.getMonth()+1)){
-            const first = new Date(m.getFullYear(), m.getMonth(), 1);
-            const add = (7 - first.getDay()) % 7;
-            const day = new Date(first); day.setDate(first.getDate()+add);
-            if(day >= dt0 && day <= end){
-              const s = new Date(day); s.setHours(dt0.getHours(), dt0.getMinutes(), 0, 0);
-              out.push({...ev, start:s.toISOString()});
-            }
-          }
-        }
-      }
-    }
-  }
-  out.sort((a,b)=>new Date(a.start)-new Date(b.start));
-  return out;
-}
+function toKey(d){ return d.toISOString().split('T')[0]; }
 
 function googleLink(ev){
   const start = new Date(ev.start);
@@ -102,59 +46,97 @@ function googleLink(ev){
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&location=${loc}&details=${details}`;
 }
 
-function render(events, label="Upcoming (simple view)"){
-  const $ul = document.getElementById('list');
-  document.getElementById('view-label').textContent = label;
-  $ul.innerHTML = events.map(e=>{
-    const dur = e.durationMinutes ? ` • ${e.durationMinutes} min` : '';
-    return `<li>
-      <strong>${e.title}</strong><br>
-      <span class="muted">${toLocal(e.start)}</span>${dur}<br>
-      <span class="muted">${e.location||''}</span><br>
-      <a href="${googleLink(e)}" target="_blank">➕ Add to Google</a>
-    </li>`;
-  }).join('');
+function expand(evs){
+  const out=[];
+  const start=new Date(current.getFullYear(),current.getMonth(),1);
+  const end=new Date(current.getFullYear(),current.getMonth()+1,0,23,59,59);
+  for(const ev of evs){
+    if(ev.start){
+      const when=new Date(ev.start);
+      if(when>=start && when<=end) out.push(ev);
+      continue;
+    }
+    if(ev.recurrence && ev.recurrence.rrule && ev.recurrence.dtstart){
+      const dt0=new Date(ev.recurrence.dtstart);
+      if(ev.recurrence.rrule.startsWith("FREQ=WEEKLY")){
+        const byday=(ev.recurrence.rrule.match(/BYDAY=([A-Z,]+)/)||[])[1]||"";
+        const want=new Set(byday.split(","));
+        for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+          const wk=['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];
+          if(d>=dt0 && want.has(wk)){
+            const s=new Date(d); s.setHours(dt0.getHours(),dt0.getMinutes(),0,0);
+            out.push({...ev,start:s.toISOString()});
+          }
+        }
+      } else if(ev.recurrence.rrule.startsWith("FREQ=MONTHLY")){
+        const bysetpos=(ev.recurrence.rrule.match(/BYSETPOS=(\-?\d+)/)||[])[1];
+        const byday=(ev.recurrence.rrule.match(/BYDAY=([A-Z]{2})/)||[])[1];
+        if(bysetpos==="1" && byday==="SU"){
+          const first=new Date(current.getFullYear(),current.getMonth(),1);
+          const add=(7-first.getDay())%7;
+          const day=new Date(first); day.setDate(first.getDate()+add);
+          if(day>=dt0 && day<=end){
+            const s=new Date(day); s.setHours(dt0.getHours(),dt0.getMinutes(),0,0);
+            out.push({...ev,start:s.toISOString()});
+          }
+        }
+      }
+    }
+  }
+  return out;
 }
 
-async function load(){
-  const $err = document.getElementById('error');
-  const $ok  = document.getElementById('status');
-  $err.style.display='none'; $ok.style.display='none';
+function render(){
+  const year=current.getFullYear(),month=current.getMonth();
+  const first=new Date(year,month,1);
+  const last=new Date(year,month+1,0);
+  const weeks=[];
+  let week=new Array(7).fill(null);
+  let day=1, dow=first.getDay();
 
-  for(const url of EVENTS_URLS){
-    try{
-      const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-      const data = await res.json();
-      const evs  = Array.isArray(data) ? data : (data.events || []);
-      allEvents  = expand(evs);
-      render(allEvents, "Upcoming (simple view)");
-      $ok.textContent = `Loaded ${allEvents.length} events`; 
-      $ok.style.display='block';
-      return;
-    }catch(err){
-      $err.style.display='block';
-      $err.textContent = `Failed loading ${url}\n${err.message}`;
-    }
+  for(let i=0;i<dow;i++) week[i]=null;
+  while(day<=last.getDate()){
+    week[dow]={y:year,m:month,d:day};
+    dow++;
+    if(dow===7){ weeks.push(week); week=new Array(7).fill(null); dow=0; }
+    day++;
+  }
+  if(dow>0) weeks.push(week);
+
+  const monthLabel=new Intl.DateTimeFormat("en",{month:"long",year:"numeric"}).format(first);
+  document.getElementById("monthLabel").textContent=monthLabel;
+
+  const expanded=expand(events);
+  const grouped={};
+  for(const ev of expanded){
+    const key=toKey(new Date(ev.start));
+    (grouped[key]=grouped[key]||[]).push(ev);
+  }
+
+  const $cal=document.getElementById("calendar");
+  $cal.innerHTML="<tr>"+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<th>${d}</th>`).join("")+"</tr>";
+  for(const w of weeks){
+    $cal.innerHTML+="<tr>"+w.map(cell=>{
+      if(!cell) return "<td></td>";
+      const date=new Date(cell.y,cell.m,cell.d);
+      const key=toKey(date);
+      const evs=grouped[key]||[];
+      return `<td><div class="date">${cell.d}</div>`+
+        evs.map(e=>`<div class="event">${e.title}<br><a class="btn" href="${googleLink(e)}" target="_blank">Add</a></div>`).join("")+
+        "</td>";
+    }).join("")+"</tr>";
   }
 }
 
-function showToday(){
-  const today = new Date();
-  const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
-  const start = new Date(y,m,d,0,0,0);
-  const end   = new Date(y,m,d,23,59,59);
-  const todays = allEvents.filter(e=>{
-    const when = new Date(e.start);
-    return when >= start && when <= end;
-  });
-  render(todays, "Today’s Events");
+async function load(){
+  const res=await fetch(EVENTS_URL);
+  events=await res.json();
+  render();
 }
-
-document.getElementById('reload').addEventListener('click', load);
-document.getElementById('today').addEventListener('click', showToday);
-
+document.getElementById("prev").onclick=()=>{current.setMonth(current.getMonth()-1);render();}
+document.getElementById("next").onclick=()=>{current.setMonth(current.getMonth()+1);render();}
 load();
 </script>
 </body>
 </html>
+
