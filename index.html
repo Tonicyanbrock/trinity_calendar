@@ -81,7 +81,7 @@
 
   <script>
   // ===== Core constants =====
-  const ASSETS_VERSION = 250; // bump when events.json or this file changes
+  const ASSETS_VERSION = 251; // bump when events.json or this file changes
   const EVENTS_URLS = [
     'assets/events.json?v=' + ASSETS_VERSION,
     'admin/events.json?v=' + ASSETS_VERSION // optional fallback if using CMS
@@ -246,4 +246,17 @@
   function showCalendar(){ cover.style.display='none'; app.style.display='block'; localStorage.setItem('coverHidden','1'); }
   function hideCalendar(){ cover.style.display='block'; app.style.display='none'; }
   showBtn?.addEventListener('click', showCalendar);
-  hideBtn?.addEventLi
+  hideBtn?.addEventListener('click', hideCalendar);
+
+  // ===== Boot =====
+  (async function(){
+    if (localStorage.getItem('coverHidden')==='1') { showCalendar(); } else { hideCalendar(); }
+    const hash=location.hash.match(/#\/(\d{4})\/(\d{2})/);
+    if (hash){ goTo(parseInt(hash[1],10), parseInt(hash[2],10)-1); } else { goToToday(); }
+  })();
+
+  // debug helper
+  window._probeEvents = async () => { const u='assets/events.json?probe='+Date.now(); const r=await fetch(u,{cache:'no-store'}); const t=await r.text(); console.log('status',r.status,'bytes',t.length); try{JSON.parse(t); console.log('JSON OK');}catch(e){console.warn('JSON parse error',e);} };
+  </script>
+</body>
+</html>
