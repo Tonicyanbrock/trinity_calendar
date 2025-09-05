@@ -1,62 +1,101 @@
-[
-  {
-    "id": "sun-service",
-    "title": "Sunday Service (Holy Eucharist)",
-    "location": "Trinity Episcopal Church, 202 W. Miller Street, De Soto, MO 63020",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=SU",
-      "dtstart": "2025-01-05T10:00:00"
+{
+  "timezone": "America/Chicago",
+  "events": [
+    /* ---------- Trinity recurring ---------- */
+    {
+      "title": "Sunday Service (Holy Eucharist)",
+      "notes": "All are welcome.",
+      "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=10;BYMINUTE=0",
+      "location": "Sanctuary",
+      "duration_minutes": 60
     },
-    "durationMinutes": 75
-  },
-  {
-    "id": "first-sunday-carry-in",
-    "title": "First Sunday Carry-In Dinner",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
-      "dtstart": "2025-01-05T12:00:00"
+    {
+      "title": "First Sunday Carry-In Dinner",
+      "notes": "Potluck lunch after the service. Bring a favorite dish if you like.",
+      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1;BYHOUR=11;BYMINUTE=30",
+      "location": "Parish Hall",
+      "duration_minutes": 90
     },
-    "durationMinutes": 90
-  },
-  {
-    "id": "aa-weekly",
-    "title": "AA (Alcoholics Anonymous)",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=MO",
-      "dtstart": "2025-01-06T19:00:00"
+    {
+      "title": "AA Group 148",
+      "notes": "Open Meeting.",
+      "rrule": "FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0",
+      "location": "Parish Hall",
+      "duration_minutes": 60
     },
-    "durationMinutes": 60
-  },
-  {
-    "id": "na-weekly",
-    "title": "NA (Narcotics Anonymous)",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=TH",
-      "dtstart": "2025-01-09T19:00:00"
+    {
+      "title": "AA Group 147",
+      "notes": "Open Meeting.",
+      "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=19;BYMINUTE=0",
+      "location": "Parish Hall",
+      "duration_minutes": 60
     },
-    "durationMinutes": 60
-  },
-  {
-    "id": "blessing-of-animals-2025",
-    "title": "Blessing of the Animals (St. Francis)",
-    "location": "Church Lawn — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-10-04T15:00:00",
-    "durationMinutes": 45
-  },
-  {
-    "id": "christmas-eve-2025",
-    "title": "Christmas Eve Candlelight Service",
-    "location": "Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "start": "2025-12-24T19:00:00",
-    "durationMinutes": 60
-  }
-]
+    {
+      "title": "NA",
+      "notes": "Narcotics Anonymous.",
+      "rrule": "FREQ=WEEKLY;BYDAY=TH;BYHOUR=19;BYMINUTE=0",
+      "location": "Parish Hall",
+      "duration_minutes": 60
+    },
+    {
+      "title": "NA",
+      "notes": "Narcotics Anonymous.",
+      "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=17;BYMINUTE=30",
+      "location": "Parish Hall",
+      "duration_minutes": 60
+    },
+
+    /* ---------- Diocesan standing Zooms ---------- */
+    {
+      "title": "Convocation Deans & Wardens (Zoom)",
+      "notes": "Monthly Zoom — first Tuesday.",
+      "rrule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=1;BYHOUR=18;BYMINUTE=0",
+      "location": "Zoom",
+      "duration_minutes": 60
+    },
+    {
+      "title": "Diocesan LGBTQ+ Virtual Gathering (Zoom)",
+      "notes": "Monthly Zoom — second Tuesday.",
+      "rrule": "FREQ=MONTHLY;BYDAY=TU;BYSETPOS=2;BYHOUR=19;BYMINUTE=0",
+      "location": "Zoom",
+      "duration_minutes": 60
+    },
+    {
+      "title": "Community of Deacons (Zoom)",
+      "notes": "Monthly Zoom — fourth Monday.",
+      "rrule": "FREQ=MONTHLY;BYDAY=MO;BYSETPOS=4;BYHOUR=18;BYMINUTE=0",
+      "location": "Zoom",
+      "duration_minutes": 60
+    },
+    {
+      "title": "Standing Committee (Zoom)",
+      "notes": "Monthly Zoom — fourth Thursday.",
+      "rrule": "FREQ=MONTHLY;BYDAY=TH;BYSETPOS=4;BYHOUR=17;BYMINUTE=0",
+      "location": "Zoom",
+      "duration_minutes": 120
+    },
+
+    /* ---------- One-off example (keep or edit) ---------- */
+    {
+      "title": "2025 Diocesan Picnic",
+      "notes": "Faith, fun, and fellowship at Camp MoVal.",
+      "start": "2025-09-20T12:00",
+      "location": "Camp MoVal, 2659 Camp Mo-Val Rd, Union, MO 63084",
+      "duration_minutes": 240
+    },
+
+    /* ---------- US Federal Holidays (recurring) ---------- */
+    { "title": "New Year’s Day (Holiday)",            "rrule": "FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1;BYHOUR=0;BYMINUTE=0",     "duration_minutes": 1440 },
+    { "title": "Martin Luther King Jr. Day (Holiday)", "rrule": "FREQ=YEARLY;BYMONTH=1;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Presidents’ Day (Holiday)",            "rrule": "FREQ=YEARLY;BYMONTH=2;BYDAY=MO;BYSETPOS=3;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Memorial Day (Holiday)",               "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=MO;BYSETPOS=-1;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Juneteenth (Holiday)",                 "rrule": "FREQ=YEARLY;BYMONTH=6;BYMONTHDAY=19;BYHOUR=0;BYMINUTE=0",  "duration_minutes": 1440 },
+    { "title": "Independence Day (Holiday)",           "rrule": "FREQ=YEARLY;BYMONTH=7;BYMONTHDAY=4;BYHOUR=0;BYMINUTE=0",   "duration_minutes": 1440 },
+    { "title": "Labor Day (Holiday)",                  "rrule": "FREQ=YEARLY;BYMONTH=9;BYDAY=MO;BYSETPOS=1;BYHOUR=0;BYMINUTE=0",  "duration_minutes": 1440 },
+    { "title": "Indigenous Peoples’ Day (Holiday)",    "rrule": "FREQ=YEARLY;BYMONTH=10;BYDAY=MO;BYSETPOS=2;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Veterans Day (Holiday)",               "rrule": "FREQ=YEARLY;BYMONTH=11;BYMONTHDAY=11;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Thanksgiving Day (Holiday)",           "rrule": "FREQ=YEARLY;BYMONTH=11;BYDAY=TH;BYSETPOS=4;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+    { "title": "Christmas Day (Holiday)",              "rrule": "FREQ=YEARLY;BYMONTH=12;BYMONTHDAY=25;BYHOUR=0;BYMINUTE=0", "duration_minutes": 1440 },
+
+    /* ---------- Missouri State Holidays (recurring) ---------- */
+    { "title": "Lincoln’s Birthday (MO Holiday)",      "rrule":
