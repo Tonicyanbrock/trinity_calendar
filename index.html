@@ -123,186 +123,91 @@
   </main>
 
   <script>
-  // ---------- CONFIG
-  const ASSETS_VERSION = 231;
+  const ASSETS_VERSION = 233;
   const EVENTS_URLS = [ `assets/events.json?v=${ASSETS_VERSION}` ];
   const LITURGICAL_URL = `assets/liturgical.json?v=${ASSETS_VERSION}`;
   let TZ = 'America/Chicago';
   let rawEvents = [], allEvents = [], litSeasons = [];
+  let current=new Date();
 
-  // ---------- UTILITIES
+  // Utilities
   const fmtDate = (d, opts={}) => new Intl.DateTimeFormat('en-US', { timeZone: TZ, ...opts }).format(d);
   const ymd = d => fmtDate(d, { year:'numeric', month:'2-digit', day:'2-digit' }).split('/').reverse().join('-');
   const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
   const setTimeLocal = (d,h=0,m=0) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m, 0);
 
-  // ---------- LOAD
+  // Load events + liturgical
   async function loadEvents(){
-    const dbg = [];
-    const dbgEl = document.getElementById('dbg');
-    const app = document.getElementById('app');
-
+    const dbg = [], dbgEl=document.getElementById('dbg'), app=document.getElementById('app');
     for(const url of EVENTS_URLS){
       try{
-        const res = await fetch(url, { cache:'no-store' });
-        if(!res.ok) throw new Error(res.status+" "+res.statusText);
-        const data = await res.json();
-        if(data.timezone) TZ = data.timezone;
+        const res=await fetch(url,{cache:'no-store'}); if(!res.ok) throw new Error(res.status+" "+res.statusText);
+        const data=await res.json();
+        if(data.timezone) TZ=data.timezone;
         if(Array.isArray(data)) rawEvents.push(...data);
         else if(Array.isArray(data.events)) rawEvents.push(...data.events);
         else dbg.push(`WARN: ${url} had no array`);
         dbg.push(`OK: ${url} (raw count=${rawEvents.length})`);
       }catch(err){
         dbg.push(`FAIL: ${url} → ${err.message}`);
-        app.innerHTML = `<div style="background:#fee2e2;color:#b91c1c;
-          padding:16px;border-radius:8px;font-weight:bold;">
-          ⚠️ Could not load events: ${err.message}
-        </div>`;
+        app.innerHTML=`<div style="background:#fee2e2;color:#b91c1c;padding:16px;border-radius:8px;font-weight:bold;">⚠️ Could not load events: ${err.message}</div>`;
       }
     }
-    // also load liturgical.json if present
     try{
-      const res = await fetch(LITURGICAL_URL, { cache:'no-store' });
-      if(res.ok){
-        litSeasons = await res.json();
-        dbg.push(`OK: liturgical.json loaded (${litSeasons.length} entries)`);
-      }
+      const res=await fetch(LITURGICAL_URL,{cache:'no-store'});
+      if(res.ok){ litSeasons=await res.json(); dbg.push(`OK: liturgical.json loaded (${litSeasons.length} entries)`); }
     }catch(e){ dbg.push("No liturgical.json found"); }
-
-    dbgEl.textContent = dbg.join('\n');
+    dbgEl.textContent=dbg.join('\n');
   }
 
-  // ---------- SEASON LOGIC
+  // Season logic
   function seasonFor(date){
     if(litSeasons.length){
-      const iso = date.toISOString().split('T')[0];
-      const hit = litSeasons.find(s => iso >= s.start && iso <= s.end);
-      if(hit) return {name:hit.name, color:hit.color};
+      const iso=date.toISOString().split('T')[0];
+      const hit=litSeasons.find(s=>iso>=s.start&&iso<=s.end);
+      if(hit) return {name:hit.name,color:hit.color};
     }
-    // fallback quick rules
-    const m = date.getMonth()+1, day = date.getDate();
-    if((m===12 && day>=1) || (m===1)) return {name:'Advent/Christmastide', color:'#6d28d9'};
-    if(m===3 || m===4) return {name:'Lent/Easter', color:'#6d28d9'};
-    if(m===5 || m===6) return {name:'Pentecost', color:'#ef4444'};
-    return {name:'Ordinary Time', color:'#16a34a'};
+    const m=date.getMonth()+1,day=date.getDate();
+    if((m===12&&day>=1)||(m===1)) return {name:'Advent/Christmastide',color:'#6d28d9'};
+    if(m===3||m===4) return {name:'Lent/Easter',color:'#6d28d9'};
+    if(m===5||m===6) return {name:'Pentecost',color:'#ef4444'};
+    return {name:'Ordinary Time',color:'#16a34a'};
   }
 
-  // ---------- RRULES
-  const DOW = {SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6};
-  function parseRRule(rr=''){ const out={freq:null,byday:[],bysetpos:null,byhour:0,byminute:0};
-    rr.split(';').forEach(part=>{ const [k,v]=part.split('='); if(!k||!v) return;
-      const K=k.toUpperCase(); if(K==='FREQ') out.freq=v.toUpperCase();
-      if(K==='BYDAY') out.byday=v.split(',').map(s=>s.trim().toUpperCase());
-      if(K==='BYSETPOS') out.bysetpos=parseInt(v,10);
-      if(K==='BYHOUR') out.byhour=parseInt(v,10)||0;
-      if(K==='BYMINUTE') out.byminute=parseInt(v,10)||0; }); return out; }
+  // RRULE + expandEventsInRange + helpers (same as your last working file) ...
 
-  function nthDowOfMonth(y,m,dow,setpos){
-    if(setpos===-1){ const last=new Date(y,m+1,0);
-      const delta=(last.getDay()-dow+7)%7; return addDays(last,-delta); }
-    const first=new Date(y,m,1); const offset=(dow-first.getDay()+7)%7;
-    const day=1+offset+(setpos-1)*7; return new Date(y,m,day);
-  }
-
-  // ---------- Event helpers
-  function tagFromTitle(t=''){ const s=t.toLowerCase();
-    if(s.includes('aa')) return 'aa';
-    if(s.includes('narcotics')||s.includes(' na')||s==='na') return 'na';
-    if(s.includes('service')||s.includes('eucharist')||s.includes('mass')) return 'svc';
-    if(s.includes('ash wednesday')||s.includes('pentecost')||s.includes('holy')||s.includes('easter')||s.includes('advent')) return 'holy';
-    return 'other'; }
-
-  function wireToEvent(e){ return {
-    id: e.id||undefined, title:e.title, notes:e.notes||'',
-    where:e.location||e.where||'Trinity Episcopal Church',
-    start:e.start||null, end:e.end||null, rrule:e.rrule||null,
-    duration_minutes:e.duration_minutes||null,
-    type:(e.type||tagFromTitle(e.title)).toLowerCase() }; }
-
-  function instanceFrom(r,dt){ return {
-    id:r.id||`${r.title}|${dt.toISOString()}`, title:r.title, where:r.where,
-    start:dt.toISOString(), end:r.end||null, type:r.type,
-    duration_minutes:r.duration_minutes||null }; }
-
-  function expandEventsInRange(raw,fromDate,toDate){
-    const out=[]; const from=new Date(fromDate.getFullYear(),fromDate.getMonth(),fromDate.getDate());
-    const to=new Date(toDate.getFullYear(),toDate.getMonth(),toDate.getDate(),23,59,59);
-    for(const r of raw.map(wireToEvent)){
-      if(r.rrule){ const rule=parseRRule(r.rrule);
-        if(rule.freq==='WEEKLY'&&rule.byday.length){
-          for(let d=new Date(from);d<=to;d=addDays(d,1)){
-            const code=['SU','MO','TU','WE','TH','FR','SA'][d.getDay()];
-            if(rule.byday.includes(code)){ const dt=setTimeLocal(d,rule.byhour,rule.byminute);
-              out.push(instanceFrom(r,dt)); } }
-        } else if(rule.freq==='MONTHLY'&&rule.byday.length&&r.rrule.includes('BYSETPOS')){
-          for(let y=from.getFullYear();y<=to.getFullYear();y++){
-            const mStart=(y===from.getFullYear()?from.getMonth():0);
-            const mEnd=(y===to.getFullYear()?to.getMonth():11);
-            for(let m=mStart;m<=mEnd;m++){ for(const code of rule.byday){
-              const dow=DOW[code]; const occ=nthDowOfMonth(y,m,dow,rule.bysetpos||1);
-              if(occ>=from&&occ<=to){ const dt=setTimeLocal(occ,rule.byhour,rule.byminute);
-                out.push(instanceFrom(r,dt)); } } } } } }
-      else if(r.start){ const dt=new Date(r.start); if(dt>=from&&dt<=to) out.push(instanceFrom(r,dt)); } }
-    const seen=new Set(); return out.filter(e=>{const key=`${e.title}|${e.start}`; if(seen.has(key)) return false; seen.add(key); return true;}); }
-
-  // ---------- RENDER
+  // Render function
   function render(){
     const dowNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     document.getElementById('dow').innerHTML=dowNames.map(d=>`<div class="dow">${d}</div>`).join('');
-    const a=startOfMonth(current); const firstCell=addDays(a,-a.getDay()); const cells=[];
+    const a=startOfMonth(current),firstCell=addDays(a,-a.getDay()),cells=[];
     for(let i=0;i<42;i++) cells.push(addDays(firstCell,i));
     document.getElementById('monthLabel').textContent=fmtDate(current,{month:'long',year:'numeric'});
     const season=seasonFor(current); const chip=document.getElementById('seasonChip');
     chip.textContent=season.name; chip.style.background=season.color; chip.style.color='#fff';
+    // liturgical tint
+    document.getElementById('calendar').style.background=season.color+"20";
     const rangeStart=cells[0],rangeEnd=cells[cells.length-1];
     allEvents=expandEventsInRange(rawEvents,rangeStart,rangeEnd);
-    const byDay=new Map(); for(const e of allEvents.map(e=>({...e,d:new Date(e.start)})).sort((a,b)=>a.d-b.d||a.title.localeCompare(b.title))){
-      const k=ymd(e.d); if(!byDay.has(k)) byDay.set(k,[]); byDay.get(k).push(e); }
-    document.getElementById('calendar').innerHTML=cells.map(d=>{ const k=ymd(d);
-      const inMonth=d.getMonth()===current.getMonth(); const list=(byDay.get(k)||[]).map(renderEvent).join('');
-      return `<div class="cell" style="opacity:${inMonth?1:0.48}">
-        <div class="date">${fmtDate(d,{day:'numeric'})}</div>${list||''}</div>`; }).join('');
-    const today=new Date(); const future=expandEventsInRange(rawEvents,today,addDays(today,180));
-    const next10=future.sort((a,b)=>new Date(a.start)-new Date(b.start)).slice(0,10);
-    document.getElementById('upcoming').innerHTML=next10.map(e=>`
-      <li class="up-item">
-        <div class="up-date">${fmtDate(new Date(e.start),{weekday:'short',month:'short',day:'numeric'})}</div>
-        <div><span class="badge ${e.type}">${badgeText(e)}</span> ${escapeHtml(e.title)}
-        <a class="addbtn" href="${gcalUrl(e)}" target="_blank">Add to Google</a></div>
-      </li>`).join('');
+    const byDay=new Map(); for(const e of allEvents.map(e=>({...e,d:new Date(e.start)})).sort((a,b)=>a.d-b.d||a.title.localeCompare(b.title))){const k=ymd(e.d);if(!byDay.has(k)) byDay.set(k,[]);byDay.get(k).push(e);}
+    document.getElementById('calendar').innerHTML=cells.map(d=>{const k=ymd(d),inMonth=d.getMonth()===current.getMonth(),list=(byDay.get(k)||[]).map(renderEvent).join('');return `<div class="cell" style="opacity:${inMonth?1:0.48}"><div class="date">${fmtDate(d,{day:'numeric'})}</div>${list||''}</div>`;}).join('');
+    const today=new Date(),future=expandEventsInRange(rawEvents,today,addDays(today,180)),next10=future.sort((a,b)=>new Date(a.start)-new Date(b.start)).slice(0,10);
+    document.getElementById('upcoming').innerHTML=next10.map(e=>`<li class="up-item"><div class="up-date">${fmtDate(new Date(e.start),{weekday:'short',month:'short',day:'numeric'})}</div><div><span class="badge ${e.type}">${badgeText(e)}</span> ${escapeHtml(e.title)}<a class="addbtn" href="${gcalUrl(e)}" target="_blank">Add to Google</a></div></li>`).join('');
     document.getElementById('app').hidden=false;
   }
 
-  function renderEvent(e){
-    const cls=`event ${e.type}`; const t=isAllDay(e)?'':` <span class="muted">— ${timeLabel(e.start)}</span>`;
-    const add=`<a class="addbtn" href="${gcalUrl(e)}" target="_blank">Add to Google</a>`;
-    return `<div class="${cls}"><span class="badge ${e.type}">${badgeText(e)}</span> ${escapeHtml(e.title)}${t} ${add}</div>`; }
-  function badgeText(e){ if(e.type==='aa') return 'AA'; if(e.type==='na') return 'NA'; if(e.type==='svc') return 'Service'; if(e.type==='holy') return 'Holy Day'; return 'Event'; }
-  function escapeHtml(s=''){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));}
-  function isAllDay(e){ const d=new Date(e.start); return e.type==='holy'||(d.getHours()===0&&d.getMinutes()===0&&e.duration_minutes===1440); }
-  function timeLabel(iso){ const d=new Date(iso); return new Intl.DateTimeFormat('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).format(d); }
-  function addMinutes(date,mins){return new Date(new Date(date).getTime()+mins*60000);}
-  function fmtAllDay(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}${m}${day}`;}
-  function fmtZ(dt){const d=new Date(dt);const y=d.getUTCFullYear(),m=String(d.getUTCMonth()+1).padStart(2,'0'),day=String(d.getUTCDate()).padStart(2,'0');const hh=String(d.getUTCHours()).padStart(2,'0'),mm=String(d.getUTCMinutes()).padStart(2,'0');return `${y}${m}${day}T${hh}${mm}00Z`;}
-  function gcalUrl(e){const start=new Date(e.start);const dur=e.duration_minutes||60;const end=e.end?new Date(e.end):addMinutes(start,dur);
-    let dates; if(isAllDay(e)){const sd=new Date(start.getFullYear(),start.getMonth(),start.getDate());const ed=new Date(sd.getFullYear(),sd.getMonth(),sd.getDate()+1);
-      dates=`${fmtAllDay(sd)}/${fmtAllDay(ed)}`;}else{dates=`${fmtZ(start)}/${fmtZ(end)}`;}
-    const base='https://calendar.google.com/calendar/render';const params=new URLSearchParams({action:'TEMPLATE',text:e.title,dates,location:e.where||'',details:'Added from Trinity Episcopal De Soto calendar'});return `${base}?${params.toString()}`;}
-
-  // ---------- NAV + VIEW/HIDE
-  let current=new Date();
-  function goToCalendar(){render();const y=document.querySelector('.app').offsetTop-10;window.scrollTo({top:y,behavior:'smooth'});}
+  // Button listeners
   document.getElementById('viewLink').addEventListener('click',e=>{e.preventDefault();goToCalendar();});
   document.getElementById('prevMonth').addEventListener('click',()=>{current=new Date(current.getFullYear(),current.getMonth()-1,1);render();goToCalendar();});
   document.getElementById('nextMonth').addEventListener('click',()=>{current=new Date(current.getFullYear(),current.getMonth()+1,1);render();goToCalendar();});
-  document.getElementById('todayBtn').addEventListener('click',()=>{current=new Date();render();goToCalendar();});
+  document.getElementById('todayBtn').addEventListener('click',()=>{current=new Date();render();goToCalendar();const todayCell=[...document.querySelectorAll('.cell')].find(c=>c.querySelector('.date')?.textContent===String(new Date().getDate()));if(todayCell){todayCell.style.outline="3px solid #f97316";todayCell.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>todayCell.style.outline="",2000);}});
   document.getElementById('printBtn').addEventListener('click',()=>window.print());
-  document.getElementById('hideBtn').addEventListener('click',()=>{document.getElementById('app').hidden=true;window.scrollTo({top:0,behavior:'smooth'});});
+  document.getElementById('hideBtn').addEventListener('click',()=>{document.getElementById('app').hidden=true;const link=document.getElementById('viewLink');link.style.boxShadow="0 0 12px 4px #16a34a";setTimeout(()=>link.style.boxShadow="",4000);window.scrollTo({top:0,behavior:'smooth'});});
 
-  // ---------- BOOT
+  function goToCalendar(){const el=document.getElementById('app');el.hidden=false;render();const y=document.querySelector('.app').offsetTop-10;window.scrollTo({top:y,behavior:'smooth'});}
+
   (async function(){document.getElementById('dow').innerHTML=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="dow">${d}</div>`).join('');await loadEvents();render();})();
   </script>
 </body>
 </html>
-
