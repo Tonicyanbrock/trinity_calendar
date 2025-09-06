@@ -1,98 +1,72 @@
- [
-  {
-    "affirmationLabel": "Daily Affirmation",
-    "affirmationURL": "",
-    "dioceseICS": "assets/LiturgicalCalendar.ics",
-    "affirmationText": "May these days remind us: God’s love is present in every season."
-  },
-
+[
   {
     "id": "sunday-service-10am",
     "title": "Holy Eucharist (10:00 AM)",
-    "location": "Sanctuary — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=SU",
-      "dtstart": "2025-01-05T10:00:00"
-    },
-    "durationMinutes": 75
+    "where": "Sanctuary — Trinity Episcopal Church",
+    "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=10;BYMINUTE=0",
+    "duration_minutes": 75,
+    "type": "svc"
   },
-
   {
     "id": "first-sunday-carry-in",
     "title": "First Sunday Carry-In Dinner",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1",
-      "dtstart": "2025-01-05T12:00:00"
-    },
-    "durationMinutes": 90
+    "where": "Parish Hall — Trinity Episcopal Church",
+    "rrule": "FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1;BYHOUR=12;BYMINUTE=0",
+    "duration_minutes": 90,
+    "type": "svc"
   },
-
   {
     "id": "aa-148-tue",
     "title": "AA Group 148",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=TU",
-      "dtstart": "2025-01-07T19:00:00"
-    },
-    "durationMinutes": 60
+    "where": "Parish Hall — Trinity Episcopal Church",
+    "rrule": "FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0",
+    "duration_minutes": 60,
+    "type": "aa"
   },
   {
     "id": "aa-147-fri",
     "title": "AA Group 147",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=FR",
-      "dtstart": "2025-01-03T19:00:00"
-    },
-    "durationMinutes": 60
+    "where": "Parish Hall — Trinity Episcopal Church",
+    "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=19;BYMINUTE=0",
+    "duration_minutes": 60,
+    "type": "aa"
   },
   {
     "id": "na-thu",
     "title": "NA (Narcotics Anonymous)",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=TH",
-      "dtstart": "2025-01-09T19:00:00"
-    },
-    "durationMinutes": 60
+    "where": "Parish Hall — Trinity Episcopal Church",
+    "rrule": "FREQ=WEEKLY;BYDAY=TH;BYHOUR=19;BYMINUTE=0",
+    "duration_minutes": 60,
+    "type": "na"
   },
   {
     "id": "na-sun",
     "title": "NA (Narcotics Anonymous)",
-    "location": "Parish Hall — Trinity Episcopal Church",
-    "timeZone": "America/Chicago",
-    "recurrence": {
-      "rrule": "FREQ=WEEKLY;BYDAY=SU",
-      "dtstart": "2025-01-05T17:30:00"
-    },
-    "durationMinutes": 60
+    "where": "Parish Hall — Trinity Episcopal Church",
+    "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=17;BYMINUTE=30",
+    "duration_minutes": 60,
+    "type": "na"
   },
- { "id": "new-years-2025", "title": "New Year's Day (State/Federal)", "location": "USA/Missouri", "timeZone": "America/Chicago", "start": "2025-01-01T00:00:00", "durationMinutes": 0 },
-  { "id": "mlk-2025", "title": "Martin Luther King, Jr.’s Birthday (State/Federal)", "location": "USA/Missouri", "timeZone": "America/Chicago", "start": "2025-01-20T00:00:00", "durationMinutes": 0 },
-  { "id": "lincoln-2025", "title": "Lincoln's Birthday (State)", "location": "Missouri, USA", "timeZone": "America/Chicago", "start": "2025-02-12T00:00:00", "durationMinutes": 0 },
-  { "id": "washington-2025", "title": "Washington's Birthday (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-02-17T00:00:00", "durationMinutes": 0 },
-  { "id": "truman-day-2025", "title": "Truman Day (Missouri)", "location": "Missouri, USA", "timeZone": "America/Chicago", "start": "2025-05-08T00:00:00", "durationMinutes": 0 },
-  { "id": "memorial-2025", "title": "Memorial Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-05-26T00:00:00", "durationMinutes": 0 },
-  { "id": "juneteenth-2025", "title": "Juneteenth (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-06-19T00:00:00", "durationMinutes": 0 },
-  { "id": "independence-2025", "title": "Independence Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-07-04T00:00:00", "durationMinutes": 0 },
-  { "id": "labor-2025", "title": "Labor Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-09-01T00:00:00", "durationMinutes": 0 },
-  { "id": "columbus-2025", "title": "Columbus Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-10-13T00:00:00", "durationMinutes": 0 },
-  { "id": "veterans-2025", "title": "Veterans Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-11-11T00:00:00", "durationMinutes": 0 },
-  { "id": "thanksgiving-2025", "title": "Thanksgiving Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-11-27T00:00:00", "durationMinutes": 0 },
-  { "id": "christmas-2025", "title": "Christmas Day (Federal)", "location": "USA", "timeZone": "America/Chicago", "start": "2025-12-25T00:00:00", "durationMinutes": 0 },
 
-  { "id": "valentines-2025", "title": "Valentine's Day", "location": "USA", "timeZone": "America/Chicago", "start": "2025-02-14T00:00:00", "durationMinutes": 0 },
-  { "id": "st-patricks-2025", "title": "St. Patrick's Day", "location": "USA", "timeZone": "America/Chicago", "start": "2025-03-17T00:00:00", "durationMinutes": 0 },
-  { "id": "cinco-2025", "title": "Cinco de Mayo", "location": "USA", "timeZone": "America/Chicago", "start": "2025-05-05T00:00:00", "durationMinutes": 0 },
-  { "id": "mothers-2025", "title": "Mother's Day", "location": "USA", "timeZone": "America/Chicago", "start": "2025-05-11T00:00:00", "durationMinutes": 0 },
-  { "id": "fathers-2025", "title": "Father's Day", "location": "USA", "timeZone": "America/Chicago", "start": "2025-06-15T00:00:00", "durationMinutes": 0 },
-  { "id": "halloween-2025", "title": "Halloween", "location": "USA", "timeZone": "America/Chicago", "start": "2025-10-31T00:00:00", "durationMinutes": 0 },
-  { "id": "new-years-eve-2025", "title": "New Year's Eve", "location": "USA", "timeZone": "America/Chicago", "start": "2025-12-31T00:00:00", "durationMinutes": 0 }
+  { "id": "new-years-2025", "title": "New Year's Day (State/Federal)", "where": "USA/Missouri", "start": "2025-01-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "mlk-2025", "title": "Martin Luther King, Jr.’s Birthday (State/Federal)", "where": "USA/Missouri", "start": "2025-01-20T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "lincoln-2025", "title": "Lincoln's Birthday (State)", "where": "Missouri, USA", "start": "2025-02-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "washington-2025", "title": "Washington's Birthday (Federal)", "where": "USA", "start": "2025-02-17T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "truman-day-2025", "title": "Truman Day (Missouri)", "where": "Missouri, USA", "start": "2025-05-08T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "memorial-2025", "title": "Memorial Day (Federal)", "where": "USA", "start": "2025-05-26T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "juneteenth-2025", "title": "Juneteenth (Federal)", "where": "USA", "start": "2025-06-19T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "independence-2025", "title": "Independence Day (Federal)", "where": "USA", "start": "2025-07-04T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "labor-2025", "title": "Labor Day (Federal)", "where": "USA", "start": "2025-09-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "columbus-2025", "title": "Columbus Day (Federal)", "where": "USA", "start": "2025-10-13T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "veterans-2025", "title": "Veterans Day (Federal)", "where": "USA", "start": "2025-11-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "thanksgiving-2025", "title": "Thanksgiving Day (Federal)", "where": "USA", "start": "2025-11-27T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "christmas-2025", "title": "Christmas Day (Federal)", "where": "USA", "start": "2025-12-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
+
+  { "id": "valentines-2025", "title": "Valentine's Day", "where": "USA", "start": "2025-02-14T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "st-patricks-2025", "title": "St. Patrick's Day", "where": "USA", "start": "2025-03-17T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "cinco-2025", "title": "Cinco de Mayo", "where": "USA", "start": "2025-05-05T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "mothers-2025", "title": "Mother's Day", "where": "USA", "start": "2025-05-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "fathers-2025", "title": "Father's Day", "where": "USA", "start": "2025-06-15T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "halloween-2025", "title": "Halloween", "where": "USA", "start": "2025-10-31T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "new-years-eve-2025", "title": "New Year's Eve", "where": "USA", "start": "2025-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" }
 ]
