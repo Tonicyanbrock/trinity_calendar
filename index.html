@@ -7,10 +7,7 @@
   <meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO. All are welcome." />
   <meta name="theme-color" content="#0b1220" />
   <style>
-    :root{
-      --bg:#0b1220; --panel:#ffffff; --ink:#0e1726; --muted:#475569;
-      --grid:#e5e7eb; --accent:#16a34a; --accent-2:#2563eb; --chip:#eafaf0;
-    }
+    :root{ --bg:#0b1220; --panel:#ffffff; --ink:#0e1726; --muted:#475569; --grid:#e5e7eb; --accent:#16a34a; --chip:#eafaf0; }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink);background:#fff}
@@ -18,26 +15,22 @@
     .banner{background: radial-gradient(1200px 600px at 10% -20%, #1b3a9c, #7c3aed 60%, #0ea5e9 100%); color:#fff;padding:40px 16px;margin-bottom:12px}
     .brand{font-weight:800;font-size:32px}
     .subtitle{margin:0 0 8px 0;opacity:.85}
-
-    /* cover */
     .cover{max-width:980px;margin:14px auto;padding:0 12px}
     .cover-card{background:#0b1220 url('assets/view-calendar.png') center/cover no-repeat;border-radius:20px;min-height:220px;display:flex;align-items:end;justify-content:end;overflow:hidden}
     .cover-veil{backdrop-filter: blur(2px);background:rgba(0,0,0,.35);width:100%;height:100%;position:relative}
-    .cover-btn{position:absolute;right:14px;bottom:14px;background:#16a34a;color:#fff;border:none;border-radius:999px;padding:10px 16px;font-weight:800;cursor:pointer; box-shadow:0 8px 22px rgba(0,0,0,.25)}
+    .cover-btn{position:absolute;right:14px;bottom:14px;background:#16a34a;color:#fff;border:none;border-radius:999px;padding:10px 16px;font-weight:800;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.25)}
     @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
     .cover-btn.pulse{animation:pulse 1.8s ease-in-out infinite}
 
     .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:10px 0}
     .chip{background:var(--chip);color:#14532d;border-radius:999px;padding:4px 10px;font-weight:600;font-size:12px}
     .btn{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-
     .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
     .dow{opacity:.7;font-size:12px;font-weight:700;text-align:center}
     .cell{border:1px solid var(--grid);border-radius:16px;min-height:120px;padding:8px;position:relative}
     .date{position:absolute;top:6px;right:10px;font-size:12px;color:var(--muted)}
     .event{margin-top:22px;background:#f8fafc;border-radius:12px;padding:6px 8px;border:1px solid #e5e7eb}
-    .event.diocese{background:#fff7ed;border-color:#fed7aa} /* soft orange highlight for lectionary */
+    .event.diocese{background:#fff7ed;border-color:#fed7aa}
     .event a{font-size:12px;text-decoration:none}
 
     .affirm{max-width:980px;margin:20px auto 40px;padding:12px;border-top:1px solid var(--grid);color:var(--muted)}
@@ -51,7 +44,6 @@
     </div>
   </div>
 
-  <!-- Cover image that can hide/show the calendar -->
   <div class="cover" id="cover" style="display:none">
     <div class="cover-card">
       <div class="cover-veil">
@@ -60,7 +52,6 @@
     </div>
   </div>
 
-  <!-- Calendar app -->
   <div class="app" id="calendarApp" style="display:block">
     <div class="controls">
       <div style="display:flex;gap:10px;align-items:center">
@@ -75,7 +66,6 @@
         <button class="btn" id="hide">Hide</button>
       </div>
     </div>
-
     <div class="grid" id="dow"></div>
     <div class="grid" id="grid"></div>
   </div>
@@ -83,27 +73,24 @@
   <div class="affirm" id="affirm"></div>
 
   <script>
-  // ===== Core constants =====
-  const ASSETS_VERSION = 258; // bump when events.json or this file changes
+  const ASSETS_VERSION = 261; // bump when events.json or ICS changes
   const EVENTS_URLS = [
     'assets/events.json?v=' + ASSETS_VERSION,
-    'admin/events.json?v=' + ASSETS_VERSION // optional fallback if using CMS
+    'admin/events.json?v=' + ASSETS_VERSION
   ];
   const TZ_DEFAULT = 'America/Chicago';
   const pad = n => String(n).padStart(2,'0');
 
-  // ===== Fetch events =====
   async function loadEvents(){
     if (window.__events) return window.__events;
     const attempts = EVENTS_URLS.map(url => fetch(url,{cache:'no-store'}).then(r=>{if(!r.ok) throw new Error(url+' '+r.status);return r.json();}));
     try{ window.__events = await Promise.any(attempts); return window.__events; }catch(e){}
     for (const url of EVENTS_URLS){
-      try{ const r = await fetch(url,{cache:'no-store'}); if(r.ok){ window.__events = await r.json(); return window.__events; } }catch(_){ }
+      try{ const r = await fetch(url,{cache:'no-store'}); if(r.ok){ window.__events = await r.json(); return window.__events; } }catch(_){}
     }
     throw new Error('No events.json sources reachable');
   }
 
-  // ===== Diocese ICS (optional) =====
   async function loadDioceseForMonth(year, month){
     try{
       const data = await loadEvents();
@@ -119,7 +106,7 @@
       for (const b of blocks){
         const sm = b.match(/SUMMARY:(.*)/);
         const sum = sm ? sm[1].trim() : '';
-        const mdt = b.match(/DTSTART;?[^:]*:(\\d{8})/);
+        const mdt = b.match(/DTSTART;?[^:]*:(\d{8})/);
         const dtm = mdt ? mdt[1] : '';
         if (!sum || !dtm) continue;
         const y = +dtm.slice(0,4), m = +dtm.slice(4,6)-1, d = +dtm.slice(6,8);
@@ -133,28 +120,39 @@
     }catch(_){ return []; }
   }
 
-  // ===== RRULE expansion =====
   function addMinutes(iso, mins){ const d=new Date(iso); d.setMinutes(d.getMinutes()+(mins||0)); return d.toISOString(); }
+
   function expandRecurrence(ev, rangeStartISO, rangeEndISO){
-    const out=[]; if(!ev || !ev.recurrence) return out; const rr=ev.recurrence; if(!rr.rrule || !rr.dtstart) return out;
-    const start=new Date(rangeStartISO), end=new Date(rangeEndISO); const rule=Object.fromEntries(rr.rrule.split(';').map(kv=>kv.split('=')));
-    const freq=rule.FREQ; const weekdayIndex={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6}; const base=new Date(rr.dtstart); const h=base.getHours(), m=base.getMinutes();
+    const out=[]; if(!ev || !ev.recurrence) return out;
+    const rr=ev.recurrence; if(!rr.rrule || !rr.dtstart) return out;
+    const start=new Date(rangeStartISO), end=new Date(rangeEndISO);
+    const rule=Object.fromEntries(rr.rrule.split(';').map(kv=>kv.split('=')));
+    const freq=rule.FREQ; const weekdayIndex={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6};
+    const base=new Date(rr.dtstart); const h=base.getHours(), m=base.getMinutes();
+
     if (freq==='WEEKLY'){
       const byday=(rule.BYDAY||'').split(',').filter(Boolean); let cursor=new Date(start);
       while(cursor<=end){
-        for(const code of byday){ const inst=new Date(cursor); const want=weekdayIndex[code]; const diff=(want-inst.getDay()+7)%7; inst.setDate(inst.getDate()+diff);
+        for(const code of byday){
+          const inst=new Date(cursor); const want=weekdayIndex[code]; const diff=(want-inst.getDay()+7)%7;
+          inst.setDate(inst.getDate()+diff);
           const dt=new Date(inst.getFullYear(),inst.getMonth(),inst.getDate(),h,m,0);
           if(dt>=start && dt<=end){ const s=dt.toISOString(); out.push({start:s,end:addMinutes(s,ev.durationMinutes||60)}); }
         }
         cursor.setDate(cursor.getDate()+7);
       }
     }
+
     if (freq==='MONTHLY'){
       const byday=(rule.BYDAY||'').split(',').filter(Boolean); const bysetpos=parseInt(rule.BYSETPOS||'1',10);
       let cursor=new Date(start.getFullYear(),start.getMonth(),1);
-      while(cursor<=end){ const y=cursor.getFullYear(), mo=cursor.getMonth();
-        for(const code of byday){ const first=new Date(y,mo,1); const firstDow=first.getDay(); const want=weekdayIndex[code]; const day=1+((want-firstDow+7)%7)+(bysetpos-1)*7;
-          const dt=new Date(y,mo,day,h,m,0); if(dt>=start && dt<=end && dt.getMonth()===mo){ const s=dt.toISOString(); out.push({start:s,end:addMinutes(s,ev.durationMinutes||60)}); }
+      while(cursor<=end){
+        const y=cursor.getFullYear(), mo=cursor.getMonth();
+        for(const code of byday){
+          const first=new Date(y,mo,1); const firstDow=first.getDay(); const want=weekdayIndex[code];
+          const day=1+((want-firstDow+7)%7)+(bysetpos-1)*7;
+          const dt=new Date(y,mo,day,h,m,0);
+          if(dt>=start && dt<=end && dt.getMonth()===mo){ const s=dt.toISOString(); out.push({start:s,end:addMinutes(s,ev.durationMinutes||60)}); }
         }
         cursor=new Date(y,mo+1,1);
       }
@@ -168,23 +166,26 @@
     const rangeEnd   = new Date(year, month+1, 0, 23, 59, 59).toISOString();
     const instances=[];
     for (const ev of evs){
-      if (ev.start){ const s=new Date(ev.start); const ms=new Date(rangeStart), me=new Date(rangeEnd); if (s>=ms && s<=me){
-        instances.push({ ev, start:s.toISOString(), end:addMinutes(ev.start, ev.durationMinutes||60) }); }}
-      if (ev.recurrence){ const reps=expandRecurrence(ev, rangeStart, rangeEnd); for (const r of reps){ instances.push({ ev, start:r.start, end:r.end }); }}
+      if (ev.start){
+        const s=new Date(ev.start); const ms=new Date(rangeStart), me=new Date(rangeEnd);
+        if (s>=ms && s<=me){
+          instances.push({ ev, start:s.toISOString(), end:addMinutes(ev.start, ev.durationMinutes||60) });
+        }
+      }
+      if (ev.recurrence){
+        const reps=expandRecurrence(ev, rangeStart, rangeEnd);
+        for (const r of reps){ instances.push({ ev, start:r.start, end:r.end }); }
+      }
     }
-    // Diocese ICS
     const extra = await loadDioceseForMonth(year, month);
     for (const x of extra){ instances.push({ ev: { title: x.title, location: x.location }, start: x.start, end: x.end, diocese:true }); }
-
     instances.sort((a,b)=> new Date(a.start)-new Date(b.start));
     return instances;
   }
 
-  // ===== Google helper =====
   function toGoogleUTC(dt){ const d=new Date(dt); return d.getUTCFullYear()+String(d.getUTCMonth()+1).padStart(2,'0')+String(d.getUTCDate()).padStart(2,'0')+'T'+String(d.getUTCHours()).padStart(2,'0')+String(d.getUTCMinutes()).padStart(2,'0')+'00Z'; }
   function googleLink(ev, startISO, endISO){ const text=encodeURIComponent(ev.title); const dates=toGoogleUTC(startISO)+'/'+toGoogleUTC(endISO); const loc=encodeURIComponent(ev.location||''); const tz=encodeURIComponent(ev.timeZone||TZ_DEFAULT); const det=encodeURIComponent('Trinity Episcopal De Soto — Calendar'); return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+text+'&dates='+dates+'&location='+loc+'&details='+det+'&ctz='+tz; }
 
-  // ===== Render =====
   const state={year:0, month:0};
   function labelMonth(y,m){ return new Date(y,m,1).toLocaleString(undefined,{month:'long', year:'numeric'}); }
 
@@ -221,7 +222,6 @@
       cell.appendChild(card);
     }
 
-    // Affirmation footer
     try{
       const data = await loadEvents();
       const meta = data.find(x=>x.affirmationText);
@@ -233,7 +233,6 @@
     }catch(_){ }
   }
 
-  // ===== Navigation & Cover =====
   function goTo(y,m){ state.year=y; state.month=m; render(); location.hash = '#/'+y+'/'+String(m+1).padStart(2,'0'); }
   function goToToday(){ const now=new Date(); goTo(now.getFullYear(), now.getMonth()); }
   document.querySelector('[data-btn="today"]').addEventListener('click', goToToday);
@@ -250,15 +249,11 @@
   showBtn?.addEventListener('click', showCalendar);
   hideBtn?.addEventListener('click', hideCalendar);
 
-  // ===== Boot =====
   (async function(){
     if (localStorage.getItem('coverHidden')==='1') { showCalendar(); } else { hideCalendar(); }
     const hash=location.hash.match(/#\/(\d{4})\/(\d{2})/);
     if (hash){ goTo(parseInt(hash[1],10), parseInt(hash[2],10)-1); } else { goToToday(); }
   })();
-
-  // debug helper
-  window._probeEvents = async () => { const u='assets/events.json?probe='+Date.now(); const r=await fetch(u,{cache:'no-store'}); const t=await r.text(); console.log('status',r.status,'bytes',t.length); try{JSON.parse(t); console.log('JSON OK');}catch(e){console.warn('JSON parse error',e);} };
   </script>
 </body>
 </html>
