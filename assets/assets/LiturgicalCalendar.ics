@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Trinity Calendar//Placeholder ICS//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:placeholder-lectionary-1@example.com
+DTSTAMP:20250101T000000Z
+DTSTART;VALUE=DATE:20250106
+SUMMARY:Epiphany (placeholder test)
+END:VEVENT
+BEGIN:VEVENT
+UID:placeholder-lectionary-2@example.com
+DTSTAMP:20250101T000000Z
+DTSTART;VALUE=DATE:20250214
+SUMMARY:Saints & Commemoration (placeholder test)
+END:VEVENT
+END:VCALENDAR
