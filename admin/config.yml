@@ -5,28 +5,22 @@ backend:
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
-site_url: "/"
-logo_url: "/assets/view-calendar.png"
-
 collections:
-  - name: "site-data"
-    label: "Site Data"
+  - name: "events"
+    label: "Events"
+    format: "json"
+    extension: "json"
+    create: true
+    identifier_field: "id"
     files:
-      - name: "events"
-        label: "Events (JSON)"
-        file: "assets/events.json"
-        description: >
-          Edit the calendar’s events. Use the examples as a guide.
-          Supported formats:
-          • Single event: { "title":"...", "start":"YYYY-MM-DDTHH:mm", "location":"...", "duration_minutes":60 }
-          • Weekly: { "title":"...", "rrule":"FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0", "location":"...", "duration_minutes":60 }
-          • First Sunday monthly: { "title":"First Sunday Carry-In Dinner", "rrule":"FREQ=MONTHLY;BYDAY=SU;BYSETPOS=1;BYHOUR=11;BYMINUTE=30", "location":"Parish Hall", "duration_minutes":90 }
-          Timezone is America/Chicago.
-        editor:
-          preview: false
+      - file: "assets/events.json"
+        label: "Events"
+        name: "events"
         fields:
-          - label: "JSON"
-            name: "raw"
-            widget: "code"
-            default_language: "json"
-            hint: "Paste valid JSON. Keep keys and quotes exactly."
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Location / Where", name: "where", widget: "string", required: false }
+          - { label: "Start (for one-time events)", name: "start", widget: "datetime", required: false }
+          - { label: "Recurrence Rule", name: "rrule", widget: "string", required: false, hint: "Use RRULE, e.g. FREQ=WEEKLY;BYDAY=SU;BYHOUR=10;BYMINUTE=0" }
+          - { label: "Duration (minutes)", name: "duration_minutes", widget: "number", default: 60 }
+          - { label: "Type", name: "type", widget: "select", options: ["svc", "aa", "na", "holy", "other"], default: "other" }
