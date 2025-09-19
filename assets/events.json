@@ -87,5 +87,6 @@
   { "id": "columbus-2026", "title": "Columbus Day", "where": "USA", "start": "2026-10-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "veterans-2026", "title": "Veterans Day", "where": "USA", "start": "2026-11-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "thanksgiving-2026", "title": "Thanksgiving", "where": "USA", "start": "2026-11-26T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "christmas-2026", "title": "Christmas Day", "where": "USA", "start": "2026-12-25T00:00:00"
-
+  { "id": "christmas-2026", "title": "Christmas Day", "where": "USA", "start": "2026-12-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  { "id": "new-years-eve-2026", "title": "New Year's Eve", "where": "USA", "start": "2026-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" }
+]
