@@ -15,38 +15,10 @@
     "duration_minutes": 90,
     "type": "svc"
   },
-  {
-    "id": "aa-148-tue",
-    "title": "AA Group 148",
-    "where": "Parish Hall — Trinity Episcopal Church",
-    "rrule": "FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0",
-    "duration_minutes": 60,
-    "type": "aa"
-  },
-  {
-    "id": "aa-147-fri",
-    "title": "AA Group 147",
-    "where": "Parish Hall — Trinity Episcopal Church",
-    "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=19;BYMINUTE=0",
-    "duration_minutes": 60,
-    "type": "aa"
-  },
-  {
-    "id": "na-thu",
-    "title": "NA (Narcotics Anonymous)",
-    "where": "Parish Hall — Trinity Episcopal Church",
-    "rrule": "FREQ=WEEKLY;BYDAY=TH;BYHOUR=19;BYMINUTE=0",
-    "duration_minutes": 60,
-    "type": "na"
-  },
-  {
-    "id": "na-sun",
-    "title": "NA (Narcotics Anonymous)",
-    "where": "Parish Hall — Trinity Episcopal Church",
-    "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=17;BYMINUTE=30",
-    "duration_minutes": 60,
-    "type": "na"
-  },
+  ...
+  { "id": "new-years-eve-2026", "title": "New Year's Eve", "where": "USA", "start": "2026-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" }
+]
+
 
   <!-- 🎉 All 2025 Holidays -->
   { "id": "new-years-2025", "title": "New Year's Day", "where": "USA/Missouri", "start": "2025-01-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
