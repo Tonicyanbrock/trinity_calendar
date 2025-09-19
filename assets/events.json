@@ -48,7 +48,6 @@
     "type": "na"
   },
 
-  <!-- 🎉 All 2025 holidays (federal, Missouri, cultural) -->
   { "id": "new-years-2025", "title": "New Year's Day", "where": "USA/Missouri", "start": "2025-01-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "mlk-2025", "title": "Martin Luther King Jr. Day", "where": "USA/Missouri", "start": "2025-01-20T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "lincoln-2025", "title": "Lincoln's Birthday", "where": "Missouri, USA", "start": "2025-02-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
@@ -70,7 +69,6 @@
   { "id": "christmas-2025", "title": "Christmas Day", "where": "USA", "start": "2025-12-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "new-years-eve-2025", "title": "New Year's Eve", "where": "USA", "start": "2025-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" },
 
-  <!-- 🎉 All 2026 holidays (federal, Missouri, cultural) -->
   { "id": "new-years-2026", "title": "New Year's Day", "where": "USA/Missouri", "start": "2026-01-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "mlk-2026", "title": "Martin Luther King Jr. Day", "where": "USA/Missouri", "start": "2026-01-19T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "lincoln-2026", "title": "Lincoln's Birthday", "where": "Missouri, USA", "start": "2026-02-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
@@ -89,6 +87,5 @@
   { "id": "columbus-2026", "title": "Columbus Day", "where": "USA", "start": "2026-10-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "veterans-2026", "title": "Veterans Day", "where": "USA", "start": "2026-11-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
   { "id": "thanksgiving-2026", "title": "Thanksgiving", "where": "USA", "start": "2026-11-26T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "christmas-2026", "title": "Christmas Day", "where": "USA", "start": "2026-12-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "new-years-eve-2026", "title": "New Year's Eve", "where": "USA", "start": "2026-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" }
-]
+  { "id": "christmas-2026", "title": "Christmas Day", "where": "USA", "start": "2026-12-25T00:00:00"
+
