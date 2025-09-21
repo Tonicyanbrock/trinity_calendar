@@ -2,33 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Trinity Episcopal Church — Calendar</title>
+  <title>Trinity Church Calendar of Events</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
       background: #f8fafc;
+      color: #0b1220;
     }
-    .calendar-button img {
-      max-width: 400px;
-      height: auto;
-      cursor: pointer;
+    header {
+      background: url("assets/stained-glass.jpg?v=315") center/cover no-repeat;
+      padding: 2rem;
+      text-align: center;
+      color: #fff;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+    .events {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: white;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      transition: transform 0.2s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
-    .calendar-button img:hover {
-      transform: scale(1.03);
+    h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .event {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .error {
+      color: #b91c1c;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <a href="calendar.html" class="calendar-button">
-    <img src="assets/view-calendar.png" alt="View Calendar">
-  </a>
+  <header>
+    Trinity Church Calendar of Events
+  </header>
+
+  <div class="events">
+    <h2>Upcoming Events</h2>
+    <div id="events-list">Loading…</div>
+  </div>
+
+  <script>
+    const ASSETS_VERSION = 316;
+    const EVENTS_URLS = [
+      `assets/events.json?v=${ASSETS_VERSION}`,
+      `admin/events.json?v=${ASSETS_VERSION}`
+    ];
+
+    async function loadEvents() {
+      const container = document.getElementById("events-list");
+      for (let url of EVENTS_URLS) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const events = await res.json();
+          if (!events.length) continue;
+
+          container.innerHTML = "";
+          events.slice(0, 10).forEach(ev => {
+            const div = document.createElement("div");
+            div.className = "event";
+            div.textContent = `${ev.title} — ${ev.where || ""}`;
+            container.appendChild(div);
+          });
+          return;
+        } catch (e) {
+          console.error("Failed to load from", url, e);
+        }
+      }
+      container.innerHTML = `<p class="error">⚠️ Could not load events</p>`;
+    }
+
+    loadEvents();
+  </script>
 </body>
 </html>
