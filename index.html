@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <title>Trinity Church Calendar of Events</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     :root {
       --panel:#ffffff; --ink:#0b1220; --muted:#475569;
-      --accent:#16a34a; --accent-2:#2563eb;
+      --accent:#db2777; --accent-2:#2563eb;
       --grid:#cbd5e1; --tint:#f8fafc;
     }
     body {
@@ -17,13 +18,13 @@
       background:var(--tint);
     }
     header {
-      background:url("assets/stained-glass.jpg") center/cover no-repeat;
+      background:url("assets/stained-glass-banner.jpg") center/cover no-repeat;
       color:#fff;
-      padding:2rem 1rem;
       text-align:center;
-      font-size:2rem;
+      padding:2rem 1rem;
+      font-size:1.8rem;
       font-weight:bold;
-      text-shadow:0 2px 4px rgba(0,0,0,0.6);
+      text-shadow:0 2px 4px rgba(0,0,0,0.5);
     }
     #calendar {
       max-width:1000px;
@@ -36,65 +37,83 @@
     #calendar table {width:100%;border-collapse:collapse;}
     #calendar th,#calendar td {
       border:1px solid var(--grid);
-      text-align:left;
+      text-align:center;
       vertical-align:top;
       padding:.5rem;
       min-height:5rem;
-      width:14.2%;
     }
-    #calendar th {background:var(--tint);text-align:center;}
+    #calendar th {background:var(--tint);}
     .event {margin:.25rem 0;padding:.25rem .5rem;border-radius:.5rem;font-size:.8rem;}
-    .svc {background:#e0f2fe;color:#0369a1;}
-    .aa {background:#fef9c3;color:#92400e;}
-    .na {background:#fce7f3;color:#9d174d;}
-    .holy {background:#dcfce7;color:#166534;}
+
+    /* === Colors for event types === */
+    .event.svc {background:#e0f2fe;color:#0369a1;}
+    .event.aa {background:#fef9c3;color:#92400e;}
+    .event.na {background:#fce7f3;color:#9d174d;}
+    .event.holiday {background:#dcfce7;color:#166534;}
+    .event.diocese {background:#ede9fe;color:#5b21b6;font-weight:bold;}
+
     .liturgical {
       display:inline-block;
       margin-left:.5rem;
-      padding:.2rem .6rem;
+      padding:.1rem .5rem;
       border-radius:.5rem;
       font-size:.8rem;
       color:#fff;
     }
-    .nav {text-align:center;margin:1rem;}
-    .nav button {
-      background:var(--accent-2);
-      border:none;
-      color:#fff;
-      padding:.5rem 1rem;
-      margin:.2rem;
-      border-radius:.5rem;
-      cursor:pointer;
-      font-weight:bold;
-    }
-    .nav button:hover {opacity:.9;}
     #upcoming {max-width:1000px;margin:1rem auto;padding:1rem;}
+    .legend {
+      max-width:1000px;
+      margin:1rem auto;
+      padding:1rem;
+      border:1px solid var(--grid);
+      border-radius:.75rem;
+      background:var(--tint);
+      font-size:.85rem;
+    }
+    .legend span {display:inline-block;margin:4px;padding:2px 8px;border-radius:6px;font-size:.75rem;font-weight:500;}
+    .legend .aa {background:#fef9c3;color:#92400e;}
+    .legend .na {background:#fce7f3;color:#9d174d;}
+    .legend .svc {background:#e0f2fe;color:#0369a1;}
+    .legend .holiday {background:#dcfce7;color:#166534;}
+    .legend .diocese {background:#ede9fe;color:#5b21b6;}
   </style>
 </head>
 <body>
   <header>Trinity Church Calendar of Events</header>
 
   <div id="calendar"></div>
+
   <div id="upcoming">
     <h2>Upcoming Events</h2>
     <ul id="upcoming-list"></ul>
   </div>
 
+  <div class="legend">
+    <strong>Legend:</strong><br>
+    <span class="svc">Sunday Service</span>
+    <span class="aa">AA Groups</span>
+    <span class="na">NA Meetings</span>
+    <span class="holiday">Holidays</span>
+    <span class="diocese">Diocese Events</span>
+    <div style="margin-top:6px;font-size:12px;">
+      Trinity Episcopal Church • 202 W. Miller St., De Soto, MO • (636) 586-2542
+    </div>
+  </div>
+
 <script>
 const ASSETS_VERSION = 320;
 const EVENTS_URLS = [
-  'assets/events.json?v='+ASSETS_VERSION,
-  'assets/liturgical.json?v='+ASSETS_VERSION
+  `/assets/events.json?v=${ASSETS_VERSION}`,
+  `/assets/liturgical.json?v=${ASSETS_VERSION}`
 ];
 
 let events = [];
 let liturgical = [];
-let currentDate = new Date();
 
 async function loadEvents() {
   for (const url of EVENTS_URLS) {
     try {
-      const r = await fetch(url);
+      const r = await fetch(url, {cache:"no-store"});
       if (!r.ok) throw new Error("HTTP " + r.status);
       if (url.includes("liturgical")) {
         liturgical = await r.json();
@@ -105,7 +124,7 @@ async function loadEvents() {
       console.error("Failed to load", url, e);
     }
   }
-  renderCalendar(currentDate);
+  renderCalendar(new Date());
 }
 
 function renderCalendar(date) {
@@ -127,14 +146,8 @@ function renderCalendar(date) {
   const lit = liturgical.find(l => new Date(l.start) <= monthEnd && new Date(l.end) >= monthStart);
   const litChip = lit ? `<span class="liturgical" style="background:${lit.color}">${lit.name}</span>` : "";
 
-  let html = `
-    <div class="nav">
-      <button onclick="prevMonth()">&#8592; Prev</button>
-      <strong>${monthStart.toLocaleString('default',{month:'long'})} ${monthStart.getFullYear()}</strong> ${litChip}
-      <button onclick="nextMonth()">Next &#8594;</button>
-    </div>
-    <table><thead><tr>
-  `;
+  let html = `<h2>${monthStart.toLocaleString('default',{month:'long'})} ${monthStart.getFullYear()} ${litChip}</h2>`;
+  html += `<table><thead><tr>`;
   ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d => html += `<th>${d}</th>`);
   html += `</tr></thead><tbody>`;
   for (const week of weeks) {
@@ -143,7 +156,7 @@ function renderCalendar(date) {
       const inMonth = day.getMonth() === monthStart.getMonth();
       html += `<td${inMonth?"":' style="background:#f1f5f9"'}>`;
       if (inMonth) {
-        html += `<div><strong>${day.getDate()}</strong></div>`;
+        html += `<div>${day.getDate()}</div>`;
         const dayEvents = events.filter(ev => occursOn(ev, day));
         for (const ev of dayEvents) {
           html += `<div class="event ${ev.type||''}">${ev.title}</div>`;
@@ -182,16 +195,35 @@ function occursOn(ev, day) {
 }
 
 function matchesRRule(rrule, day) {
-  const [freqPart,...rest] = rrule.split(";");
-  const freq = freqPart.split("=")[1];
+  const parts = Object.fromEntries(rrule.split(";").map(p => p.split("=")));
+  const freq = parts.FREQ;
   const dayStr = ["SU","MO","TU","WE","TH","FR","SA"][day.getDay()];
-  if (freq==="WEEKLY" && rest.some(p=>p.includes("BYDAY="+dayStr))) return true;
-  if (freq==="MONTHLY" && rest.some(p=>p.includes("BYDAY="+dayStr)) && rest.some(p=>p.includes("BYSETPOS=1")) && day.getDate()<=7) return true;
+
+  if (freq==="WEEKLY" && parts.BYDAY===dayStr) return true;
+  if (freq==="MONTHLY" && parts.BYDAY===dayStr && parts.BYSETPOS==="1" && day.getDate()<=7) return true;
+  if (freq==="YEARLY") {
+    if (parts.BYMONTH && parts.BYMONTHDAY) {
+      return (day.getMonth()+1)==parseInt(parts.BYMONTH) && day.getDate()==parseInt(parts.BYMONTHDAY);
+    }
+    if (parts.BYDAY && parts.BYMONTH) {
+      // e.g. Memorial Day, MLK Day
+      const [pos, weekday] = [parts.BYDAY.slice(0,-2), parts.BYDAY.slice(-2)];
+      const targetMonth = parseInt(parts.BYMONTH);
+      if ((day.getMonth()+1) != targetMonth) return false;
+      if (["SU","MO","TU","WE","TH","FR","SA"][day.getDay()]!==weekday) return false;
+      const weekOfMonth = Math.floor((day.getDate()-1)/7)+1;
+      if (pos==="1" && weekOfMonth===1) return true;
+      if (pos==="2" && weekOfMonth===2) return true;
+      if (pos==="3" && weekOfMonth===3) return true;
+      if (pos==="4" && weekOfMonth===4) return true;
+      if (pos==="-1") {
+        const nextMonth = new Date(day.getFullYear(), targetMonth, 0);
+        return (day.getDate()>nextMonth.getDate()-7);
+      }
+    }
+  }
   return false;
 }
-
-function prevMonth(){ currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(currentDate);}
-function nextMonth(){ currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(currentDate);}
 
 loadEvents();
 </script>
