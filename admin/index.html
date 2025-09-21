@@ -4,87 +4,71 @@
   <meta charset="UTF-8">
   <title>Trinity Church Calendar of Events</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+      font-family: system-ui, sans-serif;
       background: #f8fafc;
       color: #0b1220;
     }
     header {
-      background: url("assets/stained-glass.jpg?v=315") center/cover no-repeat;
-      padding: 2rem;
+      background: url("assets/stained-glass.jpg?v=316") center/cover no-repeat;
+      color: white;
       text-align: center;
-      color: #fff;
-      font-size: 2rem;
+      padding: 2rem 1rem;
+      font-size: 1.8rem;
       font-weight: bold;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
     }
-    .events {
-      max-width: 800px;
+    #calendar {
+      max-width: 1000px;
       margin: 2rem auto;
       padding: 1rem;
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
-    h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-    .event {
-      margin: 0.5rem 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid #e5e7eb;
+    .fc-toolbar-title {
+      font-size: 1.4rem;
+      font-weight: bold;
     }
     .error {
-      color: #b91c1c;
       text-align: center;
+      color: #b91c1c;
+      margin-top: 1rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <header>
-    Trinity Church Calendar of Events
-  </header>
+  <header>Trinity Church Calendar of Events</header>
+  <div id="calendar"></div>
+  <div id="error" class="error" style="display:none;">⚠️ Could not load events</div>
 
-  <div class="events">
-    <h2>Upcoming Events</h2>
-    <div id="events-list">Loading…</div>
-  </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script>
-    const ASSETS_VERSION = 316;
-    const EVENTS_URLS = [
-      `assets/events.json?v=${ASSETS_VERSION}`,
-      `admin/events.json?v=${ASSETS_VERSION}`
-    ];
+    document.addEventListener("DOMContentLoaded", function () {
+      const calendarEl = document.getElementById("calendar");
 
-    async function loadEvents() {
-      const container = document.getElementById("events-list");
-      for (let url of EVENTS_URLS) {
-        try {
-          const res = await fetch(url);
-          if (!res.ok) continue;
-          const events = await res.json();
-          if (!events.length) continue;
-
-          container.innerHTML = "";
-          events.slice(0, 10).forEach(ev => {
-            const div = document.createElement("div");
-            div.className = "event";
-            div.textContent = `${ev.title} — ${ev.where || ""}`;
-            container.appendChild(div);
-          });
-          return;
-        } catch (e) {
-          console.error("Failed to load from", url, e);
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        height: "auto",
+        events: {
+          url: "assets/events.json?v=316",
+          failure: () => {
+            document.getElementById("error").style.display = "block";
+          }
+        },
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,listWeek"
         }
-      }
-      container.innerHTML = `<p class="error">⚠️ Could not load events</p>`;
-    }
+      });
 
-    loadEvents();
+      calendar.render();
+    });
   </script>
 </body>
 </html>
