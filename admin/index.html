@@ -11,56 +11,37 @@
       --accent:#16a34a; --accent-2:#2563eb;
       --grid:#cbd5e1; --tint:#f8fafc;
     }
-    body {
-      margin:0;
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      color:var(--ink);
-      background:var(--tint);
-    }
+    body {margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:var(--tint);}
     header {
-      background:url("assets/stained-glass.jpg?v=316") center/cover no-repeat;
-      color:#fff;
-      padding:2rem 1rem;
-      text-align:center;
-      font-size:1.8rem;
-      font-weight:bold;
-      text-shadow:2px 2px 6px rgba(0,0,0,0.6);
+      background:url("assets/stained-glass.jpg") center/cover no-repeat;
+      color:#fff; padding:2rem 1rem; text-align:center;
+      font-size:2rem; font-weight:bold;
+      text-shadow:1px 1px 4px rgba(0,0,0,0.7);
     }
-    #calendar {
-      max-width:1000px;
-      margin:1rem auto;
-      padding:1rem;
-      background:var(--panel);
-      border-radius:1rem;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    }
+    #calendar {max-width:1000px;margin:1rem auto;padding:1rem;background:var(--panel);border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
     #calendar table {width:100%;border-collapse:collapse;}
-    #calendar th,#calendar td {
-      border:1px solid var(--grid);
-      text-align:center;
-      vertical-align:top;
-      padding:.5rem;
-      min-height:5rem;
-    }
+    #calendar th,#calendar td {border:1px solid var(--grid);text-align:center;vertical-align:top;padding:.5rem;min-height:5rem;}
     #calendar th {background:var(--tint);}
     .event {margin:.25rem 0;padding:.25rem .5rem;border-radius:.5rem;font-size:.8rem;}
     .svc {background:#e0f2fe;color:#0369a1;}
     .aa {background:#fef9c3;color:#92400e;}
     .na {background:#fce7f3;color:#9d174d;}
     .holy {background:#dcfce7;color:#166534;}
-    .liturgical {
-      display:inline-block;
-      margin-left:.5rem;
-      padding:.1rem .5rem;
-      border-radius:.5rem;
-      font-size:.8rem;
-      color:#fff;
-    }
+    .liturgical {display:inline-block;margin-left:.5rem;padding:.1rem .5rem;border-radius:.5rem;font-size:.8rem;color:#fff;}
+    #nav {display:flex;justify-content:center;gap:1rem;margin:1rem;}
+    #nav button {padding:.5rem 1rem;border:none;border-radius:.5rem;background:var(--accent);color:#fff;cursor:pointer;font-weight:bold;}
+    #nav button:hover {background:#15803d;}
     #upcoming {max-width:1000px;margin:1rem auto;padding:1rem;}
   </style>
 </head>
 <body>
   <header>Trinity Church Calendar of Events</header>
+
+  <div id="nav">
+    <button onclick="changeMonth(-1)">◀ Prev</button>
+    <button onclick="goToday()">Today</button>
+    <button onclick="changeMonth(1)">Next ▶</button>
+  </div>
 
   <div id="calendar"></div>
   <div id="upcoming">
@@ -69,14 +50,15 @@
   </div>
 
 <script>
-const ASSETS_VERSION = 316;
+const ASSETS_VERSION = 317;
 const EVENTS_URLS = [
-  `assets/events.json?v=${ASSETS_VERSION}`,
-  `assets/liturgical.json?v=${ASSETS_VERSION}`
+  `/assets/events.json?v=${ASSETS_VERSION}`,
+  `/assets/liturgical.json?v=${ASSETS_VERSION}`
 ];
 
 let events = [];
 let liturgical = [];
+let currentDate = new Date();
 
 async function loadEvents() {
   for (const url of EVENTS_URLS) {
@@ -92,7 +74,17 @@ async function loadEvents() {
       console.error("Failed to load", url, e);
     }
   }
-  renderCalendar(new Date());
+  renderCalendar(currentDate);
+}
+
+function changeMonth(offset) {
+  currentDate.setMonth(currentDate.getMonth() + offset);
+  renderCalendar(currentDate);
+}
+
+function goToday() {
+  currentDate = new Date();
+  renderCalendar(currentDate);
 }
 
 function renderCalendar(date) {
