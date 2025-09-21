@@ -2,45 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Trinity Episcopal Church — Calendar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trinity Episcopal De Soto — Full Calendar</title>
-  <meta name="description" content="Complete events calendar for Trinity Episcopal Church, De Soto, MO.">
-
   <style>
-    :root {
-      --panel:#ffffff; --ink:#0b1220; --muted:#475569;
-      --accent:#16a34a; --accent-2:#2563eb;
-      --grid:#64748b; --tint:#f8fafc;
-    }
     body {
-      margin:0; font-family:ui-sans-serif,system-ui,sans-serif; color:var(--ink);
-      background:url("assets/stained-glass.jpg") no-repeat center center fixed;
-      background-size:cover;
-      position:relative;
-    }
-    body::before {
-      content:""; position:absolute; inset:0;
-      background:rgba(255,255,255,0.85); /* soft overlay */
-      z-index:0;
-    }
-    header, main, footer {
-      position:relative; z-index:1;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background: #f8fafc;
+      color: #0b1220;
     }
     header {
-      background:var(--accent-2); color:#fff; padding:1rem; text-align:center;
+      background: #2563eb;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
     }
-    header h1 {margin:0; font-size:1.5rem;}
-    header p {margin:0.25rem 0 0; font-size:1rem;}
-    main, footer {
-      max-width:1000px; margin:1rem auto; padding:1rem;
-      background:var(--panel); border-radius:1rem;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
     }
-    #calendar-app {padding:1rem;}
-    .badge {display:inline-block; padding:0.25rem 0.5rem; border-radius:6px; color:#fff; font-size:0.75rem;}
-    .aa {background:#16a34a;} .na {background:#ea580c;}
-    .svc {background:#2563eb;} .holy {background:#facc15; color:#000;}
+    header p {
+      margin: 0.25rem 0 0;
+      font-size: 1rem;
+    }
+    .calendar-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    #calendar {
+      margin-bottom: 2rem;
+    }
+    .upcoming h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 0.5rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      background: #16a34a;
+      color: white;
+    }
+    .fc-event {
+      font-size: 0.85rem;
+    }
   </style>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet"/>
 </head>
 <body>
   <header>
@@ -48,53 +61,55 @@
     <p>Complete Calendar of Worship Services, AA/NA Meetings, and Community Events</p>
   </header>
 
-  <main>
-    <h2>Calendar</h2>
-    <div id="calendar-app">Loading events…</div>
-  </main>
+  <div class="calendar-container">
+    <div id="calendar"></div>
+    <div class="upcoming">
+      <h2>Upcoming Events</h2>
+      <ul id="upcoming-list"></ul>
+    </div>
+  </div>
 
-  <footer>
-    <p><span class="badge aa">AA 148 / 147</span> 
-       <span class="badge na">NA</span> 
-       <span class="badge svc">Sunday Service</span> 
-       <span class="badge holy">Holy Day</span></p>
-    <p>Trinity Episcopal Church, 202 W. Miller St., De Soto, MO 63020 · (636) 586-2542</p>
-  </footer>
-
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   <script>
-    const ASSETS_VERSION = 303;
     const EVENTS_URLS = [
-      `assets/events.json?v=${ASSETS_VERSION}`
+      '/assets/events.json?v=304'
     ];
 
     async function loadEvents() {
-      let events = [];
       for (const url of EVENTS_URLS) {
         try {
           const res = await fetch(url);
-          if (!res.ok) throw new Error(res.status);
-          const data = await res.json();
-          events = events.concat(data);
-        } catch (err) {
-          console.error("Failed to load", url, err);
-        }
+          if (!res.ok) continue;
+          return await res.json();
+        } catch (e) {}
       }
-      return events;
+      return [];
     }
 
-    function renderCalendar(events) {
-      const container = document.getElementById("calendar-app");
-      container.innerHTML = "";
-      const ul = document.createElement("ul");
-      events.forEach(ev => {
-        const li = document.createElement("li");
-        li.textContent = ev.title + (ev.start ? " — " + ev.start : "");
-        ul.appendChild(li);
+    function formatUpcoming(ev) {
+      const start = new Date(ev.start);
+      return `${start.toLocaleDateString(undefined, {month:'short', day:'numeric'})} — ${ev.title}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const events = await loadEvents();
+
+      const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        initialView: 'dayGridMonth',
+        height: 'auto',
+        events: events
       });
-      container.appendChild(ul);
-    }
+      calendar.render();
 
-    loadEvents().then(events => renderCalendar(events));
+      const upcoming = events
+        .map(ev => ({...ev, date: new Date(ev.start)}))
+        .filter(ev => ev.date >= new Date())
+        .sort((a,b) => a.date - b.date)
+        .slice(0, 10);
+
+      document.getElementById('upcoming-list').innerHTML =
+        upcoming.map(formatUpcoming).map(txt => `<li>${txt}</li>`).join('');
+    });
   </script>
 </body>
 </html>
