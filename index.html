@@ -8,222 +8,136 @@
   <style>
     :root {
       --panel:#ffffff; --ink:#0b1220; --muted:#475569;
-      --accent:#db2777; --accent-2:#2563eb;
+      --accent:#16a34a; --accent-2:#2563eb;
       --grid:#cbd5e1; --tint:#f8fafc;
     }
-    body {
-      margin:0;
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      color:var(--ink);
-      background:var(--tint);
-    }
-    header {
-      background:url("assets/stained-glass-banner.jpg") center/cover no-repeat;
-      color:#fff;
-      text-align:center;
-      padding:2rem 1rem;
-      font-size:1.8rem;
-      font-weight:bold;
-      text-shadow:0 2px 4px rgba(0,0,0,0.5);
-    }
-    #calendar {
-      max-width:1000px;
-      margin:1rem auto;
-      padding:1rem;
-      background:var(--panel);
-      border-radius:1rem;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    }
+    body {margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:var(--tint);}
+    header {background:#e11d48;color:#fff;padding:1rem;text-align:center;font-size:1.5rem;font-weight:bold;}
+    #calendar {max-width:1000px;margin:1rem auto;padding:1rem;background:var(--panel);border-radius:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
     #calendar table {width:100%;border-collapse:collapse;}
-    #calendar th,#calendar td {
-      border:1px solid var(--grid);
-      text-align:center;
-      vertical-align:top;
-      padding:.5rem;
-      min-height:5rem;
-    }
+    #calendar th,#calendar td {border:1px solid var(--grid);text-align:center;vertical-align:top;padding:.25rem;min-height:5rem;}
     #calendar th {background:var(--tint);}
-    .event {margin:.25rem 0;padding:.25rem .5rem;border-radius:.5rem;font-size:.8rem;}
-
-    /* === Colors for event types === */
-    .event.svc {background:#e0f2fe;color:#0369a1;}
-    .event.aa {background:#fef9c3;color:#92400e;}
-    .event.na {background:#fce7f3;color:#9d174d;}
-    .event.holiday {background:#dcfce7;color:#166534;}
-    .event.diocese {background:#ede9fe;color:#5b21b6;font-weight:bold;}
-
-    .liturgical {
-      display:inline-block;
-      margin-left:.5rem;
-      padding:.1rem .5rem;
-      border-radius:.5rem;
-      font-size:.8rem;
-      color:#fff;
-    }
+    .event {margin:.15rem 0;padding:.15rem .3rem;border-radius:.5rem;font-size:.75rem;}
+    .svc {background:#e0f2fe;color:#0369a1;}
+    .aa {background:#fef9c3;color:#92400e;}
+    .na {background:#fce7f3;color:#9d174d;}
+    .holy {background:#dcfce7;color:#166534;}
+    .liturgical {display:inline-block;margin-left:.5rem;padding:.1rem .5rem;border-radius:.5rem;font-size:.8rem;color:#fff;}
+    .nav {display:flex;justify-content:center;gap:.5rem;margin:1rem;}
+    .nav button {background:var(--accent);color:#fff;border:none;padding:.5rem 1rem;border-radius:.5rem;cursor:pointer;}
+    .nav button:hover {background:#15803d;}
     #upcoming {max-width:1000px;margin:1rem auto;padding:1rem;}
-    .legend {
-      max-width:1000px;
-      margin:1rem auto;
-      padding:1rem;
-      border:1px solid var(--grid);
-      border-radius:.75rem;
-      background:var(--tint);
-      font-size:.85rem;
-    }
-    .legend span {display:inline-block;margin:4px;padding:2px 8px;border-radius:6px;font-size:.75rem;font-weight:500;}
-    .legend .aa {background:#fef9c3;color:#92400e;}
-    .legend .na {background:#fce7f3;color:#9d174d;}
-    .legend .svc {background:#e0f2fe;color:#0369a1;}
-    .legend .holiday {background:#dcfce7;color:#166534;}
-    .legend .diocese {background:#ede9fe;color:#5b21b6;}
+    .debug {max-width:1000px;margin:0 auto 2rem auto;color:var(--muted);font-size:.8rem;}
   </style>
 </head>
 <body>
   <header>Trinity Church Calendar of Events</header>
 
-  <div id="calendar"></div>
+  <div class="nav">
+    <button onclick="prevMonth()">◀ Prev</button>
+    <button onclick="today()">Today</button>
+    <button onclick="nextMonth()">Next ▶</button>
+    <button onclick="window.print()">Print</button>
+  </div>
 
+  <div id="calendar"></div>
   <div id="upcoming">
     <h2>Upcoming Events</h2>
     <ul id="upcoming-list"></ul>
   </div>
-
-  <div class="legend">
-    <strong>Legend:</strong><br>
-    <span class="svc">Sunday Service</span>
-    <span class="aa">AA Groups</span>
-    <span class="na">NA Meetings</span>
-    <span class="holiday">Holidays</span>
-    <span class="diocese">Diocese Events</span>
-    <div style="margin-top:6px;font-size:12px;">
-      Trinity Episcopal Church • 202 W. Miller St., De Soto, MO • (636) 586-2542
-    </div>
-  </div>
+  <div class="debug" id="debug"></div>
 
 <script>
-const ASSETS_VERSION = 320;
+const ASSETS_VERSION = 330;
 const EVENTS_URLS = [
-  `/assets/events.json?v=${ASSETS_VERSION}`,
-  `/assets/liturgical.json?v=${ASSETS_VERSION}`
+  'assets/events.json?v='+ASSETS_VERSION,
+  'assets/liturgical.json?v='+ASSETS_VERSION
 ];
 
 let events = [];
 let liturgical = [];
+let state = {year:0,month:0};
 
 async function loadEvents() {
+  let loaded = false;
   for (const url of EVENTS_URLS) {
     try {
-      const r = await fetch(url, {cache:"no-store"});
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      if (url.includes("liturgical")) {
-        liturgical = await r.json();
-      } else {
-        events = await r.json();
+      const r = await fetch(url,{cache:'no-store'});
+      if (r.ok) {
+        if (url.includes("liturgical")) liturgical = await r.json();
+        else events = await r.json();
+        loaded = true;
       }
-    } catch (e) {
-      console.error("Failed to load", url, e);
-    }
+    } catch(e) { console.error("Load failed", url, e); }
   }
-  renderCalendar(new Date());
+  if (!loaded) document.getElementById("debug").textContent = "⚠️ Could not load events";
+  else document.getElementById("debug").textContent = "✔️ Events loaded ("+events.length+" total)";
+  const now = new Date(); state.year=now.getFullYear(); state.month=now.getMonth();
+  renderCalendar();
 }
 
-function renderCalendar(date) {
-  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-  const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  const weeks = [];
-  let current = new Date(monthStart);
-  current.setDate(current.getDate() - current.getDay());
+function liturgicalSeason(date){
+  return liturgical.find(l=> new Date(l.start)<=date && date<=new Date(l.end));
+}
 
-  while (current <= monthEnd || current.getDay() !== 0) {
-    const week = [];
-    for (let d = 0; d < 7; d++) {
-      week.push(new Date(current));
-      current.setDate(current.getDate() + 1);
-    }
+function renderCalendar() {
+  const y=state.year,m=state.month;
+  const start=new Date(y,m,1);
+  const end=new Date(y,m+1,0);
+  const weeks=[]; let d=new Date(start); d.setDate(d.getDate()-d.getDay());
+  while (d<=end||d.getDay()!==0){
+    const week=[]; for(let i=0;i<7;i++){week.push(new Date(d));d.setDate(d.getDate()+1);}
     weeks.push(week);
   }
+  const lit=liturgicalSeason(start);
+  const litChip = lit?`<span class="liturgical" style="background:${lit.color}">${lit.name}</span>`:"";
 
-  const lit = liturgical.find(l => new Date(l.start) <= monthEnd && new Date(l.end) >= monthStart);
-  const litChip = lit ? `<span class="liturgical" style="background:${lit.color}">${lit.name}</span>` : "";
-
-  let html = `<h2>${monthStart.toLocaleString('default',{month:'long'})} ${monthStart.getFullYear()} ${litChip}</h2>`;
-  html += `<table><thead><tr>`;
-  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d => html += `<th>${d}</th>`);
-  html += `</tr></thead><tbody>`;
-  for (const week of weeks) {
-    html += `<tr>`;
-    for (const day of week) {
-      const inMonth = day.getMonth() === monthStart.getMonth();
-      html += `<td${inMonth?"":' style="background:#f1f5f9"'}>`;
-      if (inMonth) {
-        html += `<div>${day.getDate()}</div>`;
-        const dayEvents = events.filter(ev => occursOn(ev, day));
-        for (const ev of dayEvents) {
-          html += `<div class="event ${ev.type||''}">${ev.title}</div>`;
-        }
+  let html=`<h2>${start.toLocaleString('default',{month:'long'})} ${y} ${litChip}</h2>`;
+  html+="<table><thead><tr>"+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<th>${d}</th>`).join("")+"</tr></thead><tbody>";
+  for(const week of weeks){
+    html+="<tr>";
+    for(const day of week){
+      const inMonth=day.getMonth()===m;
+      html+=`<td${inMonth?"":' style="background:#f1f5f9"'}><div>${day.getDate()}</div>`;
+      if(inMonth){
+        const todays=events.filter(ev=>occursOn(ev,day));
+        for(const ev of todays) html+=`<div class="event ${ev.type||''}">${ev.title}</div>`;
       }
-      html += `</td>`;
+      html+="</td>";
     }
-    html += `</tr>`;
+    html+="</tr>";
   }
-  html += `</tbody></table>`;
-  document.getElementById("calendar").innerHTML = html;
+  html+="</tbody></table>";
+  document.getElementById("calendar").innerHTML=html;
 
-  const upcoming = [];
-  const today = new Date();
-  for (let i = 0; i < 30; i++) {
-    const day = new Date(today);
-    day.setDate(today.getDate() + i);
-    const dayEvents = events.filter(ev => occursOn(ev, day));
-    for (const ev of dayEvents) {
-      upcoming.push(`${day.toLocaleDateString()} — ${ev.title}`);
-    }
+  const today=new Date(), upcoming=[];
+  for(let i=0;i<30;i++){
+    const day=new Date(today); day.setDate(today.getDate()+i);
+    const todays=events.filter(ev=>occursOn(ev,day));
+    for(const ev of todays) upcoming.push(`${day.toLocaleDateString()} — ${ev.title}`);
   }
-  document.getElementById("upcoming-list").innerHTML = upcoming.map(e => `<li>${e}</li>`).join("");
+  document.getElementById("upcoming-list").innerHTML=upcoming.map(e=>`<li>${e}</li>`).join("");
 }
 
-function occursOn(ev, day) {
-  const d = day.toISOString().split("T")[0];
-  if (ev.start) {
-    const evDate = ev.start.split("T")[0];
-    return evDate === d;
-  }
-  if (ev.rrule) {
-    return matchesRRule(ev.rrule, day);
-  }
+function occursOn(ev,day){
+  const d=day.toISOString().split("T")[0];
+  if(ev.start){ return ev.start.split("T")[0]===d; }
+  if(ev.rrule){ return matchesRRule(ev.rrule,day); }
   return false;
 }
 
-function matchesRRule(rrule, day) {
-  const parts = Object.fromEntries(rrule.split(";").map(p => p.split("=")));
-  const freq = parts.FREQ;
-  const dayStr = ["SU","MO","TU","WE","TH","FR","SA"][day.getDay()];
-
-  if (freq==="WEEKLY" && parts.BYDAY===dayStr) return true;
-  if (freq==="MONTHLY" && parts.BYDAY===dayStr && parts.BYSETPOS==="1" && day.getDate()<=7) return true;
-  if (freq==="YEARLY") {
-    if (parts.BYMONTH && parts.BYMONTHDAY) {
-      return (day.getMonth()+1)==parseInt(parts.BYMONTH) && day.getDate()==parseInt(parts.BYMONTHDAY);
-    }
-    if (parts.BYDAY && parts.BYMONTH) {
-      // e.g. Memorial Day, MLK Day
-      const [pos, weekday] = [parts.BYDAY.slice(0,-2), parts.BYDAY.slice(-2)];
-      const targetMonth = parseInt(parts.BYMONTH);
-      if ((day.getMonth()+1) != targetMonth) return false;
-      if (["SU","MO","TU","WE","TH","FR","SA"][day.getDay()]!==weekday) return false;
-      const weekOfMonth = Math.floor((day.getDate()-1)/7)+1;
-      if (pos==="1" && weekOfMonth===1) return true;
-      if (pos==="2" && weekOfMonth===2) return true;
-      if (pos==="3" && weekOfMonth===3) return true;
-      if (pos==="4" && weekOfMonth===4) return true;
-      if (pos==="-1") {
-        const nextMonth = new Date(day.getFullYear(), targetMonth, 0);
-        return (day.getDate()>nextMonth.getDate()-7);
-      }
-    }
-  }
+function matchesRRule(rr,day){
+  const [freqPart,...rest]=rr.split(";");
+  const freq=freqPart.split("=")[1];
+  const dayStr=["SU","MO","TU","WE","TH","FR","SA"][day.getDay()];
+  if(freq==="WEEKLY"&&rest.some(p=>p.includes("BYDAY="+dayStr))) return true;
+  if(freq==="MONTHLY"&&rest.some(p=>p.includes("BYDAY="+dayStr))&&rest.some(p=>p.includes("BYSETPOS=1"))&&day.getDate()<=7) return true;
   return false;
 }
+
+function prevMonth(){ state.month--; if(state.month<0){state.month=11;state.year--;} renderCalendar();}
+function nextMonth(){ state.month++; if(state.month>11){state.month=0;state.year++;} renderCalendar();}
+function today(){ const now=new Date(); state.year=now.getFullYear(); state.month=now.getMonth(); renderCalendar(); }
 
 loadEvents();
 </script>
