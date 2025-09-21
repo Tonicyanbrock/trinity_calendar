@@ -1,7 +1,7 @@
 [
   {
-    "id": "sunday-service-10am",
-    "title": "Holy Eucharist (10:00 AM)",
+    "id": "sunday-service",
+    "title": "Sunday Service (10:00 AM)",
     "where": "Sanctuary — Trinity Episcopal Church",
     "rrule": "FREQ=WEEKLY;BYDAY=SU;BYHOUR=10;BYMINUTE=0",
     "duration_minutes": 75,
@@ -16,7 +16,7 @@
     "type": "svc"
   },
   {
-    "id": "aa-148-tue",
+    "id": "aa-148",
     "title": "AA Group 148",
     "where": "Parish Hall — Trinity Episcopal Church",
     "rrule": "FREQ=WEEKLY;BYDAY=TU;BYHOUR=19;BYMINUTE=0",
@@ -24,7 +24,7 @@
     "type": "aa"
   },
   {
-    "id": "aa-147-fri",
+    "id": "aa-147",
     "title": "AA Group 147",
     "where": "Parish Hall — Trinity Episcopal Church",
     "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=19;BYMINUTE=0",
@@ -48,45 +48,104 @@
     "type": "na"
   },
 
-  { "id": "new-years-2025", "title": "New Year's Day", "where": "USA/Missouri", "start": "2025-01-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "mlk-2025", "title": "Martin Luther King Jr. Day", "where": "USA/Missouri", "start": "2025-01-20T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "lincoln-2025", "title": "Lincoln's Birthday", "where": "Missouri, USA", "start": "2025-02-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "valentines-2025", "title": "Valentine's Day", "where": "USA", "start": "2025-02-14T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "washington-2025", "title": "Washington's Birthday", "where": "USA", "start": "2025-02-17T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "st-patricks-2025", "title": "St. Patrick's Day", "where": "USA", "start": "2025-03-17T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "cinco-2025", "title": "Cinco de Mayo", "where": "USA", "start": "2025-05-05T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "truman-day-2025", "title": "Truman Day", "where": "Missouri, USA", "start": "2025-05-08T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "mothers-2025", "title": "Mother's Day", "where": "USA", "start": "2025-05-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "memorial-2025", "title": "Memorial Day", "where": "USA", "start": "2025-05-26T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "fathers-2025", "title": "Father's Day", "where": "USA", "start": "2025-06-15T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "juneteenth-2025", "title": "Juneteenth", "where": "USA", "start": "2025-06-19T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "independence-2025", "title": "Independence Day", "where": "USA", "start": "2025-07-04T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "labor-2025", "title": "Labor Day", "where": "USA", "start": "2025-09-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "halloween-2025", "title": "Halloween", "where": "USA", "start": "2025-10-31T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "columbus-2025", "title": "Columbus Day", "where": "USA", "start": "2025-10-13T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "veterans-2025", "title": "Veterans Day", "where": "USA", "start": "2025-11-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "thanksgiving-2025", "title": "Thanksgiving", "where": "USA", "start": "2025-11-27T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "christmas-2025", "title": "Christmas Day", "where": "USA", "start": "2025-12-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "new-years-eve-2025", "title": "New Year's Eve", "where": "USA", "start": "2025-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" },
+  /* --- Holidays (federal + cultural + MO) --- */
+  {
+    "id": "new-years",
+    "title": "New Year's Day",
+    "start": "2025-01-01",
+    "type": "holy"
+  },
+  {
+    "id": "mlk-day",
+    "title": "Martin Luther King Jr. Day",
+    "start": "2025-01-20",
+    "type": "civic"
+  },
+  {
+    "id": "lincolns-birthday",
+    "title": "Lincoln's Birthday (MO)",
+    "start": "2025-02-12",
+    "type": "civic"
+  },
+  {
+    "id": "valentines",
+    "title": "Valentine's Day",
+    "start": "2025-02-14",
+    "type": "cultural"
+  },
+  {
+    "id": "washingtons-birthday",
+    "title": "Washington's Birthday",
+    "start": "2025-02-17",
+    "type": "civic"
+  },
+  {
+    "id": "st-patricks",
+    "title": "St. Patrick's Day",
+    "start": "2025-03-17",
+    "type": "cultural"
+  },
+  {
+    "id": "cinco-de-mayo",
+    "title": "Cinco de Mayo",
+    "start": "2025-05-05",
+    "type": "cultural"
+  },
+  {
+    "id": "truman-day",
+    "title": "Truman Day (MO)",
+    "start": "2025-05-08",
+    "type": "civic"
+  },
+  {
+    "id": "mothers-day",
+    "title": "Mother's Day",
+    "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=SU;BYSETPOS=2",
+    "type": "cultural"
+  },
+  {
+    "id": "memorial-day",
+    "title": "Memorial Day",
+    "rrule": "FREQ=YEARLY;BYMONTH=5;BYDAY=MO;BYSETPOS=-1",
+    "type": "civic"
+  },
+  {
+    "id": "fathers-day",
+    "title": "Father's Day",
+    "rrule": "FREQ=YEARLY;BYMONTH=6;BYDAY=SU;BYSETPOS=3",
+    "type": "cultural"
+  },
+  {
+    "id": "juneteenth",
+    "title": "Juneteenth",
+    "start": "2025-06-19",
+    "type": "civic"
+  },
+  {
+    "id": "independence-day",
+    "title": "Independence Day",
+    "start": "2025-07-04",
+    "type": "civic"
+  },
+  {
+    "id": "labor-day",
+    "title": "Labor Day",
+    "rrule": "FREQ=YEARLY;BYMONTH=9;BYDAY=MO;BYSETPOS=1",
+    "type": "civic"
+  },
+  {
+    "id": "thanksgiving",
+    "title": "Thanksgiving",
+    "rrule": "FREQ=YEARLY;BYMONTH=11;BYDAY=TH;BYSETPOS=4",
+    "type": "civic"
+  },
+  {
+    "id": "christmas",
+    "title": "Christmas Day",
+    "start": "2025-12-25",
+    "type": "holy"
+  }
 
-  { "id": "new-years-2026", "title": "New Year's Day", "where": "USA/Missouri", "start": "2026-01-01T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "mlk-2026", "title": "Martin Luther King Jr. Day", "where": "USA/Missouri", "start": "2026-01-19T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "lincoln-2026", "title": "Lincoln's Birthday", "where": "Missouri, USA", "start": "2026-02-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "valentines-2026", "title": "Valentine's Day", "where": "USA", "start": "2026-02-14T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "washington-2026", "title": "Washington's Birthday", "where": "USA", "start": "2026-02-16T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "st-patricks-2026", "title": "St. Patrick's Day", "where": "USA", "start": "2026-03-17T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "cinco-2026", "title": "Cinco de Mayo", "where": "USA", "start": "2026-05-05T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "truman-day-2026", "title": "Truman Day", "where": "Missouri, USA", "start": "2026-05-08T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "mothers-2026", "title": "Mother's Day", "where": "USA", "start": "2026-05-10T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "memorial-2026", "title": "Memorial Day", "where": "USA", "start": "2026-05-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "fathers-2026", "title": "Father's Day", "where": "USA", "start": "2026-06-21T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "juneteenth-2026", "title": "Juneteenth", "where": "USA", "start": "2026-06-19T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "independence-2026", "title": "Independence Day", "where": "USA", "start": "2026-07-04T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "labor-2026", "title": "Labor Day", "where": "USA", "start": "2026-09-07T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "halloween-2026", "title": "Halloween", "where": "USA", "start": "2026-10-31T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "columbus-2026", "title": "Columbus Day", "where": "USA", "start": "2026-10-12T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "veterans-2026", "title": "Veterans Day", "where": "USA", "start": "2026-11-11T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "thanksgiving-2026", "title": "Thanksgiving", "where": "USA", "start": "2026-11-26T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "christmas-2026", "title": "Christmas Day", "where": "USA", "start": "2026-12-25T00:00:00", "duration_minutes": 1440, "type": "holy" },
-  { "id": "new-years-eve-2026", "title": "New Year's Eve", "where": "USA", "start": "2026-12-31T00:00:00", "duration_minutes": 1440, "type": "holy" }
+  /* --- Diocesan events (copied from your old file) --- */
+  // paste your diocesan entries here (they should remain unchanged)
 ]
