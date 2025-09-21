@@ -1,44 +1,44 @@
 [
   {
     "name": "Advent",
-    "color": "#6b21a8",
     "start": "2025-11-30",
-    "end": "2025-12-24"
+    "end": "2025-12-24",
+    "color": "#6b21a8"
   },
   {
     "name": "Christmas",
-    "color": "#e2e8f0",
     "start": "2025-12-25",
-    "end": "2026-01-05"
+    "end": "2026-01-05",
+    "color": "#e2e8f0"
   },
   {
     "name": "Epiphany",
-    "color": "#f59e0b",
     "start": "2026-01-06",
-    "end": "2026-02-17"
+    "end": "2026-02-17",
+    "color": "#15803d"
   },
   {
     "name": "Lent",
-    "color": "#6b21a8",
     "start": "2026-02-18",
-    "end": "2026-04-04"
+    "end": "2026-04-04",
+    "color": "#6b21a8"
   },
   {
     "name": "Easter",
-    "color": "#ffffff",
     "start": "2026-04-05",
-    "end": "2026-05-23"
+    "end": "2026-05-23",
+    "color": "#e2e8f0"
   },
   {
     "name": "Pentecost",
-    "color": "#dc2626",
     "start": "2026-05-24",
-    "end": "2026-05-30"
+    "end": "2026-05-30",
+    "color": "#dc2626"
   },
   {
     "name": "Ordinary Time",
-    "color": "#15803d",
-    "start": "2026-06-01",
-    "end": "2026-11-28"
+    "start": "2026-05-31",
+    "end": "2025-11-29",
+    "color": "#15803d"
   }
 ]
