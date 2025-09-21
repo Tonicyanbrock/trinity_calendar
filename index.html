@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trinity Episcopal De Soto — Calendar</title>
-  <meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO.">
+  <title>Trinity Episcopal De Soto — Full Calendar</title>
+  <meta name="description" content="Complete events calendar for Trinity Episcopal Church, De Soto, MO.">
 
   <style>
     :root {
@@ -20,10 +20,10 @@
     }
     body::before {
       content:""; position:absolute; inset:0;
-      background:rgba(255,255,255,0.85); /* soft overlay for readability */
+      background:rgba(255,255,255,0.85); /* soft overlay */
       z-index:0;
     }
-    header, main, section, footer {
+    header, main, footer {
       position:relative; z-index:1;
     }
     header {
@@ -31,17 +31,12 @@
     }
     header h1 {margin:0; font-size:1.5rem;}
     header p {margin:0.25rem 0 0; font-size:1rem;}
-    .view-calendar-btn {
-      display:inline-block; margin-top:0.75rem; padding:0.5rem 1rem;
-      background:#fff; color:var(--accent-2); border-radius:8px;
-      text-decoration:none; font-weight:600; transition:background 0.2s;
-    }
-    .view-calendar-btn:hover {background:#e2e8f0;}
-    #calendar, #upcoming, #legend {
+    main, footer {
       max-width:1000px; margin:1rem auto; padding:1rem;
-      background:var(--panel); border-radius:1rem; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      background:var(--panel); border-radius:1rem;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
     }
-    #calendar h2 {margin-top:0;}
+    #calendar-app {padding:1rem;}
     .badge {display:inline-block; padding:0.25rem 0.5rem; border-radius:6px; color:#fff; font-size:0.75rem;}
     .aa {background:#16a34a;} .na {background:#ea580c;}
     .svc {background:#2563eb;} .holy {background:#facc15; color:#000;}
@@ -50,21 +45,15 @@
 <body>
   <header>
     <h1>Trinity Episcopal Church — De Soto, MO</h1>
-    <p>Worship Services, AA/NA Meetings, and Community Events</p>
-    <a class="view-calendar-btn" href="calendar.html">📅 View Full Calendar</a>
+    <p>Complete Calendar of Worship Services, AA/NA Meetings, and Community Events</p>
   </header>
 
-  <main id="calendar">
+  <main>
     <h2>Calendar</h2>
-    <div id="calendar-app">Loading calendar…</div>
+    <div id="calendar-app">Loading events…</div>
   </main>
 
-  <section id="upcoming">
-    <h2>Upcoming Events</h2>
-    <ul id="upcoming-list"></ul>
-  </section>
-
-  <footer id="legend">
+  <footer>
     <p><span class="badge aa">AA 148 / 147</span> 
        <span class="badge na">NA</span> 
        <span class="badge svc">Sunday Service</span> 
@@ -73,7 +62,7 @@
   </footer>
 
   <script>
-    const ASSETS_VERSION = 302;
+    const ASSETS_VERSION = 303;
     const EVENTS_URLS = [
       `assets/events.json?v=${ASSETS_VERSION}`
     ];
@@ -96,7 +85,6 @@
     function renderCalendar(events) {
       const container = document.getElementById("calendar-app");
       container.innerHTML = "";
-      // For now, simple list (replace with full grid if desired)
       const ul = document.createElement("ul");
       events.forEach(ev => {
         const li = document.createElement("li");
@@ -104,15 +92,6 @@
         ul.appendChild(li);
       });
       container.appendChild(ul);
-
-      // Upcoming section
-      const upcomingList = document.getElementById("upcoming-list");
-      upcomingList.innerHTML = "";
-      events.slice(0,10).forEach(ev => {
-        const li = document.createElement("li");
-        li.textContent = (ev.start ? ev.start.slice(0,10) + " — " : "") + ev.title;
-        upcomingList.appendChild(li);
-      });
     }
 
     loadEvents().then(events => renderCalendar(events));
