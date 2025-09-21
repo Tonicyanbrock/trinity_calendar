@@ -5,33 +5,82 @@
   <title>Trinity Episcopal Church — Calendar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; background:#f8fafc; color:#111; }
-    header {
-      background: url("assets/stained-glass.jpg") center/cover no-repeat;
-      padding: 2rem;
-      text-align: center;
-      color: white;
-      font-size: 1.8rem;
-      font-weight: bold;
-      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+    :root {
+      --panel:#ffffff; --ink:#0b1220; --muted:#475569;
+      --accent:#16a34a; --accent-2:#2563eb;
+      --grid:#64748b; --tint:#f8fafc;
     }
-    #calendar { max-width: 960px; margin: 1rem auto; padding: 1rem; background:white; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-    table { width:100%; border-collapse: collapse; }
-    th, td { border:1px solid #ddd; padding:6px; vertical-align:top; width:14%; height:90px; }
-    th { background:#f1f5f9; }
-    .today { background:#2563eb; color:white; }
-    .daynum { font-weight:bold; }
-    ul { margin:0; padding-left:14px; font-size:0.8rem; }
-    #upcoming { max-width:960px; margin:1rem auto; padding:1rem; background:white; border-radius:12px; }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink)}
+    body{background:#fff}
+    .app{max-width:980px;margin:14px auto;padding:12px}
+    .header{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+    h1{margin:0;font-size:1.5rem;font-weight:600;text-align:center}
+    .btn{background:#16a34a;color:white;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:14px}
+    .btn:hover{background:#15803d}
+    .tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:500;margin-left:6px}
+    .tag.ordinary{background:#16a34a;color:#fff}
+    .legend{margin-top:20px;padding:10px;border:1px solid var(--grid);border-radius:8px;background:var(--tint)}
+    .legend span{display:inline-block;margin:4px;padding:2px 8px;border-radius:8px;font-size:12px;font-weight:500}
+    .legend .aa{background:#22c55e;color:#fff}
+    .legend .na{background:#f97316;color:#fff}
+    .legend .svc{background:#475569;color:#fff}
+    .legend .holy{background:#eab308;color:#fff}
+    .debug{margin-top:20px;font-size:12px;color:#475569}
+    header.banner {
+      background:url("assets/stained-glass.jpg") center/cover no-repeat;
+      color:white;
+      text-align:center;
+      padding:2rem 1rem;
+      font-size:1.8rem;
+      font-weight:bold;
+      text-shadow:0 2px 6px rgba(0,0,0,0.7);
+    }
+    #calendar{padding:1rem}
+    .month-label{display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:1.25rem;font-weight:bold;margin:.5rem 0}
+    .badge{padding:.2rem .5rem;border-radius:.5rem;font-size:.8rem;color:white}
+    .purple{background:#6b21a8}.green{background:#15803d}.red{background:#dc2626}.white{background:#e2e8f0;color:#111}
+    table{border-collapse:collapse;width:100%;margin-top:1rem}
+    th,td{border:1px solid var(--grid);text-align:left;vertical-align:top;padding:.25rem;min-width:6rem;height:5rem}
+    td .daynum{font-weight:bold}
+    .today{background:var(--accent-2);color:white}
+    ul{list-style:none;padding:0;margin:0}
+    li{margin:.1rem 0;font-size:.75rem}
+    .upcoming{margin-top:1rem}
   </style>
 </head>
 <body>
-  <header>Trinity Church Calendar of Events</header>
-  <div id="calendar"></div>
-  <div id="upcoming"></div>
+  <header class="banner">Trinity Church Calendar of Events</header>
+  <div class="app">
+    <div class="header">
+      <button class="btn" data-btn="prev">◀</button>
+      <h1>Calendar</h1>
+      <button class="btn" data-btn="next">▶</button>
+    </div>
+    <div style="text-align:center;margin:10px 0;">
+      <button class="btn" data-btn="today">Today</button>
+      <button class="btn" onclick="window.print()">Print</button>
+    </div>
+    <div id="calendar"></div>
+    <div class="upcoming">
+      <h3>Upcoming Events</h3>
+      <ul id="upcoming-list"></ul>
+    </div>
+    <div class="legend">
+      <strong>Legend</strong><br>
+      <span class="aa">AA 148 / 147</span>
+      <span class="na">NA</span>
+      <span class="svc">Sunday Service</span>
+      <span class="holy">Holiday</span>
+      <div style="margin-top:6px;font-size:12px;">
+        Trinity Episcopal Church, 202 W. Miller St., De Soto, MO 63020 • (636) 586-2542
+      </div>
+    </div>
+    <div class="debug" id="debug"></div>
+  </div>
 
 <script>
-const ASSETS_VERSION = 313;  // bump number
+const ASSETS_VERSION = 300; // keep this bump number for now
 const EVENTS_URLS = [
   'assets/events.json?v=' + ASSETS_VERSION,
   'admin/events.json?v=' + ASSETS_VERSION
@@ -41,111 +90,161 @@ const state = { year:0, month:0, events:[] };
 
 function startOfMonth(y,m){ return new Date(y,m,1);}
 function endOfMonth(y,m){ return new Date(y,m+1,0);}
-function pad(n){return String(n).padStart(2,'0');}
 function formatDate(d){return d.toLocaleDateString("en-US",{month:"short",day:"numeric"});}
+function pad(n){return String(n).padStart(2,"0");}
 
+// === Liturgical Season ===
+function liturgicalSeason(date){
+  const m = date.getMonth()+1, d=date.getDate();
+  if((m===12&&d>=1)||(m<=1)) return {name:"Advent / Christmas",cls:"purple"};
+  if(m===2||m===3) return {name:"Lent",cls:"purple"};
+  if(m===4) return {name:"Easter",cls:"white"};
+  if(m>=6&&m<=10) return {name:"Ordinary Time",cls:"green"};
+  if(m===5) return {name:"Pentecost",cls:"red"};
+  return {name:"Season",cls:"green"};
+}
+
+// === RRULE expansion ===
 function expandRrule(event, rangeStart, rangeEnd) {
   if (!event.rrule) return [];
   const rules = {};
-  event.rrule.split(";").forEach(p => { const [k,v]=p.split("="); rules[k]=v; });
+  event.rrule.split(";").forEach(p => {
+    const [k, v] = p.split("=");
+    rules[k] = v;
+  });
   const freq = rules.FREQ;
-  const hour = parseInt(rules.BYHOUR||"0");
-  const minute = parseInt(rules.BYMINUTE||"0");
-  let dates=[];
-  if (freq==="WEEKLY" && rules.BYDAY) {
-    const dayMap={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6};
-    const target=dayMap[rules.BYDAY];
-    let d=new Date(rangeStart);
-    d.setDate(d.getDate()+((7+target-d.getDay())%7));
-    while(d<=rangeEnd){
-      dates.push(new Date(d.getFullYear(),d.getMonth(),d.getDate(),hour,minute));
-      d.setDate(d.getDate()+7);
+  const hour = parseInt(rules.BYHOUR || "0");
+  const minute = parseInt(rules.BYMINUTE || "0");
+  let dates = [];
+  if (freq === "WEEKLY" && rules.BYDAY) {
+    const dayMap = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+    const target = dayMap[rules.BYDAY];
+    let d = new Date(rangeStart);
+    d.setDate(d.getDate() + ((7 + target - d.getDay()) % 7));
+    while (d <= rangeEnd) {
+      dates.push(new Date(d.getFullYear(), d.getMonth(), d.getDate(), hour, minute));
+      d.setDate(d.getDate() + 7);
     }
   }
-  if (freq==="MONTHLY" && rules.BYDAY && rules.BYSETPOS) {
-    const dayMap={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6};
-    const target=dayMap[rules.BYDAY];
-    const setpos=parseInt(rules.BYSETPOS);
-    for(let m=rangeStart.getMonth(); m<=rangeEnd.getMonth(); m++){
-      let count=0;
-      for(let i=1;i<=31;i++){
-        let test=new Date(rangeStart.getFullYear(),m,i);
-        if(test.getMonth()!==m) break;
-        if(test.getDay()===target){
+  if (freq === "MONTHLY" && rules.BYDAY && rules.BYSETPOS) {
+    const dayMap = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+    const target = dayMap[rules.BYDAY];
+    const setpos = parseInt(rules.BYSETPOS);
+    let testDate = new Date(rangeStart);
+    while (testDate <= rangeEnd) {
+      let count = 0;
+      for (let i=1;i<=31;i++){
+        let test = new Date(testDate.getFullYear(), testDate.getMonth(), i);
+        if (test.getMonth() !== testDate.getMonth()) break;
+        if (test.getDay() === target) {
           count++;
-          if(count===setpos){
-            dates.push(new Date(test.getFullYear(),test.getMonth(),test.getDate(),hour,minute));
+          if (count === setpos) {
+            dates.push(new Date(test.getFullYear(), test.getMonth(), test.getDate(), hour, minute));
           }
         }
       }
+      testDate = new Date(testDate.getFullYear(), testDate.getMonth()+1, 1);
     }
   }
   return dates;
 }
 
+// === Load Events ===
 async function loadEvents(){
   let all=[];
   for(const url of EVENTS_URLS){
     try{
       const resp=await fetch(url,{cache:"no-store"});
-      if(resp.ok){
-        const data=await resp.json();
-        all=all.concat(data);
-      }
-    }catch(e){console.error("Failed to load",url,e);}
+      if(!resp.ok) continue;
+      const data=await resp.json();
+      all=all.concat(data);
+      console.log("Loaded",data.length,"events from",url);
+    }catch(e){console.error("Failed",url,e);}
   }
   return all;
 }
 
+// === Render ===
 function render(events){
   const today=new Date();
   const y=today.getFullYear(), m=today.getMonth();
-  const start=startOfMonth(y,m), end=endOfMonth(y,m);
-  // expand recurrences
+  const rangeStart=startOfMonth(y,m), rangeEnd=endOfMonth(y,m);
+
+  // Expand recurrences
   let expanded=[];
   events.forEach(ev=>{
-    if(ev.date){expanded.push(ev);}
-    else if(ev.rrule){
-      expandRrule(ev,start,end).forEach(d=>{
+    if(ev.start){
+      expanded.push({...ev,date:new Date(ev.start)});
+    } else if(ev.rrule){
+      expandRrule(ev,rangeStart,rangeEnd).forEach(d=>{
         expanded.push({...ev,date:d});
       });
     }
   });
-  // group
+
+  // Group by day
   let grouped={};
   expanded.forEach(ev=>{
-    let key=ev.date.toDateString();
+    const key=ev.date.toDateString();
     if(!grouped[key]) grouped[key]=[];
     grouped[key].push(ev);
   });
-  // render table
-  let cal="<table><tr>";
-  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>cal+=`<th>${d}</th>`);
-  cal+="</tr><tr>";
-  let startDay=start.getDay();
-  for(let i=0;i<startDay;i++) cal+="<td></td>";
-  for(let d=1; d<=end.getDate(); d++){
+
+  // Month label + liturgical season
+  const season=liturgicalSeason(today);
+  const cal=document.getElementById("calendar");
+  let html=`<div class="month-label">${today.toLocaleString("default",{month:"long"})} ${today.getFullYear()} <span class="badge ${season.cls}">${season.name}</span></div>`;
+
+  // Table header
+  html+="<table><tr>";
+  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>html+=`<th>${d}</th>`);
+  html+="</tr><tr>";
+
+  // Fill blanks before 1st
+  for(let i=0;i<rangeStart.getDay();i++) html+="<td></td>";
+
+  // Fill days
+  for(let d=1;d<=rangeEnd.getDate();d++){
     let thisDay=new Date(y,m,d);
     let key=thisDay.toDateString();
-    let classes=thisDay.toDateString()===today.toDateString()?"today":"";
-    cal+=`<td class="${classes}"><div class="daynum">${d}</div>`;
-    (grouped[key]||[]).forEach(ev=>{
-      cal+=`<div style="font-size:0.8rem;margin:2px 0;">${ev.title}</div>`;
-    });
-    cal+="</td>";
-    if((startDay+d)%7===0) cal+="</tr><tr>";
+    let eventsHere=grouped[key]||[];
+    let isToday=thisDay.toDateString()===today.toDateString();
+    html+=`<td class="${isToday?'today':''}"><div class="daynum">${d}</div>`;
+    if(eventsHere.length){
+      html+="<ul>";
+      eventsHere.forEach(ev=>{
+        html+=`<li>${ev.title}</li>`;
+      });
+      html+="</ul>";
+    }
+    html+="</td>";
+    if((rangeStart.getDay()+d)%7===0) html+="</tr><tr>";
   }
-  cal+="</tr></table>";
-  document.getElementById("calendar").innerHTML=cal;
-  // upcoming
+
+  html+="</tr></table>";
+  cal.innerHTML=html;
+
+  // Upcoming
+  let list=document.getElementById("upcoming-list");
   let upcoming=expanded.filter(e=>e.date>=today).sort((a,b)=>a.date-b.date).slice(0,10);
-  document.getElementById("upcoming").innerHTML="<h3>Upcoming Events</h3><ul>"+upcoming.map(ev=>`<li>${formatDate(ev.date)} — ${ev.title}</li>`).join("")+"</ul>";
+  list.innerHTML=upcoming.map(ev=>`<li>${formatDate(ev.date)} — ${ev.title}</li>`).join("");
 }
 
+// === Controls ===
+document.querySelector('[data-btn="prev"]').onclick=()=>{state.month--;if(state.month<0){state.month=11;state.year--;}render(state.events);}
+document.querySelector('[data-btn="next"]').onclick=()=>{state.month++;if(state.month>11){state.month=0;state.year++;}render(state.events);}
+document.querySelector('[data-btn="today"]').onclick=()=>{const now=new Date();state.year=now.getFullYear();state.month=now.getMonth();render(state.events);}
+
+// === Init ===
 (async()=>{
-  const ev=await loadEvents();
-  state.events=ev;
-  render(ev);
+  try{
+    const ev=await loadEvents();
+    state.events=ev;
+    render(ev);
+    document.getElementById("debug").textContent=`OK: events loaded (${ev.length} total)`;
+  }catch(e){
+    document.getElementById("debug").textContent="⚠️ "+e.message;
+  }
 })();
 </script>
 </body>
