@@ -3,213 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trinity Church Calendar of Events</title>
+  <title>Trinity Episcopal De Soto — Calendar</title>
   <meta name="description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO.">
-  <meta property="og:title" content="Trinity Church Calendar of Events">
-  <meta property="og:description" content="Monthly events & services at Trinity Episcopal Church, De Soto, MO.">
-  <meta property="og:image" content="https://tonicyanbrock.github.io/trinity_calendar/assets/og-image.jpg?v=300">
 
   <style>
-    :root{
+    :root {
       --panel:#ffffff; --ink:#0b1220; --muted:#475569;
       --accent:#16a34a; --accent-2:#2563eb;
       --grid:#64748b; --tint:#f8fafc;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:var(--ink)}
-    header{padding:1rem;text-align:center;background:var(--accent);color:white;font-size:1.5rem;font-weight:bold}
-    #calendar{padding:1rem}
-    .month-label{display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:1.25rem;font-weight:bold;margin:.5rem 0}
-    .badge{padding:.2rem .5rem;border-radius:.5rem;font-size:.8rem;color:white}
-    .purple{background:#6b21a8}.green{background:#15803d}.red{background:#dc2626}.white{background:#e2e8f0;color:#111}
-    table{border-collapse:collapse;width:100%;margin-top:1rem}
-    th,td{border:1px solid var(--grid);text-align:left;vertical-align:top;padding:.25rem;min-width:6rem;height:5rem}
-    td .daynum{font-weight:bold}
-    .today{background:var(--accent-2);color:white}
-    ul{list-style:none;padding:0;margin:0}
-    li{margin:.1rem 0;font-size:.75rem}
-    .upcoming{margin-top:1rem}
+    body {
+      margin:0; font-family:ui-sans-serif,system-ui,sans-serif; color:var(--ink);
+      background:url("assets/stained-glass.jpg") no-repeat center center fixed;
+      background-size:cover;
+      position:relative;
+    }
+    body::before {
+      content:""; position:absolute; inset:0;
+      background:rgba(255,255,255,0.85); /* soft overlay for readability */
+      z-index:0;
+    }
+    header, main, section, footer {
+      position:relative; z-index:1;
+    }
+    header {
+      background:var(--accent-2); color:#fff; padding:1rem; text-align:center;
+    }
+    header h1 {margin:0; font-size:1.5rem;}
+    header p {margin:0.25rem 0 0; font-size:1rem;}
+    .view-calendar-btn {
+      display:inline-block; margin-top:0.75rem; padding:0.5rem 1rem;
+      background:#fff; color:var(--accent-2); border-radius:8px;
+      text-decoration:none; font-weight:600; transition:background 0.2s;
+    }
+    .view-calendar-btn:hover {background:#e2e8f0;}
+    #calendar, #upcoming, #legend {
+      max-width:1000px; margin:1rem auto; padding:1rem;
+      background:var(--panel); border-radius:1rem; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    #calendar h2 {margin-top:0;}
+    .badge {display:inline-block; padding:0.25rem 0.5rem; border-radius:6px; color:#fff; font-size:0.75rem;}
+    .aa {background:#16a34a;} .na {background:#ea580c;}
+    .svc {background:#2563eb;} .holy {background:#facc15; color:#000;}
   </style>
 </head>
 <body>
-<header>Trinity Church Calendar of Events (build 300)</header>
-<div id="calendar"></div>
-<div class="upcoming">
-  <h3>Upcoming Events</h3>
-  <ul id="upcoming-list"></ul>
-</div>
+  <header>
+    <h1>Trinity Episcopal Church — De Soto, MO</h1>
+    <p>Worship Services, AA/NA Meetings, and Community Events</p>
+    <a class="view-calendar-btn" href="calendar.html">📅 View Full Calendar</a>
+  </header>
 
-<script>
-const ASSETS_VERSION = 300;
-const EVENTS_URLS = [
-  `assets/events.json?v=${ASSETS_VERSION}`
-];
+  <main id="calendar">
+    <h2>Calendar</h2>
+    <div id="calendar-app">Loading calendar…</div>
+  </main>
 
-// === Utility: Date helpers ===
-function startOfMonth(d){return new Date(d.getFullYear(),d.getMonth(),1);}
-function endOfMonth(d){return new Date(d.getFullYear(),d.getMonth()+1,0);}
-function formatDate(d){
-  return d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
-}
+  <section id="upcoming">
+    <h2>Upcoming Events</h2>
+    <ul id="upcoming-list"></ul>
+  </section>
 
-// === Liturgical Season ===
-function liturgicalSeason(date){
-  const m = date.getMonth()+1, d=date.getDate();
-  if((m===12&&d>=1)||(m<=1)) return {name:"Advent / Christmas",cls:"purple"};
-  if(m===2||m===3) return {name:"Lent",cls:"purple"};
-  if(m===4) return {name:"Easter",cls:"white"};
-  if(m>=6&&m<=10) return {name:"Ordinary Time",cls:"green"};
-  if(m===5) return {name:"Pentecost",cls:"red"};
-  return {name:"Season",cls:"green"};
-}
+  <footer id="legend">
+    <p><span class="badge aa">AA 148 / 147</span> 
+       <span class="badge na">NA</span> 
+       <span class="badge svc">Sunday Service</span> 
+       <span class="badge holy">Holy Day</span></p>
+    <p>Trinity Episcopal Church, 202 W. Miller St., De Soto, MO 63020 · (636) 586-2542</p>
+  </footer>
 
-// === RRULE expansion ===
-function expandRrule(event, rangeStart, rangeEnd) {
-  if (!event.rrule) return [];
-  const rules = {};
-  event.rrule.split(";").forEach(p => {
-    const [k, v] = p.split("=");
-    rules[k] = v;
-  });
+  <script>
+    const ASSETS_VERSION = 302;
+    const EVENTS_URLS = [
+      `assets/events.json?v=${ASSETS_VERSION}`
+    ];
 
-  const freq = rules.FREQ;
-  const hour = parseInt(rules.BYHOUR || "0");
-  const minute = parseInt(rules.BYMINUTE || "0");
-  let dates = [];
-
-  if (freq === "WEEKLY" && rules.BYDAY) {
-    const dayMap = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
-    const target = dayMap[rules.BYDAY];
-
-    let d = new Date(rangeStart);
-    d.setDate(d.getDate() + ((7 + target - d.getDay()) % 7));
-
-    while (d <= rangeEnd) {
-      dates.push(new Date(d.getFullYear(), d.getMonth(), d.getDate(), hour, minute));
-      d.setDate(d.getDate() + 7);
-    }
-  }
-
-  if (freq === "MONTHLY" && rules.BYDAY && rules.BYSETPOS) {
-    const dayMap = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
-    const target = dayMap[rules.BYDAY];
-    const setpos = parseInt(rules.BYSETPOS);
-
-    for (let m = rangeStart.getMonth(); m <= rangeEnd.getMonth(); m++) {
-      let count = 0;
-      for (let i = 1; i <= 31; i++) {
-        let test = new Date(rangeStart.getFullYear(), m, i);
-        if (test.getMonth() !== m) break;
-        if (test.getDay() === target) {
-          count++;
-          if (count === setpos) {
-            dates.push(new Date(test.getFullYear(), test.getMonth(), test.getDate(), hour, minute));
-          }
+    async function loadEvents() {
+      let events = [];
+      for (const url of EVENTS_URLS) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(res.status);
+          const data = await res.json();
+          events = events.concat(data);
+        } catch (err) {
+          console.error("Failed to load", url, err);
         }
       }
+      return events;
     }
-  }
 
-  return dates;
-}
+    function renderCalendar(events) {
+      const container = document.getElementById("calendar-app");
+      container.innerHTML = "";
+      // For now, simple list (replace with full grid if desired)
+      const ul = document.createElement("ul");
+      events.forEach(ev => {
+        const li = document.createElement("li");
+        li.textContent = ev.title + (ev.start ? " — " + ev.start : "");
+        ul.appendChild(li);
+      });
+      container.appendChild(ul);
 
-// === Render Calendar ===
-async function loadEvents(){
-  let all=[];
-  for(const url of EVENTS_URLS){
-    try{
-      console.log("DEBUG: fetching", url);
-      const resp=await fetch(url);
-      const data=await resp.json();
-      console.log("DEBUG: loaded", data.length, "events");
-      console.log("DEBUG: first 3 IDs:", data.slice(0,3).map(e=>e.id));
-      all=all.concat(data);
-    }catch(e){console.error("Failed load",url,e);}
-  }
-
-  // Add automatic Sunday Services (10 AM)
-  const today=new Date();
-  const rangeStart=startOfMonth(today);
-  const rangeEnd=endOfMonth(today);
-  for(let d=new Date(rangeStart); d<=rangeEnd; d.setDate(d.getDate()+1)){
-    if(d.getDay()===0){
-      all.push({
-        id:"sunday-service-auto",
-        title:"Sunday Service (10:00 AM)",
-        date:new Date(d.getFullYear(), d.getMonth(), d.getDate(), 10, 0),
-        type:"svc"
+      // Upcoming section
+      const upcomingList = document.getElementById("upcoming-list");
+      upcomingList.innerHTML = "";
+      events.slice(0,10).forEach(ev => {
+        const li = document.createElement("li");
+        li.textContent = (ev.start ? ev.start.slice(0,10) + " — " : "") + ev.title;
+        upcomingList.appendChild(li);
       });
     }
-  }
 
-  render(all);
-}
-
-function render(events){
-  const today=new Date();
-  const rangeStart=startOfMonth(today);
-  const rangeEnd=endOfMonth(today);
-
-  // Expand recurrences
-  let expanded=[];
-  events.forEach(ev=>{
-    if(ev.date){
-      expanded.push(ev);
-    } else {
-      let inst=expandRrule(ev,rangeStart,rangeEnd);
-      inst.forEach(d=>{
-        expanded.push({...ev,date:d});
-      });
-    }
-  });
-
-  console.log("DEBUG: expanded instances", expanded.length);
-
-  // Group events
-  let grouped={};
-  expanded.forEach(ev=>{
-    let key=ev.date.toDateString();
-    if(!grouped[key]) grouped[key]=[];
-    grouped[key].push(ev);
-  });
-
-  // Month label
-  const cal=document.getElementById("calendar");
-  const season=liturgicalSeason(today);
-  cal.innerHTML=`<div class="month-label">${today.toLocaleString("default",{month:"long"})} ${today.getFullYear()} <span class="badge ${season.cls}">${season.name}</span></div>`;
-
-  // Grid
-  let table="<table><tr>";
-  ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(d=>table+=`<th>${d}</th>`);
-  table+="</tr><tr>";
-  let startDay=rangeStart.getDay();
-  for(let i=0;i<startDay;i++) table+="<td></td>";
-  for(let d=1;d<=rangeEnd.getDate();d++){
-    let thisDay=new Date(today.getFullYear(),today.getMonth(),d);
-    let classes=thisDay.toDateString()===today.toDateString()?"today":"";
-    let key=thisDay.toDateString();
-    let eventsHere=grouped[key]||[];
-    table+=`<td class="${classes}"><div class="daynum">${d}</div>`;
-    if(eventsHere.length){
-      table+="<ul>";
-      eventsHere.forEach(ev=>{
-        table+=`<li>${ev.title}</li>`;
-      });
-      table+="</ul>";
-    }
-    table+="</td>";
-    if((startDay+d)%7===0) table+="</tr><tr>";
-  }
-  table+="</tr></table>";
-  cal.innerHTML+=table;
-
-  // Upcoming
-  let list=document.getElementById("upcoming-list");
-  let upcoming=expanded.filter(e=>e.date>=today).sort((a,b)=>a.date-b.date).slice(0,10);
-  list.innerHTML=upcoming.map(ev=>`<li>${formatDate(ev.date)} — ${ev.title}</li>`).join("");
-}
-
-loadEvents();
-</script>
+    loadEvents().then(events => renderCalendar(events));
+  </script>
 </body>
 </html>
