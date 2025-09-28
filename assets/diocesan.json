@@ -4,13 +4,69 @@
     "start": "2025-10-07T18:00:00",
     "end": "2025-10-07T19:00:00",
     "location": "Zoom",
-    "class": "diocesan"
+    "type": "diocesan"
   },
   {
     "title": "Diocesan LGBTQ+ Virtual Gathering",
     "start": "2025-10-14T19:00:00",
     "end": "2025-10-14T20:00:00",
     "location": "Zoom",
-    "class": "diocesan"
+    "type": "diocesan"
+  },
+  {
+    "title": "Standing Committee",
+    "start": "2025-10-23T17:00:00",
+    "end": "2025-10-23T19:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
+  },
+  {
+    "title": "Community of Deacons",
+    "start": "2025-10-27T18:00:00",
+    "end": "2025-10-27T19:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
+  },
+  {
+    "title": "Convocation Deans & Wardens",
+    "start": "2025-11-04T18:00:00",
+    "end": "2025-11-04T19:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
+  },
+  {
+    "title": "Diocesan LGBTQ+ Virtual Gathering",
+    "start": "2025-11-11T19:00:00",
+    "end": "2025-11-11T20:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
+  },
+  {
+    "title": "186th Diocesan Convention: Woven Together (Day 1)",
+    "start": "2025-11-13T16:00:00",
+    "end": "2025-11-13T20:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
+  },
+  {
+    "title": "186th Diocesan Convention: Woven Together (Day 2)",
+    "start": "2025-11-14T17:00:00",
+    "end": "2025-11-14T20:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
+  },
+  {
+    "title": "186th Diocesan Convention: Woven Together (Day 3)",
+    "start": "2025-11-15T07:30:00",
+    "end": "2025-11-15T16:00:00",
+    "location": "Manchester United Methodist Church, 129 Woods Mill Rd, Manchester, MO",
+    "type": "diocesan"
+  },
+  {
+    "title": "Community of Deacons",
+    "start": "2025-11-24T18:00:00",
+    "end": "2025-11-24T19:00:00",
+    "location": "Zoom",
+    "type": "diocesan"
   }
 ]
