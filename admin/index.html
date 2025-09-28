@@ -27,10 +27,7 @@
     .aa {background:#fef9c3;color:#92400e;}
     .na {background:#fce7f3;color:#9d174d;}
     .holy {background:#dcfce7;color:#166534;}
-    .diocesan {
-      background: #e0e7ff; /* light blue */
-      color: #1e3a8a;      /* navy text */
-    }
+    .diocesan {background:#e0e7ff;color:#1e3a8a;}
     .liturgical {display:inline-block;margin-left:.5rem;padding:.1rem .5rem;border-radius:.5rem;font-size:.8rem;color:#fff;}
     #nav {display:flex;justify-content:center;gap:1rem;margin:1rem;}
     #nav button {padding:.5rem 1rem;border:none;border-radius:.5rem;background:var(--accent);color:#fff;cursor:pointer;font-weight:bold;}
@@ -63,7 +60,7 @@
   </div>
 
 <script>
-const ASSETS_VERSION = 343;
+const ASSETS_VERSION = 344;  // bump this if updates don’t show
 const EVENTS_URLS = [
   `/assets/events.json?v=${ASSETS_VERSION}`,
   `/assets/liturgical.json?v=${ASSETS_VERSION}`,
@@ -83,7 +80,6 @@ async function loadEvents() {
         liturgical = await r.json();
       } else {
         const more = await r.json();
-        console.log("Loaded", url, more); // debug line
         events = events.concat(more);
       }
     } catch (e) {
@@ -182,7 +178,8 @@ function matchesRRule(rrule, day) {
 
 loadEvents();
 </script>
-    <!-- Footer Button -->
+
+  <!-- Footer Button -->
   <footer style="text-align:center; margin: 3rem 0 1.5rem 0;">
     <a href="calendar.html" 
        style="
@@ -202,9 +199,6 @@ loadEvents();
       📅 View Full Calendar
     </a>
   </footer>
-
-</body>
-</html>
 
 </body>
 </html>
