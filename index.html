@@ -37,6 +37,21 @@ background:var(--tint);}
     .nav button:hover {background:#15803d;}
     #upcoming {max-width:1000px;margin:1rem auto;padding:1rem;}
     .debug {max-width:1000px;margin:0 auto 2rem auto;color:var(--muted);font-size:.8rem;}
+    #calendar {
+  position: relative;
+  background: var(--panel);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  /* faint watermark frame */
+  background-image: url('assets/trinity-shield.png'); /* or prayers-blur.jpg */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80%;     /* shrinks image so you see edges */
+  opacity: 0.95;            /* keeps text readable */
+}
+
   </style>
 </head>
 <body>
