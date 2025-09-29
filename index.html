@@ -118,30 +118,70 @@
     footer a:hover {
       background-color:#7fb6eb;
     }
+
+    /* === Print Styles === */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-header, #upcoming, #upcoming * {
+        visibility: visible;
+      }
+      #print-header, #upcoming {
+        position: relative;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff;
+        color: #000;
+      }
+      #print-header {
+        text-align:center;
+        margin-bottom:1rem;
+        font-size:1rem;
+        line-height:1.4;
+      }
+      #print-header strong {
+        display:block;
+        font-size:1.25rem;
+        margin-bottom:0.25rem;
+      }
+      #upcoming h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        text-align:center;
+      }
+      #upcoming li {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+      }
+      /* hide shield watermark in print */
+      #calendar {
+        background-image: none !important;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="banner">
-  <img src="assets/trinity_calendar_banner.png?v=1" alt="Trinity Calendar of Events Banner">
-</div>
+    <img src="assets/trinity_calendar_banner.png?v=1" alt="Trinity Calendar of Events Banner">
+  </div>
 
-<div style="text-align:center; margin:1.25rem; font-size:1rem; color:var(--muted); line-height:1.6;">
-  <strong>10:00 AM English Sunday Worship</strong><br>
-  Our opportunity to meet together to give praise and glory to God, be fed by God,
-  and then be sent out into the world to serve and to love others.
-  <br><br>
-  202 W. Miller Street · Mailing Address: PO Box 9 · De Soto, MO 63020 · United States
-  <br>
-  Phone: (636) 586-2542 · 
-  <a href="mailto:trinitydesoto@gmail.com" style="color:var(--accent-2); text-decoration:none;">
-    trinitydesoto@gmail.com
-  </a>
-  <br><br>
-  <em>"Lift each other up, for life is better when shared."</em>
-</div>
-
-<header>Trinity Church Calendar of Events</header>
-
+  <!-- contact + worship info -->
+  <div style="text-align:center; margin:1.25rem; font-size:1rem; color:var(--muted); line-height:1.6;">
+    <strong>10:00 AM English Sunday Worship</strong><br>
+    Our opportunity to meet together to give praise and glory to God, be fed by God,
+    and then be sent out into the world to serve and to love others.
+    <br><br>
+    202 W. Miller Street · Mailing Address: PO Box 9 · De Soto, MO 63020 · United States
+    <br>
+    Phone: (636) 586-2542 · 
+    <a href="mailto:trinitydesoto@gmail.com" style="color:var(--accent-2); text-decoration:none;">
+      trinitydesoto@gmail.com
+    </a>
+    <br><br>
+    <em>"Lift each other up, for life is better when shared."</em>
+  </div>
 
   <header>Trinity Church Calendar of Events</header>
 
@@ -159,10 +199,17 @@
     <ul id="upcoming-list"></ul>
   </div>
 
+  <div id="print-header" style="display:none;">
+    <strong>Trinity Episcopal Church</strong>
+    202 W. Miller Street · Mailing Address: PO Box 9 · De Soto, MO 63020 · United States<br>
+    Phone: (636) 586-2542 · trinitydesoto@gmail.com<br>
+    <em>"Lift each other up, for life is better when shared."</em>
+  </div>
+
   <div class="debug" id="debug"></div>
 
 <script>
-const ASSETS_VERSION = 350;  // bump this if updates don’t show
+const ASSETS_VERSION = 353;  // bump this if updates don’t show
 const EVENTS_URLS = [
   `/assets/events.json?v=${ASSETS_VERSION}`,
   `/assets/liturgical.json?v=${ASSETS_VERSION}`,
@@ -284,12 +331,11 @@ function matchesRRule(rrule, day) {
 loadEvents();
 </script>
 
- <footer>
-  <a href="https://www.diocesemo.org/calendar" target="_blank">
-    📅 View Full Diocesan Calendar
-  </a>
-</footer>
-
+  <footer>
+    <a href="https://www.diocesemo.org/calendar" target="_blank">
+      📅 View Full Diocesan Calendar
+    </a>
+  </footer>
 
 </body>
 </html>
